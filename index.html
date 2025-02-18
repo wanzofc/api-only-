@@ -15,6 +15,10 @@
             height: auto;
             padding-bottom: 50px;
         }
+        body.dark-theme {
+            background: linear-gradient(to bottom, #222, #111);
+            color: #ddd;
+        }
 
         #particles-js {
             position: fixed;
@@ -23,6 +27,9 @@
             z-index: -1;
             top: 0;
             left: 0;
+        }
+        body.dark-theme #particles-js .particles-js-canvas-el {
+            filter: blur(3px);
         }
 
         header {
@@ -38,6 +45,24 @@
             padding: 15px 0;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
             z-index: 100;
+        }
+
+        /* Theme Toggle Button */
+        #theme-toggle {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: transparent;
+            border: none;
+            font-size: 24px;
+            color: #fff;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            z-index: 101; /* Over header */
+        }
+
+        #theme-toggle:hover {
+            color: #bbb;
         }
 
         main {
@@ -61,7 +86,8 @@
             margin-bottom: 20px;
         }
 
-        h1, h2 {
+        h1,
+        h2 {
             color: #fff;
             font-weight: lighter;
             margin-bottom: 0.75rem;
@@ -137,12 +163,14 @@
         }
     </style>
 </head>
+
 <body>
     <audio id="bg-music" src="https://files.catbox.moe/irf66d.mp3" autoplay loop></audio>
     <div id="particles-js"></div>
     <header class="text-center">
         <h1>WANZOFC TECH</h1>
-        <p>API</p>
+        <p> API DEMO</p>
+        <button id="theme-toggle">💡</button>
     </header>
 
     <main class="container">
@@ -185,8 +213,8 @@
                     <h2 class="container-title">API Endpoints</h2>
                     <ul>
                         <li>
-                            <a href="#" data-endpoint="/api/stalk/github?user=octocat">
-                                <i class="fab fa-github"></i> Get GitHub User (octocat)
+                            <a href="#" data-endpoint="/api/stalk/github?user=wanzbrayy">
+                                <i class="fab fa-github"></i> Get GitHub User (wanzbrayy)
                             </a>
                             <button class="try-it-button btn btn-primary" data-endpoint="/api/stalk/github?user=octocat">
                                 <i class="fas fa-flask"></i> Try It
@@ -215,7 +243,7 @@
     </main>
 
     <footer>
-        © 2024 WANZOFC TECH
+         WANZOFC TECH
     </footer>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -225,6 +253,42 @@
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 
     <script>
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+        let currentTheme = localStorage.getItem('theme') || 'light'; // Default to light
+
+        // Apply stored theme
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                body.classList.add('dark-theme');
+                themeToggle.textContent = '🌑'; // Moon
+            } else {
+                body.classList.remove('dark-theme');
+                themeToggle.textContent = '💡'; // Lightbulb
+            }
+        }
+
+        // Initialize theme
+        applyTheme(currentTheme);
+
+        // Theme toggle functionality
+        themeToggle.addEventListener('click', () => {
+            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+            localStorage.setItem('theme', currentTheme);
+            applyTheme(currentTheme);
+
+            // Update Particles.js in Dark Mode
+            if (currentTheme === 'dark') {
+                particlesJS.load('particles-js', '', function() {
+                    console.log('callback - particles.js config loaded');
+                });
+            } else {
+                particlesJS.load('particles-js', '', function() {
+                    console.log('callback - particles.js config loaded');
+                });
+            }
+        });
+
         async function loadChatHistory() {
             try {
                 const response = await fetch('/chat-history');
@@ -294,23 +358,57 @@
                 try {
                     const response = await fetch('/chat-message', {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ message: message })
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            message: message
+                        })
                     });
-                    if (response.ok) { messageInput.value = ''; } else { console.error('Failed to send message:', response.status); }
+                    if (response.ok) {
+                        messageInput.value = '';
+                    } else {
+                        console.error('Failed to send message:', response.status);
+                    }
                 } catch (error) {
                     console.error('Error sending message:', error);
                 }
             }
         });
+       // Load stored notifications
+        function loadStoredNotifications() {
+            const storedNotifications = localStorage.getItem('notifications');
+            if (storedNotifications) {
+                const notificationArray = JSON.parse(storedNotifications);
+                notificationArray.forEach(notification => {
+                    const notificationElement = document.createElement('div');
+                    notificationElement.textContent = `Notification: ${notification}`;
+                    notifications.appendChild(notificationElement);
+                });
+            }
+        }
+
+        // Add new notification to the list and store it
+        function addNotification(message) {
+            const notificationElement = document.createElement('div');
+            notificationElement.textContent = `Notification: ${message}`;
+            notifications.appendChild(notificationElement);
+
+            // Get existing notifications or initialize an empty array
+            let notificationArray = JSON.parse(localStorage.getItem('notifications')) || [];
+
+            // Add the new message to the array
+            notificationArray.push(message);
+
+            // Store the updated array back to localStorage
+            localStorage.setItem('notifications', JSON.stringify(notificationArray));
+        }
 
         const notificationEventSource = new EventSource('/notification-stream');
         notificationEventSource.onmessage = (event) => {
             const data = JSON.parse(event.data);
             if (data.notification) {
-                const notificationElement = document.createElement('div');
-                notificationElement.textContent = `Notification: ${data.notification}`;
-                notifications.appendChild(notificationElement);
+                addNotification(data.notification);
             }
         };
 
@@ -320,7 +418,7 @@
 
         async function getApiKey() {
             try {
-                const response = await fetch('/api/stalk/github?username=your_username');
+                const response = await fetch('/api/stalk/github?username=wanzbrayy');
                 const data = await response.json();
                 if (data.result && data.apikey) {
                     apiKeyDisplay.textContent = `API Key: ${data.apikey}`;
@@ -342,6 +440,8 @@
             });
         });
         loadChatHistory();
+         loadStoredNotifications();
     </script>
 </body>
+
 </html>
