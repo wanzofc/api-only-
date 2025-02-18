@@ -1,172 +1,91 @@
 const express = require('express');
+const http = require('http');
 const axios = require('axios');
 const cors = require('cors');
+const requestIp = require('request-ip');
+const mongoose = require('mongoose');
+
 const app = express();
-const port = process.env.PORT || 3000;
+const server = http.createServer(app);
 
-// Middleware
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.static('public'));
+app.use(requestIp.mw());
 
-// Status Aplikasi
-let appStatus = "Sedang Berjalan";
+// MongoDB Connection
+mongoose.connect('YOUR_MONGODB_CONNECTION_STRING', {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    })
+    .then(() => console.log('Connected to MongoDB'))
+    .catch(err => console.error('MongoDB connection error:', err));
 
-// Simpan API Keys (sementara, jangan lakukan ini di produksi!)
-const apiKeys = new Map();
-
-// Fungsi untuk menghasilkan API key acak (6 digit)
-function generateApiKey() {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let apiKey = '';
-    for (let i = 0; i < 6; i++) {
-        apiKey += characters.charAt(Math.floor(Math.random() * characters.length));
+// Define Visit Schema and Model
+const visitSchema = new mongoose.Schema({
+    ip: String,
+    timestamp: {
+        type: Date,
+        default: Date.now
     }
-    return apiKey;
-}
-
-// Fungsi middleware untuk validasi API key
-const apiKeyValidator = (req, res, next) => {
-    const apiKey = req.query.apikey;
-    const userId = req.headers['user-id']; // Ambil User ID dari Header
-
-    if (!userId) {
-        return res.status(400).json({
-            creator: "WANZOFC TECH",
-            result: false,
-            message: "User ID dibutuhkan pada header 'User-Id'.",
-            status: appStatus
-        });
-    }
-
-    if (!apiKey) {
-        return res.status(401).json({
-            creator: "WANZOFC TECH",
-            result: false,
-            message: "API key dibutuhkan. Sertakan parameter 'apikey' pada request Anda.",
-            status: appStatus
-        });
-    }
-
-    if (apiKeys.get(userId) !== apiKey) {
-        return res.status(403).json({
-            creator: "WANZOFC TECH",
-            result: false,
-            message: "API key tidak valid.",
-            status: appStatus
-        });
-    }
-
-    next(); // Lanjutkan ke handler berikutnya jika API key valid
-};
-
-// Endpoint Utama
-app.get('/', (req, res) => {
-    res.json({
-        status: appStatus,
-        message: "API is running. Akses /api/stalk/github?user={username}&apikey={apikey} untuk melakukan stalking GitHub."
-    });
 });
 
-// Endpoint untuk mendapatkan API Key
-app.get('/api/stalk/github', async (req, res) => {
-    const userId = req.headers['user-id'];
+const Visit = mongoose.model('Visit', visitSchema);
 
-    if (!userId) {
-        return res.status(400).json({
-            creator: "WANZOFC TECH",
-            result: false,
-            message: "User ID dibutuhkan pada header 'User-Id'.",
-            status: appStatus
-        });
-    }
+let totalRequests = 0; // Keep track of total requests
 
-    // Cek apakah user sudah memiliki API key
-    if (apiKeys.has(userId)) {
-        return res.status(200).json({
-            creator: "WANZOFC TECH",
-            result: true,
-            message: "API key sudah ada.",
-            status: appStatus,
-            apikey: apiKeys.get(userId)
-        });
-    }
-
-    // Generate API key baru
-    const newApiKey = generateApiKey();
-    apiKeys.set(userId, newApiKey);
-
-    res.status(201).json({
-        creator: "WANZOFC TECH",
-        result: true,
-        message: "API key berhasil dibuat.",
-        status: appStatus,
-        apikey: newApiKey
+// Middleware to track unique visits
+app.use(async (req, res, next) => {
+    const clientIp = requestIp.getClientIp(req);
+    const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const existingVisit = await Visit.findOne({
+        ip: clientIp,
+        timestamp: {
+            $gte: twentyFourHoursAgo
+        }
     });
-});
 
-// Endpoint /api/stalk/github (dilindungi oleh API key)
-app.get('/api/stalk/github/stalk', apiKeyValidator, async (req, res) => {
-    const user = req.query.user;
-    const userId = req.headers['user-id'];
-    const apiKey = req.query.apikey;
-
-
-    if (!user) {
-        return res.status(400).json({
-            creator: "WANZOFC TECH",
-            result: false,
-            message: "Tambahkan parameter 'user' (contoh: /api/stalk/github/stalk?user=username&apikey=apikey).",
-            status: appStatus
+    if (!existingVisit) {
+        const newVisit = new Visit({
+            ip: clientIp
         });
+        await newVisit.save();
     }
-
+    next();
+});
+app.get('/stats', async (req, res) => {
     try {
-        const { data } = await axios.get(`https://api.siputzx.my.id/api/stalk/github?user=${encodeURIComponent(user)}`);
+        const totalVisits = await Visit.countDocuments();
         res.json({
-            creator: "WANZOFC TECH",
-            result: true,
-            message: "GitHub Stalker",
-            status: appStatus,
-            apikey: apiKey,
-            data: data
+            totalVisits: totalVisits,
+            totalRequests: totalRequests
         });
     } catch (error) {
-        console.error("Error fetching data:", error);
-        res.status(500).json({
-            creator: "WANZOFC TECH",
-            result: false,
-            message: "GitHub Stalker bermasalah. Periksa kembali username atau coba lagi nanti.",
-            status: appStatus,
-            apikey: apiKey,
-            error: error.message
-        });
+        console.error("Error fetching stats:", error);
+        res.status(500).send("Error fetching stats");
     }
 });
 
-// Handle 404 errors
-app.use((req, res, next) => {
-    res.status(404).json({
-        creator: "WANZOFC TECH",
-        result: false,
-        message: "Endpoint tidak ditemukan.",
-        status: appStatus
+app.get('/get-ip', (req, res) => {
+    const clientIp = requestIp.getClientIp(req);
+    res.json({
+        ip: clientIp
     });
 });
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({
-        creator: "WANZOFC TECH",
-        result: false,
-        message: "Terjadi kesalahan server.",
-        status: appStatus,
-        error: err.message
+// Your AI Endpoint
+app.get('/ai/metaai', (req, res) => {
+    const query = req.query.query || 'tahun berapa sekarang';
+    const apiKey = 'ET386PIT';
+    const apiUrl = `https://wanzofc.us.kg/api/ai/metaai?query=${encodeURIComponent(query)}&apikey=${apiKey}`;
+    totalRequests++;
+
+    // Respond with the full API URL
+    res.json({
+        "API URL": apiUrl
     });
 });
 
-// Jalankan Server
-app.listen(port, () => {
-    console.log(`Server berjalan di http://localhost:${port}`);
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+    console.log(`Server started on port ${PORT}`);
 });
