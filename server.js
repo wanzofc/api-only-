@@ -8,12 +8,12 @@ const mongoose = require('mongoose');
 const app = express();
 const server = http.createServer(app);
 
-app.use(cors());
-app.use(express.static('public'));
-app.use(requestIp.mw());
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 // MongoDB Connection
-mongoose.connect('YOUR_MONGODB_CONNECTION_STRING', {
+mongoose.connect('mongodb+srv://zanssxploit:pISqUYgJJDfnLW9b@cluster0.fgram.mongodb.net/?retryWrites=true&w=majority', {
         useNewUrlParser: true,
         useUnifiedTopology: true
     })
