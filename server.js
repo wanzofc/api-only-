@@ -88,7 +88,7 @@ app.get('/', (req, res) => {
 });
 
 // Declare clients array OUTSIDE all route handlers
-const clients = [];
+let clients = []; // Menggunakan 'let' alih-alih 'const'
 
 // SSE Endpoint for Chat
 app.get('/chat-stream', async (req, res) => {
