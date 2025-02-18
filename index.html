@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,6 +16,7 @@
             height: auto;
             padding-bottom: 50px;
         }
+
         body.dark-theme {
             background: linear-gradient(to bottom, #222, #111);
             color: #ddd;
@@ -28,6 +30,7 @@
             top: 0;
             left: 0;
         }
+
         body.dark-theme #particles-js .particles-js-canvas-el {
             filter: blur(3px);
         }
@@ -58,7 +61,8 @@
             color: #fff;
             cursor: pointer;
             transition: color 0.3s ease;
-            z-index: 101; /* Over header */
+            z-index: 101;
+            /* Over header */
         }
 
         #theme-toggle:hover {
@@ -216,23 +220,28 @@
                             <a href="#" data-endpoint="/api/stalk/github?user=wanzbrayy">
                                 <i class="fab fa-github"></i> Get GitHub User (wanzbrayy)
                             </a>
-                            <button class="try-it-button btn btn-primary" data-endpoint="/api/stalk/github?user=octocat">
+                            <button class="try-it-button btn btn-primary"
+                                data-endpoint="/api/stalk/github?user=octocat">
                                 <i class="fas fa-flask"></i> Try It
                             </button>
                         </li>
                         <li>
-                            <a href="#" data-endpoint="/api/d/tiktok?url=https://www.tiktok.com/@scout2626/video/7359387817030466821">
+                            <a href="#"
+                                data-endpoint="/api/d/tiktok?url=https://www.tiktok.com/@scout2626/video/7359387817030466821">
                                 <i class="fab fa-tiktok"></i> TikTok Downloader
                             </a>
-                            <button class="try-it-button btn btn-primary" data-endpoint="/api/d/tiktok?url=https://www.tiktok.com/@scout2626/video/7359387817030466821">
+                            <button class="try-it-button btn btn-primary"
+                                data-endpoint="/api/d/tiktok?url=https://www.tiktok.com/@scout2626/video/7359387817030466821">
                                 <i class="fas fa-flask"></i> Try It
                             </button>
                         </li>
                         <li>
-                            <a href="#" data-endpoint="/api/stalk/youtube?username=UCXuqSBlHAE6Xw-yeJA0Tunw">
+                            <a href="#"
+                                data-endpoint="/api/stalk/youtube?username=UCXuqSBlHAE6Xw-yeJA0Tunw">
                                 <i class="fab fa-youtube"></i> Stalk YouTube
                             </a>
-                            <button class="try-it-button btn btn-primary" data-endpoint="/api/stalk/youtube?username=UCXuqSBlHAE6Xw-yeJA0Tunw">
+                            <button class="try-it-button btn btn-primary"
+                                data-endpoint="/api/stalk/youtube?username=UCXuqSBlHAE6Xw-yeJA0Tunw">
                                 <i class="fas fa-flask"></i> Try It
                             </button>
                         </li>
@@ -243,7 +252,7 @@
     </main>
 
     <footer>
-         WANZOFC TECH
+        WANZOFC TECH
     </footer>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -279,52 +288,144 @@
 
             // Update Particles.js in Dark Mode
             if (currentTheme === 'dark') {
-                particlesJS.load('particles-js', '', function() {
+                particlesJS.load('particles-js', '', function () {
                     console.log('callback - particles.js config loaded');
                 });
             } else {
-                particlesJS.load('particles-js', '', function() {
+                particlesJS.load('particles-js', '', function () {
                     console.log('callback - particles.js config loaded');
                 });
             }
         });
 
-        async function loadChatHistory() {
-            try {
-                const response = await fetch('/chat-history');
-                const chatHistory = await response.json();
-                chatHistory.forEach(msg => {
-                    const messageElement = document.createElement('div');
-                    messageElement.textContent = `${msg.message} - ${new Date(msg.timestamp).toLocaleTimeString()}`;
-                    chatMessages.appendChild(messageElement);
-                    chatMessages.scrollTop = chatMessages.scrollHeight;
-                });
-            } catch (error) {
-                console.error('Error loading chat history:', error);
-            }
-        }
-
         particlesJS('particles-js', {
             "particles": {
-                "number": { "value": 80, "density": { "enable": true, "value_area": 800 } },
-                "color": { "value": "#ffffff" },
-                "shape": { "type": "circle", "stroke": { "width": 0, "color": "#000000" }, "polygon": { "nb_sides": 5 },"image": { "src": "img/github.svg", "width": 100, "height": 100 } },
-                "opacity": { "value": 0.5, "random": false, "anim": { "enable": false, "speed": 1, "opacity_min": 0.1, "sync": false } },
-                "size": { "value": 5, "random": true, "anim": { "enable": false, "speed": 40, "size_min": 0.1, "sync": false } },
-                "line_linked": { "enable": true, "distance": 150, "color": "#ffffff", "opacity": 0.4, "width": 1 },
-                "move": { "enable": true, "speed": 6, "direction": "none", "random": false, "straight": false, "out_mode": "out", "attract": { "enable": false, "rotateX": 600, "rotateY": 1200 } }
+                "number": {
+                    "value": 80,
+                    "density": {
+                        "enable": true,
+                        "value_area": 800
+                    }
+                },
+                "color": {
+                    "value": "#ffffff"
+                },
+                "shape": {
+                    "type": "circle",
+                    "stroke": {
+                        "width": 0,
+                        "color": "#000000"
+                    },
+                    "polygon": {
+                        "nb_sides": 5
+                    },
+                    "image": {
+                        "src": "img/github.svg",
+                        "width": 100,
+                        "height": 100
+                    }
+                },
+                "opacity": {
+                    "value": 0.5,
+                    "random": false,
+                    "anim": {
+                        "enable": false,
+                        "speed": 1,
+                        "opacity_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "size": {
+                    "value": 5,
+                    "random": true,
+                    "anim": {
+                        "enable": false,
+                        "speed": 40,
+                        "size_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "line_linked": {
+                    "enable": true,
+                    "distance": 150,
+                    "color": "#ffffff",
+                    "opacity": 0.4,
+                    "width": 1
+                },
+                "move": {
+                    "enable": true,
+                    "speed": 6,
+                    "direction": "none",
+                    "random": false,
+                    "straight": false,
+                    "out_mode": "out",
+                    "attract": {
+                        "enable": false,
+                        "rotateX": 600,
+                        "rotateY": 1200
+                    }
+                }
             },
             "interactivity": {
                 "detect_on": "canvas",
-                "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" }, "resize": true },
-                "modes": { "grab": { "distance": 140, "line_linked": { "opacity": 1 } }, "bubble": { "distance": 400, "size": 40, "duration": 2, "opacity": 8, "speed": 3 }, "repulse": { "distance": 200 }, "push": { "particles_nb": 4 }, "remove": { "particles_nb": 2 } }
+                "events": {
+                    "onhover": {
+                        "enable": true,
+                        "mode": "grab"
+                    },
+                    "onclick": {
+                        "enable": true,
+                        "mode": "push"
+                    },
+                    "resize": true
+                },
+                "modes": {
+                    "grab": {
+                        "distance": 140,
+                        "line_linked": {
+                            "opacity": 1
+                        }
+                    },
+                    "bubble": {
+                        "distance": 400,
+                        "size": 40,
+                        "duration": 2,
+                        "opacity": 8,
+                        "speed": 3
+                    },
+                    "repulse": {
+                        "distance": 200
+                    },
+                    "push": {
+                        "particles_nb": 4
+                    },
+                    "remove": {
+                        "particles_nb": 2
+                    }
+                }
             },
             "retina_detect": true,
         });
 
-        gsap.from("header", { duration: 1, y: -100, opacity: 0, ease: "power2.out" });
-        gsap.from("main", { duration: 1, opacity: 0, delay: 0.5, ease: "power2.out" });
-        gsap.from("footer", { duration: 1, y: 100, opacity: 0, delay: 1, ease: "power2.out" });
+        gsap.from("header", {
+            duration: 1,
+            y: -100,
+            opacity: 0,
+            ease: "power2.out"
+        });
+        gsap.from("main", {
+            duration: 1,
+            opacity: 0,
+            delay: 0.5,
+            ease: "power2.out"
+        });
+        gsap.from("footer", {
+            duration: 1,
+            y: 100,
+            opacity: 0,
+            delay: 1,
+            ease: "power2.out"
+        });
 
         const chatMessages = document.getElementById('chat-messages');
         const messageInput = document.getElementById('message-input');
@@ -332,26 +433,14 @@
         const notifications = document.getElementById('notifications');
         const apiKeyDisplay = document.getElementById('api-key-display');
 
-        const chatEventSource = new EventSource('/chat-stream');
-        chatEventSource.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            if (data.message) {
-                const messageElement = document.createElement('div');
-                messageElement.textContent = `${data.message} - ${new Date(data.timestamp).toLocaleTimeString()}`;
-                chatMessages.appendChild(messageElement);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            } else if (data.error) {
-                console.error('Chat Error:', data.error);
-                const errorElement = document.createElement('div');
-                errorElement.textContent = `Chat Error: ${data.error}`;
-                chatMessages.appendChild(errorElement);
-            }
-        };
-
-        chatEventSource.onerror = (error) => {
-            console.error("Chat SSE error:", error);
-        };
-
+        // Function to add a message to the chat
+        function addChatMessage(message, timestamp) {
+            const messageElement = document.createElement('div');
+            messageElement.textContent = `${message} - ${new Date(timestamp).toLocaleTimeString()}`;
+            chatMessages.appendChild(messageElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight; // Scroll to bottom
+        }
+        // Send Message Function
         sendButton.addEventListener('click', async () => {
             const message = messageInput.value;
             if (message) {
@@ -366,7 +455,7 @@
                         })
                     });
                     if (response.ok) {
-                        messageInput.value = '';
+                        messageInput.value = ''; // Clear input after sending
                     } else {
                         console.error('Failed to send message:', response.status);
                     }
@@ -375,36 +464,35 @@
                 }
             }
         });
-       // Load stored notifications
-        function loadStoredNotifications() {
-            const storedNotifications = localStorage.getItem('notifications');
-            if (storedNotifications) {
-                const notificationArray = JSON.parse(storedNotifications);
-                notificationArray.forEach(notification => {
-                    const notificationElement = document.createElement('div');
-                    notificationElement.textContent = `Notification: ${notification}`;
-                    notifications.appendChild(notificationElement);
-                });
-            }
-        }
 
-        // Add new notification to the list and store it
+        // Initialize EventSource for chat
+        const chatEventSource = new EventSource('/chat-stream');
+        chatEventSource.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            if (data.message) {
+                addChatMessage(data.message, data.timestamp);
+            } else if (data.error) {
+                console.error('Chat Error:', data.error);
+                const errorElement = document.createElement('div');
+                errorElement.textContent = `Chat Error: ${data.error}`;
+                chatMessages.appendChild(errorElement);
+            }
+        };
+
+        chatEventSource.onerror = (error) => {
+            console.error("Chat SSE error:", error);
+        };
+
+        // Function to add a notification
         function addNotification(message) {
             const notificationElement = document.createElement('div');
             notificationElement.textContent = `Notification: ${message}`;
             notifications.appendChild(notificationElement);
-
-            // Get existing notifications or initialize an empty array
-            let notificationArray = JSON.parse(localStorage.getItem('notifications')) || [];
-
-            // Add the new message to the array
-            notificationArray.push(message);
-
-            // Store the updated array back to localStorage
-            localStorage.setItem('notifications', JSON.stringify(notificationArray));
         }
 
+        // SSE Connection for Notifications
         const notificationEventSource = new EventSource('/notification-stream');
+
         notificationEventSource.onmessage = (event) => {
             const data = JSON.parse(event.data);
             if (data.notification) {
@@ -439,9 +527,6 @@
                 window.open(endpoint, '_blank');
             });
         });
-        loadChatHistory();
-         loadStoredNotifications();
     </script>
 </body>
-
 </html>
