@@ -5,12 +5,18 @@ const cors = require('cors');
 const requestIp = require('request-ip');
 const mongoose = require('mongoose');
 const path = require('path');
+const fs = require('fs'); // File system module
 const app = express();
 const server = http.createServer(app);
 
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
-});
+// Enable CORS for all origins
+app.use(cors());
+
+// Middleware to parse JSON bodies
+app.use(express.json());
+
+// Middleware to parse URL-encoded bodies
+app.use(express.urlencoded({ extended: true }));
 
 // MongoDB Connection
 mongoose.connect('mongodb+srv://zanssxploit:pISqUYgJJDfnLW9b@cluster0.fgram.mongodb.net/?retryWrites=true&w=majority', {
@@ -31,7 +37,33 @@ const visitSchema = new mongoose.Schema({
 
 const Visit = mongoose.model('Visit', visitSchema);
 
-let totalRequests = 0; // Keep track of total requests
+// Load totalRequests from file (if it exists)
+const statsFilePath = path.join(__dirname, 'stats.json'); // Adjust path as needed
+let totalRequests = 0;
+
+try {
+    if (fs.existsSync(statsFilePath)) {
+        const statsData = fs.readFileSync(statsFilePath, 'utf8');
+        const stats = JSON.parse(statsData);
+        totalRequests = stats.totalRequests || 0; //Use default if property not found or undefined
+        console.log(`Loaded totalRequests from ${statsFilePath}: ${totalRequests}`);
+    } else {
+        console.log(`Stats file not found, starting with totalRequests = 0`);
+    }
+} catch (error) {
+    console.error("Error loading totalRequests from file:", error);
+}
+
+// Function to save totalRequests to file
+const saveStatsToFile = () => {
+    try {
+        const stats = { totalRequests: totalRequests };
+        fs.writeFileSync(statsFilePath, JSON.stringify(stats));
+        console.log(`Saved totalRequests to ${statsFilePath}: ${totalRequests}`);
+    } catch (error) {
+        console.error("Error saving totalRequests to file:", error);
+    }
+};
 
 // Middleware to track unique visits
 app.use(async (req, res, next) => {
@@ -52,37 +84,61 @@ app.use(async (req, res, next) => {
     }
     next();
 });
-app.get('/stats', async (req, res) => {
+
+// Route to get total visits and requests
+app.get('/api/stats', async (req, res) => {
     try {
         const totalVisits = await Visit.countDocuments();
         res.json({
-            totalVisits: totalVisits,
-            totalRequests: totalRequests
+            success: true,
+            data: {
+                totalVisits: totalVisits,
+                totalRequests: totalRequests
+            }
         });
     } catch (error) {
         console.error("Error fetching stats:", error);
-        res.status(500).send("Error fetching stats");
+        res.status(500).json({ success: false, message: "Error fetching stats", error: error.message });
     }
 });
 
-app.get('/get-ip', (req, res) => {
+// Route to get client's IP address
+app.get('/api/ip', (req, res) => {
     const clientIp = requestIp.getClientIp(req);
     res.json({
-        ip: clientIp
+        success: true,
+        data: {
+            ip: clientIp
+        }
     });
 });
 
-// Your AI Endpoint
-app.get('/ai/metaai', (req, res) => {
+// Route to interact with the AI API
+app.get('/api/ai/metaai', async (req, res) => {
     const query = req.query.query || 'tahun berapa sekarang';
     const apiKey = 'ET386PIT';
     const apiUrl = `https://wanzofc.us.kg/api/ai/metaai?query=${encodeURIComponent(query)}&apikey=${apiKey}`;
     totalRequests++;
+    saveStatsToFile(); // Save totalRequests after each AI request
 
-    // Respond with the full API URL
-    res.json({
-        "API URL": apiUrl
-    });
+    try {
+        const response = await axios.get(apiUrl);
+        res.json({
+            success: true,
+            data: response.data,
+            apiUrl: apiUrl
+        });
+    } catch (error) {
+        console.error("Error calling AI API:", error);
+        res.status(500).json({ success: false, message: "Error calling AI API", error: error.message });
+    }
+});
+
+// Serve static files (if you still need to serve index.html)
+app.use(express.static(path.join(__dirname)));  // Serve from the root directory
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html')); // Assuming index.html is in the same directory
 });
 
 const PORT = process.env.PORT || 3000;
