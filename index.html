@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WANZOFC AI Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/styles/github-dark.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #ecf0f1;
+            color: #34495e;
+        }
+
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        h1 {
+            text-align: center;
+            color: #3498db;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background-color: rgba(255, 255, 255, 0.5);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            width: 220px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            transition: transform 0.2s ease-in-out;
+            margin-bottom: 20px;
+            backdrop-filter: blur(5px);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-bottom: 30px;
+            transition: background-color 0.3s ease;
+            display: block;
+            margin: 0 auto 30px;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        #json-preview {
+            background-color: #2c3e50;
+            color: #f0f3f4;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: monospace;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .hljs {
+            padding: 0;
+            background: transparent;
+        }
+
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 15px;
+            background-color: #2c3e50;
+            color: white;
+            border-radius: 8px;
+        }
+
+        #qris-image {
+            width: 120px;
+            cursor: pointer;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        .modal-content {
+            margin: auto;
+            display: block;
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 10px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            color: #fff;
+            font-size: 50px;
+            font-weight: bold;
+            transition: color 0.3s;
+            cursor: pointer;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #bbb;
+            text-decoration: none;
+        }
+        .api-card {
+            text-align: center;
+            /* Center the button */
+        }
+    </style>
+</head>
+
+<body>
+    <div id="particles-js"></div>
+    <div class="container">
+        <h1>WANZOFC AI Dashboard</h1>
+
+        <div class="stats-container">
+            <div class="stat-card">
+                <h4>Total Visits</h4>
+                <p id="total-visits">0</p>
+            </div>
+            <div class="stat-card">
+                <h4>Total Requests</h4>
+                <p id="total-requests">0</p>
+            </div>
+            <div class="stat-card">
+                <h4>Current Time</h4>
+                <p id="current-time">--:--:--</p>
+            </div>
+            <div class="stat-card">
+                <h4>Your IP</h4>
+                <p id="user-ip">Loading...</p>
+            </div>
+        </div>
+
+        <div class="api-card">
+            <h4>Meta AI Endpoint</h4>
+            <button id="try-endpoint">Try Endpoint</button>
+        </div>
+
+        <h4>JSON Preview</h4>
+        <pre><code id="json-preview" class="language-json"></code></pre>
+
+    </div>
+
+    <footer>
+        <p>Support WANZOFC AI</p>
+        <img id="qris-image" src="qris.jpg" alt="QRIS Payment">
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/highlight.min.js"></script>
+    <script>
+        const dashboard = {
+            totalVisitsDisplay: document.getElementById('total-visits'),
+            totalRequestsDisplay: document.getElementById('total-requests'),
+            currentTimeDisplay: document.getElementById('current-time'),
+            userIpDisplay: document.getElementById('user-ip'),
+            jsonPreview: document.getElementById('json-preview'),
+            tryEndpointButton: document.getElementById('try-endpoint'),
+
+            defaultQuery: 'tahun berapa sekarang',
+            apiUrl: '/ai/metaai?query=',
+
+            init() {
+                this.tryEndpointButton.addEventListener('click', this.tryEndpoint.bind(this));
+                this.getInitialStats();
+                this.getRealtimeIP();
+                this.updateTime();
+                setInterval(this.updateTime.bind(this), 1000);
+                this.setupParticles();
+            },
+            setupParticles() {
+                particlesJS('particles-js', {
+                    "particles": {
+                        "number": {
+                            "value": 80,
+                            "density": {
+                                "enable": true,
+                                "value_area": 800
+                            }
+                        },
+                        "color": {
+                            "value": "#007bff"
+                        },
+                        "shape": {
+                            "type": "circle",
+                            "stroke": {
+                                "width": 0,
+                                "color": "#000000"
+                            },
+                            "polygon": {
+                                "nb_sides": 5
+                            },
+                        },
+                        "opacity": {
+                            "value": 0.5,
+                            "random": false,
+                            "anim": {
+                                "enable": false,
+                                "speed": 1,
+                                "opacity_min": 0.1,
+                                "sync": false
+                            }
+                        },
+                        "size": {
+                            "value": 5,
+                            "random": true,
+                            "anim": {
+                                "enable": false,
+                                "speed": 40,
+                                "size_min": 0.1,
+                                "sync": false
+                            }
+                        },
+                        "line_linked": {
+                            "enable": true,
+                            "distance": 150,
+                            "color": "#007bff",
+                            "opacity": 0.4,
+                            "width": 1
+                        },
+                        "move": {
+                            "enable": true,
+                            "speed": 6,
+                            "direction": "none",
+                            "random": false,
+                            "straight": false,
+                            "out_mode": "out",
+                            "attract": {
+                                "enable": false,
+                                "rotateX": 600,
+                                "rotateY": 1200
+                            }
+                        }
+                    },
+                    "interactivity": {
+                        "detect_on": "canvas",
+                        "events": {
+                            "onhover": {
+                                "enable": true,
+                                "mode": "repulse"
+                            },
+                            "onclick": {
+                                "enable": true,
+                                "mode": "push"
+                            },
+                            "resize": true
+                        },
+                        "modes": {
+                            "repulse": {
+                                "distance": 200,
+                                "duration": 0.4
+                            },
+                            "push": {
+                                "particles_nb": 4
+                            },
+                        }
+                    },
+                    "retina_detect": true
+                });
+            },
+
+            getInitialStats() {
+                fetch('/stats')
+                    .then(response => response.json())
+                    .then(data => {
+                        this.totalVisitsDisplay.textContent = data.totalVisits;
+                        this.totalRequestsDisplay.textContent = data.totalRequests;
+                    })
+                    .catch(error => {
+                        console.error('Error getting initial stats:', error);
+                        this.totalVisitsDisplay.textContent = 'Error';
+                        this.totalRequestsDisplay.textContent = 'Error';
+                    });
+            },
+            updateTime() {
+                const now = new Date();
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+                this.currentTimeDisplay.textContent = `${hours}:${minutes}:${seconds}`;
+            },
+            getRealtimeIP() {
+                fetch('/get-ip')
+                    .then(response => response.json())
+                    .then(data => {
+                        this.userIpDisplay.textContent = data.ip;
+                    })
+                    .catch(error => {
+                        console.error('Error getting IP:', error);
+                        this.userIpDisplay.textContent = 'Error loading IP';
+                    });
+            },
+            tryEndpoint() {
+                const url = `/ai/metaai?query=${encodeURIComponent(this.defaultQuery)}`;
+
+                this.displayJSON({
+                    "API URL": url
+                });  // Display the URL
+            },
+            displayJSON(data) {
+                const jsonString = JSON.stringify(data, null, 2);
+                this.jsonPreview.textContent = jsonString;
+                hljs.highlightElement(this.jsonPreview);
+            },
+        };
+
+        dashboard.init(); // Initialize the dashboard
+    </script>
+</body>
+
+</html>
