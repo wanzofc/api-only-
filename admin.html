@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WANZOFC TECH - Admin Panel</title>
+    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body {
@@ -17,8 +18,7 @@
             justify-content: center;
             min-height: 100vh;
             margin: 0;
-            overflow: hidden;
-            /* Hide scrollbars */
+            overflow: hidden; /* Hide scrollbars */
         }
 
         .container {
@@ -59,63 +59,18 @@
         }
 
         /* Add some subtle animations */
-        .container,
-        h2,
-        .form-control,
-        .btn-primary {
+        .container, h2, .form-control, .btn-primary {
             opacity: 0;
-        }
-
-        /* Style untuk daftar pesan */
-        #message-list {
-            margin-top: 20px;
-            text-align: left;
-        }
-
-        .message-item {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 5px;
-            padding: 10px;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .message-item .message-text {
-            flex-grow: 1;
-            margin-right: 10px;
-        }
-
-        .delete-button {
-            background-color: #e74c3c;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            padding: 5px 10px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .delete-button:hover {
-            background-color: #c0392b;
         }
     </style>
 </head>
-
 <body>
     <div class="container">
         <h2>WANZOFC TECH - Admin Panel</h2>
         <div class="form-group">
-            <input type="text" class="form-control" id="notification-message"
-                placeholder="Enter notification message">
+            <input type="text" class="form-control" id="notification-message" placeholder="Enter notification message">
         </div>
-        <button class="btn-primary" onclick="sendNotification()">Send Notification</button>
-
-        <!-- Daftar Pesan -->
-        <div id="message-list">
-            <h3>Pesan Terkirim</h3>
-        </div>
+        <button class="btn btn-primary" onclick="sendNotification()">Send Notification</button>
     </div>
 
     <!-- GSAP -->
@@ -123,119 +78,27 @@
 
     <script>
         // GSAP Animations
-        gsap.to(".container", {
-            duration: 1,
-            opacity: 1,
-            y: 0,
-            ease: "power2.out"
-        });
-        gsap.to("h2", {
-            duration: 1,
-            opacity: 1,
-            y: 0,
-            delay: 0.2,
-            ease: "power2.out"
-        });
-        gsap.to(".form-control", {
-            duration: 1,
-            opacity: 1,
-            y: 0,
-            delay: 0.4,
-            ease: "power2.out"
-        });
-        gsap.to(".btn-primary", {
-            duration: 1,
-            opacity: 1,
-            y: 0,
-            delay: 0.6,
-            ease: "power2.out"
-        });
-
-        let messages = []; // Store messages received from SSE
-        const messageList = document.getElementById('message-list');
+        gsap.to(".container", { duration: 1, opacity: 1, y: 0, ease: "power2.out" });
+        gsap.to("h2", { duration: 1, opacity: 1, y: 0, delay: 0.2, ease: "power2.out" });
+        gsap.to(".form-control", { duration: 1, opacity: 1, y: 0, delay: 0.4, ease: "power2.out" });
+        gsap.to(".btn-primary", { duration: 1, opacity: 1, y: 0, delay: 0.6, ease: "power2.out" });
 
         function sendNotification() {
             const message = document.getElementById('notification-message').value;
             if (message) {
                 fetch('/admin/notify', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        message: message
-                    })
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: message })
                 })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log('Notification sent:', data);
-                        document.getElementById('notification-message').value = '';
-
-                    })
-                    .catch(error => console.error('Error sending notification:', error));
-            }
-        }
-
-        function deleteMessage(messageId) {
-            fetch(`/admin/messages/${messageId}`, {
-                method: 'DELETE',
-            })
-                .then(response => {
-                    if (response.ok) {
-                        console.log(`Message ${messageId} deleted.`);
-                    } else {
-                        console.error(`Failed to delete message ${messageId}:`, response.status);
-                    }
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Notification sent:', data);
+                    document.getElementById('notification-message').value = '';
                 })
-                .catch(error => console.error('Error deleting message:', error));
-        }
-
-        function displayMessages() {
-            messageList.innerHTML = '<h3>Pesan Terkirim</h3>'; // Reset message list
-
-            messages.forEach(message => {
-                const messageItem = document.createElement('div');
-                messageItem.classList.add('message-item');
-
-                const messageText = document.createElement('span');
-                messageText.classList.add('message-text');
-                messageText.textContent = message.message; // Display message
-
-                const deleteButton = document.createElement('button');
-                deleteButton.classList.add('delete-button');
-                deleteButton.textContent = 'Hapus';
-                deleteButton.onclick = () => deleteMessage(message._id);
-
-                messageItem.appendChild(messageText);
-                messageItem.appendChild(deleteButton);
-                messageList.appendChild(messageItem);
-            });
-        }
-
-        // SSE Connection for Admin Messages
-        const adminMessageSource = new EventSource('/admin-message-stream');
-
-        adminMessageSource.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            console.log("Admin Message Event Received", data);
-            if (data.type === 'initial') {
-                messages = data.messages;
-                displayMessages();
+                .catch(error => console.error('Error sending notification:', error));
             }
-            else if (data.type === 'new') {
-                messages.push(data.message);
-                displayMessages();
-            } else if (data.type === 'delete') {
-                messages = messages.filter(msg => msg._id !== data.messageId);
-                displayMessages();
-            } else if (data.type === 'error') {
-                console.error("Error from admin-message-stream", data.message)
-            }
-        };
-
-        adminMessageSource.onerror = (error) => {
-            console.error("Admin Message SSE error:", error);
-        };
+        }
     </script>
 
     <!-- Bootstrap Scripts -->
@@ -243,5 +106,4 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
-
 </html>
