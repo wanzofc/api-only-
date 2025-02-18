@@ -1,368 +1,347 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WANZOFC AI Dashboard</title>
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/styles/github-dark.min.css">
+    <title>WANZOFC TECH - API Demo</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #ecf0f1;
-            color: #34495e;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to bottom, #3498db, #2c3e50);
+            color: #ecf0f1;
+            overflow-x: hidden;
+            height: auto;
+            padding-bottom: 50px;
+        }
+
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            top: 0;
+            left: 0;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            color: #fff;
+            text-align: center;
+            padding: 15px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+        }
+
+        main {
+            margin-top: 120px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .container-title {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #fff;
         }
 
         .container {
-            width: 80%;
-            margin: 20px auto;
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            position: relative;
-        }
-
-        h1 {
-            text-align: center;
-            color: #3498db;
-            margin-bottom: 30px;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-        }
-
-        .stats-container {
-            display: flex;
-            justify-content: space-around;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-
-        .stat-card {
-            background-color: rgba(255, 255, 255, 0.5);
-            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
             border-radius: 8px;
-            text-align: center;
-            width: 220px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-            transition: transform 0.2s ease-in-out;
-            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             backdrop-filter: blur(5px);
+            padding: 20px;
+            margin-bottom: 20px;
         }
 
-        .stat-card:hover {
-            transform: translateY(-5px);
+        h1, h2 {
+            color: #fff;
+            font-weight: lighter;
+            margin-bottom: 0.75rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
         }
 
-        .stat-card h4 {
-            color: #2c3e50;
-            margin-bottom: 10px;
+        #chat-messages {
+            height: 150px;
+            overflow-y: auto;
+            padding: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+            color: #fff;
+            font-size: 0.9rem;
+        }
+
+        input[type="text"] {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
         }
 
         button {
-            background-color: #3498db;
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            margin-bottom: 30px;
+            background-color: #2ecc71;
             transition: background-color 0.3s ease;
-            display: block;
-            margin: 0 auto 30px;
+            border: none;
+            border-radius: 4px;
         }
 
         button:hover {
-            background-color: #2980b9;
+            background-color: #27ae60;
         }
 
+        #api-endpoints a {
+            color: #3498db;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
 
-        #particles-js {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            z-index: -1;
+        #api-endpoints a:hover {
+            text-decoration: underline;
+            color: #fff;
+        }
+
+        .try-it-button {
+            background-color: #3498db;
+            margin-left: 10px;
+            border: none;
+            border-radius: 4px;
         }
 
         footer {
             text-align: center;
-            margin-top: 40px;
-            padding: 15px;
-            background-color: #2c3e50;
-            color: white;
-            border-radius: 8px;
-        }
-
-        #qris-image {
-            width: 120px;
-            cursor: pointer;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.7);
-        }
-
-        .modal-content {
-            margin: auto;
-            display: block;
-            max-width: 90%;
-            max-height: 90%;
-            border-radius: 10px;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-        }
-
-        .close {
-            position: absolute;
-            top: 20px;
-            right: 40px;
+            padding: 20px;
             color: #fff;
-            font-size: 50px;
-            font-weight: bold;
-            transition: color 0.3s;
-            cursor: pointer;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            background-color: rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 1;
+            margin-top: 50px;
         }
 
-        .close:hover,
-        .close:focus {
-            color: #bbb;
-            text-decoration: none;
-        }
-
-        .api-card {
-            text-align: center;
-            /* Center the button */
+        #notifications {
+            min-height: 50px;
+            padding: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+            color: #fff;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
         }
     </style>
 </head>
-
 <body>
-    <audio id="autoplay-audio" autoplay loop preload="auto" style="display:none;">
-        <source src="https://files.catbox.moe/irf66d.mp3" type="audio/mp3">
-        Your browser does not support the audio element.
-    </audio>
-
+    <audio id="bg-music" src="https://files.catbox.moe/irf66d.mp3" autoplay loop></audio>
     <div id="particles-js"></div>
-    <div class="container">
-        <h1>WANZOFC AI Dashboard</h1>
+    <header class="text-center">
+        <h1>WANZOFC TECH</h1>
+        <p>API</p>
+    </header>
 
-        <div class="stats-container">
-            <div class="stat-card">
-                <h4>Total Visits</h4>
-                <p id="total-visits">0</p>
+    <main class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="container">
+                    <h2 class="container-title">Chat Room</h2>
+                    <div id="chat-messages"></div>
+                    <div class="input-group">
+                        <input type="text" id="message-input" class="form-control" placeholder="Enter your message">
+                        <div class="input-group-append">
+                            <button id="send-button" class="btn btn-success">
+                                <i class="fas fa-paper-plane"></i> Send
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="stat-card">
-                <h4>Total Requests</h4>
-                <p id="total-requests">0</p>
+
+            <div class="col-md-4">
+                <div class="container">
+                    <h2 class="container-title">Notifications</h2>
+                    <div id="notifications"></div>
+                </div>
             </div>
-            <div class="stat-card">
-                <h4>Current Time</h4>
-                <p id="current-time">--:--:--</p>
-            </div>
-            <div class="stat-card">
-                <h4>Your IP</h4>
-                <p id="user-ip">Loading...</p>
+
+            <div class="col-md-4">
+                <div id="api-key-container" class="container">
+                    <h2 class="container-title">API Key</h2>
+                    <p id="api-key-display">Loading API Key...</p>
+                </div>
             </div>
         </div>
+    </main>
 
-        <div class="api-card">
-            <h4>Meta AI Endpoint</h4>
-            <button id="try-endpoint">Try Endpoint</button>
+    <main class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="container">
+                    <h2 class="container-title">API Endpoints</h2>
+                    <ul>
+                        <li>
+                            <a href="#" data-endpoint="/api/stalk/github?user=octocat">
+                                <i class="fab fa-github"></i> Get GitHub User (octocat)
+                            </a>
+                            <button class="try-it-button btn btn-primary" data-endpoint="/api/stalk/github?user=octocat">
+                                <i class="fas fa-flask"></i> Try It
+                            </button>
+                        </li>
+                        <li>
+                            <a href="#" data-endpoint="/api/d/tiktok?url=https://www.tiktok.com/@scout2626/video/7359387817030466821">
+                                <i class="fab fa-tiktok"></i> TikTok Downloader
+                            </a>
+                            <button class="try-it-button btn btn-primary" data-endpoint="/api/d/tiktok?url=https://www.tiktok.com/@scout2626/video/7359387817030466821">
+                                <i class="fas fa-flask"></i> Try It
+                            </button>
+                        </li>
+                        <li>
+                            <a href="#" data-endpoint="/api/stalk/youtube?username=UCXuqSBlHAE6Xw-yeJA0Tunw">
+                                <i class="fab fa-youtube"></i> Stalk YouTube
+                            </a>
+                            <button class="try-it-button btn btn-primary" data-endpoint="/api/stalk/youtube?username=UCXuqSBlHAE6Xw-yeJA0Tunw">
+                                <i class="fas fa-flask"></i> Try It
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
-
-    </div>
+    </main>
 
     <footer>
-        <p>Support WANZOFC AI</p>
-        <img id="qris-image" src="qris.jpg" alt="QRIS Payment">
+        © 2024 WANZOFC TECH
     </footer>
 
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/highlight.min.js"></script>
+
     <script>
-        const dashboard = {
-            totalVisitsDisplay: document.getElementById('total-visits'),
-            totalRequestsDisplay: document.getElementById('total-requests'),
-            currentTimeDisplay: document.getElementById('current-time'),
-            userIpDisplay: document.getElementById('user-ip'),
-            tryEndpointButton: document.getElementById('try-endpoint'),
-
-            statsUrl: '/api/stats',
-            ipUrl: '/api/ip',
-
-            init() {
-                this.tryEndpointButton.addEventListener('click', this.tryEndpoint.bind(this));
-                this.getInitialStats();
-                this.getRealtimeIP();
-                this.updateTime();
-                setInterval(this.updateTime.bind(this), 1000);
-                this.setupParticles();
-                this.startAutoplay();
-            },
-
-            startAutoplay() {
-                const audio = document.getElementById('autoplay-audio');
-                audio.volume = 0.5; // Set volume to 50% (adjust as needed)
-                audio.play().catch(error => {
-                    console.warn('Autoplay prevented by browser.  User interaction needed.');
+        async function loadChatHistory() {
+            try {
+                const response = await fetch('/chat-history');
+                const chatHistory = await response.json();
+                chatHistory.forEach(msg => {
+                    const messageElement = document.createElement('div');
+                    messageElement.textContent = `${msg.message} - ${new Date(msg.timestamp).toLocaleTimeString()}`;
+                    chatMessages.appendChild(messageElement);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
                 });
-            },
-            setupParticles() {
-                particlesJS('particles-js', {
-                    "particles": {
-                        "number": {
-                            "value": 80,
-                            "density": {
-                                "enable": true,
-                                "value_area": 800
-                            }
-                        },
-                        "color": {
-                            "value": "#007bff"
-                        },
-                        "shape": {
-                            "type": "circle",
-                            "stroke": {
-                                "width": 0,
-                                "color": "#000000"
-                            },
-                            "polygon": {
-                                "nb_sides": 5
-                            },
-                        },
-                        "opacity": {
-                            "value": 0.5,
-                            "random": false,
-                            "anim": {
-                                "enable": false,
-                                "speed": 1,
-                                "opacity_min": 0.1,
-                                "sync": false
-                            }
-                        },
-                        "size": {
-                            "value": 5,
-                            "random": true,
-                            "anim": {
-                                "enable": false,
-                                "speed": 40,
-                                "size_min": 0.1,
-                                "sync": false
-                            }
-                        },
-                        "line_linked": {
-                            "enable": true,
-                            "distance": 150,
-                            "color": "#007bff",
-                            "opacity": 0.4,
-                            "width": 1
-                        },
-                        "move": {
-                            "enable": true,
-                            "speed": 6,
-                            "direction": "none",
-                            "random": false,
-                            "straight": false,
-                            "out_mode": "out",
-                            "attract": {
-                                "enable": false,
-                                "rotateX": 600,
-                                "rotateY": 1200
-                            }
-                        }
-                    },
-                    "interactivity": {
-                        "detect_on": "canvas",
-                        "events": {
-                            "onhover": {
-                                "enable": true,
-                                "mode": "repulse"
-                            },
-                            "onclick": {
-                                "enable": true,
-                                "mode": "push"
-                            },
-                            "resize": true
-                        },
-                        "modes": {
-                            "repulse": {
-                                "distance": 200,
-                                "duration": 0.4
-                            },
-                            "push": {
-                                "particles_nb": 4
-                            },
-                        }
-                    },
-                    "retina_detect": true
-                });
-            },
+            } catch (error) {
+                console.error('Error loading chat history:', error);
+            }
+        }
 
-            getInitialStats() {
-                fetch(this.statsUrl)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            this.totalVisitsDisplay.textContent = data.data.totalVisits;
-                            this.totalRequestsDisplay.textContent = data.data.totalRequests;
-                        } else {
-                            console.error('Error getting initial stats:', data.message);
-                            this.totalVisitsDisplay.textContent = 'Error';
-                            this.totalRequestsDisplay.textContent = 'Error';
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error getting initial stats:', error);
-                        this.totalVisitsDisplay.textContent = 'Error';
-                        this.totalRequestsDisplay.textContent = 'Error';
-                    });
+        particlesJS('particles-js', {
+            "particles": {
+                "number": { "value": 80, "density": { "enable": true, "value_area": 800 } },
+                "color": { "value": "#ffffff" },
+                "shape": { "type": "circle", "stroke": { "width": 0, "color": "#000000" }, "polygon": { "nb_sides": 5 },"image": { "src": "img/github.svg", "width": 100, "height": 100 } },
+                "opacity": { "value": 0.5, "random": false, "anim": { "enable": false, "speed": 1, "opacity_min": 0.1, "sync": false } },
+                "size": { "value": 5, "random": true, "anim": { "enable": false, "speed": 40, "size_min": 0.1, "sync": false } },
+                "line_linked": { "enable": true, "distance": 150, "color": "#ffffff", "opacity": 0.4, "width": 1 },
+                "move": { "enable": true, "speed": 6, "direction": "none", "random": false, "straight": false, "out_mode": "out", "attract": { "enable": false, "rotateX": 600, "rotateY": 1200 } }
             },
-            updateTime() {
-                const now = new Date();
-                const hours = String(now.getHours()).padStart(2, '0');
-                const minutes = String(now.getMinutes()).padStart(2, '0');
-                const seconds = String(now.getSeconds()).padStart(2, '0');
-                this.currentTimeDisplay.textContent = `${hours}:${minutes}:${seconds}`;
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" }, "resize": true },
+                "modes": { "grab": { "distance": 140, "line_linked": { "opacity": 1 } }, "bubble": { "distance": 400, "size": 40, "duration": 2, "opacity": 8, "speed": 3 }, "repulse": { "distance": 200 }, "push": { "particles_nb": 4 }, "remove": { "particles_nb": 2 } }
             },
-            getRealtimeIP() {
-                fetch(this.ipUrl)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            this.userIpDisplay.textContent = data.data.ip;
-                        } else {
-                            console.error('Error getting IP:', data.message);
-                            this.userIpDisplay.textContent = 'Error loading IP';
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error getting IP:', error);
-                        this.userIpDisplay.textContent = 'Error loading IP';
-                    });
-            },
+            "retina_detect": true,
+        });
 
-            tryEndpoint() {
-                window.location.href = "/api/ai/metaai?query=halo";
-            },
+        gsap.from("header", { duration: 1, y: -100, opacity: 0, ease: "power2.out" });
+        gsap.from("main", { duration: 1, opacity: 0, delay: 0.5, ease: "power2.out" });
+        gsap.from("footer", { duration: 1, y: 100, opacity: 0, delay: 1, ease: "power2.out" });
+
+        const chatMessages = document.getElementById('chat-messages');
+        const messageInput = document.getElementById('message-input');
+        const sendButton = document.getElementById('send-button');
+        const notifications = document.getElementById('notifications');
+        const apiKeyDisplay = document.getElementById('api-key-display');
+
+        const chatEventSource = new EventSource('/chat-stream');
+        chatEventSource.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            if (data.message) {
+                const messageElement = document.createElement('div');
+                messageElement.textContent = `${data.message} - ${new Date(data.timestamp).toLocaleTimeString()}`;
+                chatMessages.appendChild(messageElement);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            } else if (data.error) {
+                console.error('Chat Error:', data.error);
+                const errorElement = document.createElement('div');
+                errorElement.textContent = `Chat Error: ${data.error}`;
+                chatMessages.appendChild(errorElement);
+            }
         };
 
-        dashboard.init();
+        chatEventSource.onerror = (error) => {
+            console.error("Chat SSE error:", error);
+        };
+
+        sendButton.addEventListener('click', async () => {
+            const message = messageInput.value;
+            if (message) {
+                try {
+                    const response = await fetch('/chat-message', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ message: message })
+                    });
+                    if (response.ok) { messageInput.value = ''; } else { console.error('Failed to send message:', response.status); }
+                } catch (error) {
+                    console.error('Error sending message:', error);
+                }
+            }
+        });
+
+        const notificationEventSource = new EventSource('/notification-stream');
+        notificationEventSource.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            if (data.notification) {
+                const notificationElement = document.createElement('div');
+                notificationElement.textContent = `Notification: ${data.notification}`;
+                notifications.appendChild(notificationElement);
+            }
+        };
+
+        notificationEventSource.onerror = (error) => {
+            console.error("Notification SSE error:", error);
+        };
+
+        async function getApiKey() {
+            try {
+                const response = await fetch('/api/stalk/github?username=your_username');
+                const data = await response.json();
+                if (data.result && data.apikey) {
+                    apiKeyDisplay.textContent = `API Key: ${data.apikey}`;
+                } else {
+                    apiKeyDisplay.textContent = `Error: ${data.message}`;
+                }
+            } catch (error) {
+                apiKeyDisplay.textContent = `Error: ${error.message}`;
+            }
+        }
+
+        getApiKey();
+
+        const tryItButtons = document.querySelectorAll('.try-it-button');
+        tryItButtons.forEach(button => {
+            button.addEventListener('click', (event) => {
+                const endpoint = event.target.dataset.endpoint;
+                window.open(endpoint, '_blank');
+            });
+        });
+        loadChatHistory();
     </script>
 </body>
-
 </html>
