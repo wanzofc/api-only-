@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,7 +17,8 @@
             justify-content: center;
             min-height: 100vh;
             margin: 0;
-            overflow: hidden; /* Hide scrollbars */
+            overflow: hidden;
+            /* Hide scrollbars */
         }
 
         .container {
@@ -57,7 +59,10 @@
         }
 
         /* Add some subtle animations */
-        .container, h2, .form-control, .btn-primary {
+        .container,
+        h2,
+        .form-control,
+        .btn-primary {
             opacity: 0;
         }
 
@@ -97,13 +102,15 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h2>WANZOFC TECH - Admin Panel</h2>
         <div class="form-group">
-            <input type="text" class="form-control" id="notification-message" placeholder="Enter notification message">
+            <input type="text" class="form-control" id="notification-message"
+                placeholder="Enter notification message">
         </div>
-        <button class="btn btn-primary" onclick="sendNotification()">Send Notification</button>
+        <button class="btn-primary" onclick="sendNotification()">Send Notification</button>
 
         <!-- Daftar Pesan -->
         <div id="message-list">
@@ -116,62 +123,119 @@
 
     <script>
         // GSAP Animations
-        gsap.to(".container", { duration: 1, opacity: 1, y: 0, ease: "power2.out" });
-        gsap.to("h2", { duration: 1, opacity: 1, y: 0, delay: 0.2, ease: "power2.out" });
-        gsap.to(".form-control", { duration: 1, opacity: 1, y: 0, delay: 0.4, ease: "power2.out" });
-        gsap.to(".btn-primary", { duration: 1, opacity: 1, y: 0, delay: 0.6, ease: "power2.out" });
+        gsap.to(".container", {
+            duration: 1,
+            opacity: 1,
+            y: 0,
+            ease: "power2.out"
+        });
+        gsap.to("h2", {
+            duration: 1,
+            opacity: 1,
+            y: 0,
+            delay: 0.2,
+            ease: "power2.out"
+        });
+        gsap.to(".form-control", {
+            duration: 1,
+            opacity: 1,
+            y: 0,
+            delay: 0.4,
+            ease: "power2.out"
+        });
+        gsap.to(".btn-primary", {
+            duration: 1,
+            opacity: 1,
+            y: 0,
+            delay: 0.6,
+            ease: "power2.out"
+        });
 
-        // Array untuk menyimpan pesan
-        let messages = [];
+        let messages = []; // Store messages received from SSE
+        const messageList = document.getElementById('message-list');
 
         function sendNotification() {
             const message = document.getElementById('notification-message').value;
             if (message) {
-                // Tambahkan pesan ke array
-                messages.push(message);
-
                 fetch('/admin/notify', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: message })
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: message
+                    })
                 })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Notification sent:', data);
-                    document.getElementById('notification-message').value = '';
-                    displayMessages(); // Perbarui tampilan pesan
-                })
-                .catch(error => console.error('Error sending notification:', error));
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Notification sent:', data);
+                        document.getElementById('notification-message').value = '';
+
+                    })
+                    .catch(error => console.error('Error sending notification:', error));
             }
         }
 
-        function deleteMessage(index) {
-            messages.splice(index, 1); // Hapus pesan dari array
-            displayMessages(); // Perbarui tampilan pesan
+        function deleteMessage(messageId) {
+            fetch(`/admin/messages/${messageId}`, {
+                method: 'DELETE',
+            })
+                .then(response => {
+                    if (response.ok) {
+                        console.log(`Message ${messageId} deleted.`);
+                    } else {
+                        console.error(`Failed to delete message ${messageId}:`, response.status);
+                    }
+                })
+                .catch(error => console.error('Error deleting message:', error));
         }
 
         function displayMessages() {
-            const messageList = document.getElementById('message-list');
-            messageList.innerHTML = '<h3>Pesan Terkirim</h3>'; // Reset daftar pesan
+            messageList.innerHTML = '<h3>Pesan Terkirim</h3>'; // Reset message list
 
-            messages.forEach((message, index) => {
+            messages.forEach(message => {
                 const messageItem = document.createElement('div');
                 messageItem.classList.add('message-item');
 
                 const messageText = document.createElement('span');
                 messageText.classList.add('message-text');
-                messageText.textContent = message;
+                messageText.textContent = message.message; // Display message
 
                 const deleteButton = document.createElement('button');
                 deleteButton.classList.add('delete-button');
                 deleteButton.textContent = 'Hapus';
-                deleteButton.onclick = () => deleteMessage(index);
+                deleteButton.onclick = () => deleteMessage(message._id);
 
                 messageItem.appendChild(messageText);
                 messageItem.appendChild(deleteButton);
                 messageList.appendChild(messageItem);
             });
         }
+
+        // SSE Connection for Admin Messages
+        const adminMessageSource = new EventSource('/admin-message-stream');
+
+        adminMessageSource.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            console.log("Admin Message Event Received", data);
+            if (data.type === 'initial') {
+                messages = data.messages;
+                displayMessages();
+            }
+            else if (data.type === 'new') {
+                messages.push(data.message);
+                displayMessages();
+            } else if (data.type === 'delete') {
+                messages = messages.filter(msg => msg._id !== data.messageId);
+                displayMessages();
+            } else if (data.type === 'error') {
+                console.error("Error from admin-message-stream", data.message)
+            }
+        };
+
+        adminMessageSource.onerror = (error) => {
+            console.error("Admin Message SSE error:", error);
+        };
     </script>
 
     <!-- Bootstrap Scripts -->
@@ -179,4 +243,5 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
+
 </html>
