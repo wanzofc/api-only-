@@ -1,4 +1,3 @@
-// server.js
 const express = require('express');
 const http = require('http');
 const mongoose = require('mongoose');
@@ -9,9 +8,8 @@ const axios = require('axios');
 const app = express();
 const server = http.createServer(app);
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 4000;
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://zanssxploit:pISqUYgJJDfnLW9b@cluster0.fgram.mongodb.net/?retryWrites=true&w=majority';
-
 mongoose.set('strictQuery', false);
 mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('Connected to MongoDB'))
@@ -23,13 +21,6 @@ const chatMessageSchema = new mongoose.Schema({
     timestamp: { type: Date, default: Date.now }
 });
 const ChatMessage = mongoose.model('ChatMessage', chatMessageSchema);
-
-// Admin Message Schema and Model (New)
-const adminMessageSchema = new mongoose.Schema({
-    message: String,
-    timestamp: { type: Date, default: Date.now }
-});
-const AdminMessage = mongoose.model('AdminMessage', adminMessageSchema);
 
 // API Key Storage (Temporary - Use a proper database for production)
 const apiKeys = new Map();
@@ -97,7 +88,7 @@ app.get('/', (req, res) => {
 });
 
 // Declare clients array OUTSIDE all route handlers
-let clients = []; // Menggunakan 'let' alih-alih 'const'
+const clients = [];
 
 // SSE Endpoint for Chat
 app.get('/chat-stream', async (req, res) => {
@@ -148,96 +139,18 @@ app.get('/notification-stream', (req, res) => {
     });
 });
 
-// SSE for Admin Messages (New)
-let adminClients = [];
-
-app.get('/admin-message-stream', (req, res) => {
-    res.setHeader('Content-Type', 'text/event-stream');
-    res.setHeader('Cache-Control', 'no-cache');
-    res.setHeader('Connection', 'keep-alive');
-    res.flushHeaders();
-
-    const clientId = Date.now();
-    const newClient = {
-        id: clientId,
-        res
-    };
-    adminClients.push(newClient);
-
-    req.on('close', () => {
-        console.log(`Admin client ${clientId} disconnected`);
-        adminClients = adminClients.filter(client => client.id !== clientId);
-    });
-    // Send initial message list to clients
-    sendAdminMessageList(res);
-});
-
-// Function to send Admin message list to admin-stream
-async function sendAdminMessageList(res) {
-    try {
-        const messages = await AdminMessage.find().sort({ timestamp: 1 }); // Fetch all messages from db
-        res.write(`data: ${JSON.stringify({ type: 'initial', messages: messages })}\n\n`);
-    } catch (err) {
-        console.error("Error getting admin messages", err)
-        res.write(`data: ${JSON.stringify({ type: 'error', message: "Error fetching messages" })}\n\n`);
-    }
-}
-
-// Function to send updates Admin message lists
-async function sendAdminMessageUpdate(type, message) {
-    adminClients.forEach(client => {
-        client.res.write(`data: ${JSON.stringify({ type: type, message: message })}\n\n`);
-    });
-}
 // Protected Admin endpoint to send notifications
-app.post('/admin/notify', async (req, res) => {
+app.post('/admin/notify', (req, res) => {
     const { message } = req.body;
     if (!message) {
         return res.status(400).json({ message: 'Message is required' });
     }
 
-    try {
-        const adminMessage = new AdminMessage({ message: message });
-        await adminMessage.save();
-        // Send real-time notification to clients
-        clients.forEach(client => {
-            client.res.write(`data: ${JSON.stringify({ notification: message })} \n\n`);
-        });
-
-        // Send real-time adminMessage to admin stream
-        sendAdminMessageUpdate("new", adminMessage);
-
-        res.json({ message: 'Notification sent' });
-    } catch (error) {
-        console.error("Failed to save message", error);
-        res.status(500).json({ message: 'Error sending notification' });
-    }
-});
-
-// Function to send updates Admin message lists
-async function sendAdminMessageDelete(type, messageId) {
-    adminClients.forEach(client => {
-        client.res.write(`data: ${JSON.stringify({ type: type, messageId: messageId })}\n\n`);
+    clients.forEach(client => {
+        client.res.write(`data: ${JSON.stringify({ notification: message })} \n\n`);
     });
-}
 
-// API Endpoint to Delete Admin Messages
-app.delete('/admin/messages/:messageId', async (req, res) => {
-    const messageId = req.params.messageId;
-
-    try {
-        const deletedMessage = await AdminMessage.findByIdAndDelete(messageId);
-        if (!deletedMessage) {
-            return res.status(404).json({ message: 'Message not found' });
-        }
-
-        // Send real-time adminMessage delete to admin stream
-        sendAdminMessageDelete("delete", messageId);
-        res.json({ message: 'Message deleted' });
-    } catch (error) {
-        console.error("Failed to save message", error);
-        res.status(500).json({ message: 'Error deleting message' });
-    }
+    res.json({ message: 'Notification sent' });
 });
 
 // Endpoint to post a new chat message
@@ -430,76 +343,68 @@ app.get('/api/s/tiktok', async (req, res) => {
     }
 });
 
+// SSE Endpoint for Chat
+app.get('/chat-stream', async (req, res) => {
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.flushHeaders();
+
+    try {
+        const changeStream = ChatMessage.watch();
+
+        changeStream.on('change', async (change) => {
+            if (change.operationType === 'insert') {
+                const message = await ChatMessage.findById(change.documentKey._id);
+                res.write(`data: ${JSON.stringify({ message: message.message, timestamp: message.timestamp })} \n\n`);
+            }
+        });
+
+        req.on('close', () => {
+            console.log('Client disconnected from chat-stream');
+            changeStream.close();
+        });
+
+    } catch (error) {
+        console.error('Error streaming updates:', error);
+        res.write(`data: ${JSON.stringify({ error: 'Error streaming updates.' })}\n\n`);
+        res.end();
+    }
+});
+
+// SSE Endpoint for Notifications
+app.get('/notification-stream', (req, res) => {
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.flushHeaders();
+
+    const clientId = Date.now();
+    const newClient = {
+        id: clientId,
+        res,
+    };
+    clients.push(newClient);
+
+    req.on('close', () => {
+        console.log(`${clientId} Connection closed`);
+        clients = clients.filter(client => client.id !== clientId);
+    });
+});
+
 // Protected Admin endpoint to send notifications
-app.post('/admin/notify', async (req, res) => {
+app.post('/admin/notify', (req, res) => {
     const { message } = req.body;
     if (!message) {
         return res.status(400).json({ message: 'Message is required' });
     }
 
-    try {
-        const adminMessage = new AdminMessage({ message: message });
-        await adminMessage.save();
-
-        // Send real-time notification to clients
-        clients.forEach(client => {
-            client.res.write(`data: ${JSON.stringify({ notification: message })} \n\n`);
-        });
-
-        // Send real-time adminMessage to admin stream
-        sendAdminMessageUpdate("new", adminMessage);
-
-        res.json({ message: 'Notification sent' });
-    } catch (error) {
-        console.error("Failed to save message", error);
-        res.status(500).json({ message: 'Error sending notification' });
-    }
-});
-
-// Function to send updates Admin message lists
-async function sendAdminMessageDelete(type, messageId) {
-    adminClients.forEach(client => {
-        client.res.write(`data: ${JSON.stringify({ type: type, messageId: messageId })}\n\n`);
+    clients.forEach(client => {
+        client.res.write(`data: ${JSON.stringify({ notification: message })} \n\n`);
     });
-}
 
-// API Endpoint to Delete Admin Messages
-app.delete('/admin/messages/:messageId', async (req, res) => {
-    const messageId = req.params.messageId;
-
-    try {
-        const deletedMessage = await AdminMessage.findByIdAndDelete(messageId);
-        if (!deletedMessage) {
-            return res.status(404).json({ message: 'Message not found' });
-        }
-
-        // Send real-time adminMessage delete to admin stream
-        sendAdminMessageDelete("delete", messageId);
-        res.json({ message: 'Message deleted' });
-    } catch (error) {
-        console.error("Failed to save message", error);
-        res.status(500).json({ message: 'Error deleting message' });
-    }
+    res.json({ message: 'Notification sent' });
 });
-
-// Function to send Admin message list to admin-stream
-async function sendAdminMessageList(res) {
-    try {
-        const messages = await AdminMessage.find().sort({ timestamp: 1 }); // Fetch all messages from db
-        res.write(`data: ${JSON.stringify({ type: 'initial', messages: messages })}\n\n`);
-    } catch (err) {
-        console.error("Error getting admin messages", err)
-        res.write(`data: ${JSON.stringify({ type: 'error', message: "Error fetching messages" })}\n\n`);
-    }
-}
-
-// Function to send updates Admin message lists
-async function sendAdminMessageUpdate(type, message) {
-    adminClients.forEach(client => {
-        client.res.write(`data: ${JSON.stringify({ type: type, message: message })}\n\n`);
-    });
-}
-
 // Fallback route
 app.use((req, res, next) => {
     res.status(404).json({
