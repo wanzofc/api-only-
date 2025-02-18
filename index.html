@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WANZOFC AI Dashboard</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/styles/github-dark.min.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/styles/github-dark.min.css">
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -78,21 +79,6 @@
             background-color: #2980b9;
         }
 
-        #json-preview {
-            background-color: #2c3e50;
-            color: #f0f3f4;
-            padding: 15px;
-            border-radius: 6px;
-            font-family: monospace;
-            overflow-x: auto;
-            white-space: pre-wrap;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-        }
-
-        .hljs {
-            padding: 0;
-            background: transparent;
-        }
 
         #particles-js {
             position: absolute;
@@ -157,6 +143,7 @@
             color: #bbb;
             text-decoration: none;
         }
+
         .api-card {
             text-align: center;
             /* Center the button */
@@ -165,6 +152,11 @@
 </head>
 
 <body>
+    <audio id="autoplay-audio" autoplay loop preload="auto" style="display:none;">
+        <source src="your_music_file.mp3" type="audio/mp3">
+        Your browser does not support the audio element.
+    </audio>
+
     <div id="particles-js"></div>
     <div class="container">
         <h1>WANZOFC AI Dashboard</h1>
@@ -193,9 +185,6 @@
             <button id="try-endpoint">Try Endpoint</button>
         </div>
 
-        <h4>JSON Preview</h4>
-        <pre><code id="json-preview" class="language-json"></code></pre>
-
     </div>
 
     <footer>
@@ -211,11 +200,10 @@
             totalRequestsDisplay: document.getElementById('total-requests'),
             currentTimeDisplay: document.getElementById('current-time'),
             userIpDisplay: document.getElementById('user-ip'),
-            jsonPreview: document.getElementById('json-preview'),
             tryEndpointButton: document.getElementById('try-endpoint'),
 
-            defaultQuery: 'tahun berapa sekarang',
-            apiUrl: '/ai/metaai?query=',
+            statsUrl: '/api/stats',
+            ipUrl: '/api/ip',
 
             init() {
                 this.tryEndpointButton.addEventListener('click', this.tryEndpoint.bind(this));
@@ -224,6 +212,15 @@
                 this.updateTime();
                 setInterval(this.updateTime.bind(this), 1000);
                 this.setupParticles();
+                this.startAutoplay();
+            },
+
+            startAutoplay() {
+                const audio = document.getElementById('autoplay-audio');
+                audio.volume = 0.5; // Set volume to 50% (adjust as needed)
+                audio.play().catch(error => {
+                    console.warn('Autoplay prevented by browser.  User interaction needed.');
+                });
             },
             setupParticles() {
                 particlesJS('particles-js', {
@@ -317,11 +314,17 @@
             },
 
             getInitialStats() {
-                fetch('/stats')
+                fetch(this.statsUrl)
                     .then(response => response.json())
                     .then(data => {
-                        this.totalVisitsDisplay.textContent = data.totalVisits;
-                        this.totalRequestsDisplay.textContent = data.totalRequests;
+                        if (data.success) {
+                            this.totalVisitsDisplay.textContent = data.data.totalVisits;
+                            this.totalRequestsDisplay.textContent = data.data.totalRequests;
+                        } else {
+                            console.error('Error getting initial stats:', data.message);
+                            this.totalVisitsDisplay.textContent = 'Error';
+                            this.totalRequestsDisplay.textContent = 'Error';
+                        }
                     })
                     .catch(error => {
                         console.error('Error getting initial stats:', error);
@@ -337,31 +340,28 @@
                 this.currentTimeDisplay.textContent = `${hours}:${minutes}:${seconds}`;
             },
             getRealtimeIP() {
-                fetch('/get-ip')
+                fetch(this.ipUrl)
                     .then(response => response.json())
                     .then(data => {
-                        this.userIpDisplay.textContent = data.ip;
+                        if (data.success) {
+                            this.userIpDisplay.textContent = data.data.ip;
+                        } else {
+                            console.error('Error getting IP:', data.message);
+                            this.userIpDisplay.textContent = 'Error loading IP';
+                        }
                     })
                     .catch(error => {
                         console.error('Error getting IP:', error);
                         this.userIpDisplay.textContent = 'Error loading IP';
                     });
             },
-            tryEndpoint() {
-                const url = `/ai/metaai?query=${encodeURIComponent(this.defaultQuery)}`;
 
-                this.displayJSON({
-                    "API URL": url
-                });  // Display the URL
-            },
-            displayJSON(data) {
-                const jsonString = JSON.stringify(data, null, 2);
-                this.jsonPreview.textContent = jsonString;
-                hljs.highlightElement(this.jsonPreview);
+            tryEndpoint() {
+                window.location.href = "/api/ai/metaai?query=halo";
             },
         };
 
-        dashboard.init(); // Initialize the dashboard
+        dashboard.init();
     </script>
 </body>
 
