@@ -60,6 +60,41 @@
         .container, h2, .form-control, .btn-primary {
             opacity: 0;
         }
+
+        /* Style untuk daftar pesan */
+        #message-list {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .message-item {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .message-item .message-text {
+            flex-grow: 1;
+            margin-right: 10px;
+        }
+
+        .delete-button {
+            background-color: #e74c3c;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .delete-button:hover {
+            background-color: #c0392b;
+        }
     </style>
 </head>
 <body>
@@ -69,6 +104,11 @@
             <input type="text" class="form-control" id="notification-message" placeholder="Enter notification message">
         </div>
         <button class="btn btn-primary" onclick="sendNotification()">Send Notification</button>
+
+        <!-- Daftar Pesan -->
+        <div id="message-list">
+            <h3>Pesan Terkirim</h3>
+        </div>
     </div>
 
     <!-- GSAP -->
@@ -81,9 +121,15 @@
         gsap.to(".form-control", { duration: 1, opacity: 1, y: 0, delay: 0.4, ease: "power2.out" });
         gsap.to(".btn-primary", { duration: 1, opacity: 1, y: 0, delay: 0.6, ease: "power2.out" });
 
+        // Array untuk menyimpan pesan
+        let messages = [];
+
         function sendNotification() {
             const message = document.getElementById('notification-message').value;
             if (message) {
+                // Tambahkan pesan ke array
+                messages.push(message);
+
                 fetch('/admin/notify', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -93,9 +139,38 @@
                 .then(data => {
                     console.log('Notification sent:', data);
                     document.getElementById('notification-message').value = '';
+                    displayMessages(); // Perbarui tampilan pesan
                 })
                 .catch(error => console.error('Error sending notification:', error));
             }
+        }
+
+        function deleteMessage(index) {
+            messages.splice(index, 1); // Hapus pesan dari array
+            displayMessages(); // Perbarui tampilan pesan
+        }
+
+        function displayMessages() {
+            const messageList = document.getElementById('message-list');
+            messageList.innerHTML = '<h3>Pesan Terkirim</h3>'; // Reset daftar pesan
+
+            messages.forEach((message, index) => {
+                const messageItem = document.createElement('div');
+                messageItem.classList.add('message-item');
+
+                const messageText = document.createElement('span');
+                messageText.classList.add('message-text');
+                messageText.textContent = message;
+
+                const deleteButton = document.createElement('button');
+                deleteButton.classList.add('delete-button');
+                deleteButton.textContent = 'Hapus';
+                deleteButton.onclick = () => deleteMessage(index);
+
+                messageItem.appendChild(messageText);
+                messageItem.appendChild(deleteButton);
+                messageList.appendChild(messageItem);
+            });
         }
     </script>
 
