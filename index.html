@@ -2,531 +2,465 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WANZOFC TECH - API Demo</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(to bottom, #3498db, #2c3e50);
-            color: #ecf0f1;
-            overflow-x: hidden;
-            height: auto;
-            padding-bottom: 50px;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WANZOFC TECH - API Demo</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(to bottom, #3498db, #2c3e50);
+      color: #ecf0f1;
+      overflow-x: hidden;
+      height: auto;
+      padding-bottom: 50px;
+    }
 
-        body.dark-theme {
-            background: linear-gradient(to bottom, #222, #111);
-            color: #ddd;
-        }
+    #particles-js {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      top: 0;
+      left: 0;
+    }
 
-        #particles-js {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            top: 0;
-            left: 0;
-        }
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100px;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(10px);
+      color: #fff;
+      text-align: center;
+      padding: 15px 0;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      z-index: 100;
+    }
 
-        body.dark-theme #particles-js .particles-js-canvas-el {
-            filter: blur(3px);
-        }
+    main {
+      margin-top: 120px;
+      position: relative;
+      z-index: 1;
+    }
 
-        header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100px;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(10px);
-            color: #fff;
-            text-align: center;
-            padding: 15px 0;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-            z-index: 100;
-        }
+    .container-title {
+      text-align: center;
+      margin-bottom: 10px;
+      color: #fff;
+    }
 
-        /* Theme Toggle Button */
-        #theme-toggle {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: transparent;
-            border: none;
-            font-size: 24px;
-            color: #fff;
-            cursor: pointer;
-            transition: color 0.3s ease;
-            z-index: 101;
-            /* Over header */
-        }
+    .container {
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(5px);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
 
-        #theme-toggle:hover {
-            color: #bbb;
-        }
+    h1,
+    h2 {
+      color: #fff;
+      font-weight: lighter;
+      margin-bottom: 0.75rem;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    }
 
-        main {
-            margin-top: 120px;
-            position: relative;
-            z-index: 1;
-        }
+    #chat-messages {
+      height: 150px;
+      overflow-y: auto;
+      padding: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: 5px;
+      color: #fff;
+      font-size: 0.9rem;
+    }
 
-        .container-title {
-            text-align: center;
-            margin-bottom: 10px;
-            color: #fff;
-        }
+    input[type="text"] {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+    }
 
-        .container {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(5px);
-            padding: 20px;
-            margin-bottom: 20px;
-        }
+    button {
+      background-color: #2ecc71;
+      transition: background-color 0.3s ease;
+      border: none;
+      border-radius: 4px;
+    }
 
-        h1,
-        h2 {
-            color: #fff;
-            font-weight: lighter;
-            margin-bottom: 0.75rem;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-        }
+    button:hover {
+      background-color: #27ae60;
+    }
 
-        #chat-messages {
-            height: 150px;
-            overflow-y: auto;
-            padding: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            background-color: rgba(255, 255, 255, 0.05);
-            border-radius: 5px;
-            color: #fff;
-            font-size: 0.9rem;
-        }
+    #api-endpoints a {
+      color: #3498db;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
 
-        input[type="text"] {
-            background-color: rgba(255, 255, 255, 0.1);
-            color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 4px;
-        }
+    #api-endpoints a:hover {
+      text-decoration: underline;
+      color: #fff;
+    }
 
-        button {
-            background-color: #2ecc71;
-            transition: background-color 0.3s ease;
-            border: none;
-            border-radius: 4px;
-        }
+    .try-it-button {
+      background-color: #3498db;
+      margin-left: 10px;
+      border: none;
+      border-radius: 4px;
+    }
 
-        button:hover {
-            background-color: #27ae60;
-        }
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: #fff;
+      background-color: rgba(0, 0, 0, 0.3);
+      position: relative;
+      z-index: 1;
+      margin-top: 50px;
+    }
 
-        #api-endpoints a {
-            color: #3498db;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        #api-endpoints a:hover {
-            text-decoration: underline;
-            color: #fff;
-        }
-
-        .try-it-button {
-            background-color: #3498db;
-            margin-left: 10px;
-            border: none;
-            border-radius: 4px;
-        }
-
-        footer {
-            text-align: center;
-            padding: 20px;
-            color: #fff;
-            background-color: rgba(0, 0, 0, 0.3);
-            position: relative;
-            z-index: 1;
-            margin-top: 50px;
-        }
-
-        #notifications {
-            min-height: 50px;
-            padding: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            background-color: rgba(255, 255, 255, 0.05);
-            border-radius: 5px;
-            color: #fff;
-            font-size: 0.9rem;
-            margin-bottom: 10px;
-        }
-    </style>
+    #notifications {
+      min-height: 50px;
+      padding: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: 5px;
+      color: #fff;
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+    }
+  </style>
 </head>
 
 <body>
-    <audio id="bg-music" src="https://files.catbox.moe/irf66d.mp3" autoplay loop></audio>
-    <div id="particles-js"></div>
-    <header class="text-center">
-        <h1>WANZOFC TECH</h1>
-        <p> API DEMO</p>
-        <button id="theme-toggle">💡</button>
-    </header>
+  <audio id="bg-music" src="https://file-examples.com/storage/fe623f143c64070c215b244/2017/11/file_example_MP3_700KB.mp3" autoplay loop></audio>
+  <div id="particles-js"></div>
+  <header class="text-center">
+    <h1>WANZOFC TECH</h1>
+    <p>Interactive API Demo</p>
+  </header>
 
-    <main class="container">
-        <div class="row">
-            <div class="col-md-4">
-                <div class="container">
-                    <h2 class="container-title">Chat Room</h2>
-                    <div id="chat-messages"></div>
-                    <div class="input-group">
-                        <input type="text" id="message-input" class="form-control" placeholder="Enter your message">
-                        <div class="input-group-append">
-                            <button id="send-button" class="btn btn-success">
-                                <i class="fas fa-paper-plane"></i> Send
-                            </button>
-                        </div>
-                    </div>
-                </div>
+  <main class="container">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="container">
+          <h2 class="container-title">Chat Room</h2>
+          <div id="chat-messages"></div>
+          <div class="input-group">
+            <input type="text" id="message-input" class="form-control" placeholder="Enter your message">
+            <div class="input-group-append">
+              <button id="send-button" class="btn btn-success">
+                <i class="fas fa-paper-plane"></i> Send
+              </button>
             </div>
-
-            <div class="col-md-4">
-                <div class="container">
-                    <h2 class="container-title">Notifications</h2>
-                    <div id="notifications"></div>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div id="api-key-container" class="container">
-                    <h2 class="container-title">API Key</h2>
-                    <p id="api-key-display">Loading API Key...</p>
-                </div>
-            </div>
+          </div>
         </div>
-    </main>
+      </div>
 
-    <main class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="container">
-                    <h2 class="container-title">API Endpoints</h2>
-                    <ul>
-                        <li>
-                            <a href="#" data-endpoint="/api/stalk/github?user=wanzbrayy">
-                                <i class="fab fa-github"></i> Get GitHub User (wanzbrayy)
-                            </a>
-                            <button class="try-it-button btn btn-primary"
-                                data-endpoint="/api/stalk/github?user=octocat">
-                                <i class="fas fa-flask"></i> Try It
-                            </button>
-                        </li>
-                        <li>
-                            <a href="#"
-                                data-endpoint="/api/d/tiktok?url=https://www.tiktok.com/@scout2626/video/7359387817030466821">
-                                <i class="fab fa-tiktok"></i> TikTok Downloader
-                            </a>
-                            <button class="try-it-button btn btn-primary"
-                                data-endpoint="/api/d/tiktok?url=https://www.tiktok.com/@scout2626/video/7359387817030466821">
-                                <i class="fas fa-flask"></i> Try It
-                            </button>
-                        </li>
-                        <li>
-                            <a href="#"
-                                data-endpoint="/api/stalk/youtube?username=UCXuqSBlHAE6Xw-yeJA0Tunw">
-                                <i class="fab fa-youtube"></i> Stalk YouTube
-                            </a>
-                            <button class="try-it-button btn btn-primary"
-                                data-endpoint="/api/stalk/youtube?username=UCXuqSBlHAE6Xw-yeJA0Tunw">
-                                <i class="fas fa-flask"></i> Try It
-                            </button>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+      <div class="col-md-4">
+        <div class="container">
+          <h2 class="container-title">Notifications</h2>
+          <div id="notifications"></div>
         </div>
-    </main>
+      </div>
 
-    <footer>
-        WANZOFC TECH
-    </footer>
+      <div class="col-md-4">
+        <div id="api-key-container" class="container">
+          <h2 class="container-title">API Key</h2>
+          <p id="api-key-display">Loading API Key...</p>
+        </div>
+      </div>
+    </div>
+  </main>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <main class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="container">
+          <h2 class="container-title">API Endpoints</h2>
+          <ul>
+            <li>
+              <a href="#" data-endpoint="/api/stalk/github?user=octocat">
+                <i class="fab fa-github"></i> Get GitHub User (octocat)
+              </a>
+              <button class="try-it-button btn btn-primary" data-endpoint="/api/stalk/github?user=octocat">
+                <i class="fas fa-flask"></i> Try It
+              </button>
+            </li>
+            <li>
+              <a href="#" data-endpoint="/api/d/tiktok?url=https://www.tiktok.com/@scout2626/video/7359387817030466821">
+                <i class="fab fa-tiktok"></i> TikTok Downloader
+              </a>
+              <button class="try-it-button btn btn-primary" data-endpoint="/api/d/tiktok?url=https://www.tiktok.com/@scout2626/video/7359387817030466821">
+                <i class="fas fa-flask"></i> Try It
+              </button>
+            </li>
+            <li>
+              <a href="#" data-endpoint="/api/stalk/youtube?username=UCXuqSBlHAE6Xw-yeJA0Tunw">
+                <i class="fab fa-youtube"></i> Stalk YouTube
+              </a>
+              <button class="try-it-button btn btn-primary" data-endpoint="/api/stalk/youtube?username=UCXuqSBlHAE6Xw-yeJA0Tunw">
+                <i class="fas fa-flask"></i> Try It
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </main>
 
-    <script>
-        const themeToggle = document.getElementById('theme-toggle');
-        const body = document.body;
-        let currentTheme = localStorage.getItem('theme') || 'light'; // Default to light
+  <footer>
+    © 2024 WANZOFC TECH
+  </footer>
 
-        // Apply stored theme
-        function applyTheme(theme) {
-            if (theme === 'dark') {
-                body.classList.add('dark-theme');
-                themeToggle.textContent = '🌑'; // Moon
-            } else {
-                body.classList.remove('dark-theme');
-                themeToggle.textContent = '💡'; // Lightbulb
-            }
-        }
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 
-        // Initialize theme
-        applyTheme(currentTheme);
-
-        // Theme toggle functionality
-        themeToggle.addEventListener('click', () => {
-            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
-            localStorage.setItem('theme', currentTheme);
-            applyTheme(currentTheme);
-
-            // Update Particles.js in Dark Mode
-            if (currentTheme === 'dark') {
-                particlesJS.load('particles-js', '', function () {
-                    console.log('callback - particles.js config loaded');
-                });
-            } else {
-                particlesJS.load('particles-js', '', function () {
-                    console.log('callback - particles.js config loaded');
-                });
-            }
+  <script>
+    async function loadChatHistory() {
+      try {
+        const response = await fetch('/chat-history');
+        const chatHistory = await response.json();
+        chatHistory.forEach(msg => {
+          const messageElement = document.createElement('div');
+          messageElement.textContent = `${msg.message} - ${new Date(msg.timestamp).toLocaleTimeString()}`;
+          chatMessages.appendChild(messageElement);
+          chatMessages.scrollTop = chatMessages.scrollHeight;
         });
+      } catch (error) {
+        console.error('Error loading chat history:', error);
+      }
+    }
 
-        particlesJS('particles-js', {
-            "particles": {
-                "number": {
-                    "value": 80,
-                    "density": {
-                        "enable": true,
-                        "value_area": 800
-                    }
-                },
-                "color": {
-                    "value": "#ffffff"
-                },
-                "shape": {
-                    "type": "circle",
-                    "stroke": {
-                        "width": 0,
-                        "color": "#000000"
-                    },
-                    "polygon": {
-                        "nb_sides": 5
-                    },
-                    "image": {
-                        "src": "img/github.svg",
-                        "width": 100,
-                        "height": 100
-                    }
-                },
-                "opacity": {
-                    "value": 0.5,
-                    "random": false,
-                    "anim": {
-                        "enable": false,
-                        "speed": 1,
-                        "opacity_min": 0.1,
-                        "sync": false
-                    }
-                },
-                "size": {
-                    "value": 5,
-                    "random": true,
-                    "anim": {
-                        "enable": false,
-                        "speed": 40,
-                        "size_min": 0.1,
-                        "sync": false
-                    }
-                },
-                "line_linked": {
-                    "enable": true,
-                    "distance": 150,
-                    "color": "#ffffff",
-                    "opacity": 0.4,
-                    "width": 1
-                },
-                "move": {
-                    "enable": true,
-                    "speed": 6,
-                    "direction": "none",
-                    "random": false,
-                    "straight": false,
-                    "out_mode": "out",
-                    "attract": {
-                        "enable": false,
-                        "rotateX": 600,
-                        "rotateY": 1200
-                    }
-                }
+    particlesJS('particles-js', {
+      "particles": {
+        "number": {
+          "value": 80,
+          "density": {
+            "enable": true,
+            "value_area": 800
+          }
+        },
+        "color": {
+          "value": "#ffffff"
+        },
+        "shape": {
+          "type": "circle",
+          "stroke": {
+            "width": 0,
+            "color": "#000000"
+          },
+          "polygon": {
+            "nb_sides": 5
+          },
+          "image": {
+            "src": "img/github.svg",
+            "width": 100,
+            "height": 100
+          }
+        },
+        "opacity": {
+          "value": 0.5,
+          "random": false,
+          "anim": {
+            "enable": false,
+            "speed": 1,
+            "opacity_min": 0.1,
+            "sync": false
+          }
+        },
+        "size": {
+          "value": 5,
+          "random": true,
+          "anim": {
+            "enable": false,
+            "speed": 40,
+            "size_min": 0.1,
+            "sync": false
+          }
+        },
+        "line_linked": {
+          "enable": true,
+          "distance": 150,
+          "color": "#ffffff",
+          "opacity": 0.4,
+          "width": 1
+        },
+        "move": {
+          "enable": true,
+          "speed": 6,
+          "direction": "none",
+          "random": false,
+          "straight": false,
+          "out_mode": "out",
+          "attract": {
+            "enable": false,
+            "rotateX": 600,
+            "rotateY": 1200
+          }
+        }
+      },
+      "interactivity": {
+        "detect_on": "canvas",
+        "events": {
+          "onhover": {
+            "enable": true,
+            "mode": "grab"
+          },
+          "onclick": {
+            "enable": true,
+            "mode": "push"
+          },
+          "resize": true
+        },
+        "modes": {
+          "grab": {
+            "distance": 140,
+            "line_linked": {
+              "opacity": 1
+            }
+          },
+          "bubble": {
+            "distance": 400,
+            "size": 40,
+            "duration": 2,
+            "opacity": 8,
+            "speed": 3
+          },
+          "repulse": {
+            "distance": 200
+          },
+          "push": {
+            "particles_nb": 4
+          },
+          "remove": {
+            "particles_nb": 2
+          }
+        }
+      },
+      "retina_detect": true,
+    });
+
+    gsap.from("header", {
+      duration: 1,
+      y: -100,
+      opacity: 0,
+      ease: "power2.out"
+    });
+    gsap.from("main", {
+      duration: 1,
+      opacity: 0,
+      delay: 0.5,
+      ease: "power2.out"
+    });
+    gsap.from("footer", {
+      duration: 1,
+      y: 100,
+      opacity: 0,
+      delay: 1,
+      ease: "power2.out"
+    });
+
+    const chatMessages = document.getElementById('chat-messages');
+    const messageInput = document.getElementById('message-input');
+    const sendButton = document.getElementById('send-button');
+    const notifications = document.getElementById('notifications');
+    const apiKeyDisplay = document.getElementById('api-key-display');
+
+    const chatEventSource = new EventSource('/chat-stream');
+    chatEventSource.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.message) {
+        const messageElement = document.createElement('div');
+        messageElement.textContent = `${data.message} - ${new Date(data.timestamp).toLocaleTimeString()}`;
+        chatMessages.appendChild(messageElement);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      } else if (data.error) {
+        console.error('Chat Error:', data.error);
+        const errorElement = document.createElement('div');
+        errorElement.textContent = `Chat Error: ${data.error}`;
+        chatMessages.appendChild(errorElement);
+      }
+    };
+
+    chatEventSource.onerror = (error) => {
+      console.error("Chat SSE error:", error);
+    };
+
+    sendButton.addEventListener('click', async () => {
+      const message = messageInput.value;
+      if (message) {
+        try {
+          const response = await fetch('/chat-message', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
             },
-            "interactivity": {
-                "detect_on": "canvas",
-                "events": {
-                    "onhover": {
-                        "enable": true,
-                        "mode": "grab"
-                    },
-                    "onclick": {
-                        "enable": true,
-                        "mode": "push"
-                    },
-                    "resize": true
-                },
-                "modes": {
-                    "grab": {
-                        "distance": 140,
-                        "line_linked": {
-                            "opacity": 1
-                        }
-                    },
-                    "bubble": {
-                        "distance": 400,
-                        "size": 40,
-                        "duration": 2,
-                        "opacity": 8,
-                        "speed": 3
-                    },
-                    "repulse": {
-                        "distance": 200
-                    },
-                    "push": {
-                        "particles_nb": 4
-                    },
-                    "remove": {
-                        "particles_nb": 2
-                    }
-                }
-            },
-            "retina_detect": true,
-        });
-
-        gsap.from("header", {
-            duration: 1,
-            y: -100,
-            opacity: 0,
-            ease: "power2.out"
-        });
-        gsap.from("main", {
-            duration: 1,
-            opacity: 0,
-            delay: 0.5,
-            ease: "power2.out"
-        });
-        gsap.from("footer", {
-            duration: 1,
-            y: 100,
-            opacity: 0,
-            delay: 1,
-            ease: "power2.out"
-        });
-
-        const chatMessages = document.getElementById('chat-messages');
-        const messageInput = document.getElementById('message-input');
-        const sendButton = document.getElementById('send-button');
-        const notifications = document.getElementById('notifications');
-        const apiKeyDisplay = document.getElementById('api-key-display');
-
-        // Function to add a message to the chat
-        function addChatMessage(message, timestamp) {
-            const messageElement = document.createElement('div');
-            messageElement.textContent = `${message} - ${new Date(timestamp).toLocaleTimeString()}`;
-            chatMessages.appendChild(messageElement);
-            chatMessages.scrollTop = chatMessages.scrollHeight; // Scroll to bottom
+            body: JSON.stringify({
+              message: message
+            })
+          });
+          if (response.ok) {
+            messageInput.value = '';
+          } else {
+            console.error('Failed to send message:', response.status);
+          }
+        } catch (error) {
+          console.error('Error sending message:', error);
         }
-        // Send Message Function
-        sendButton.addEventListener('click', async () => {
-            const message = messageInput.value;
-            if (message) {
-                try {
-                    const response = await fetch('/chat-message', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            message: message
-                        })
-                    });
-                    if (response.ok) {
-                        messageInput.value = ''; // Clear input after sending
-                    } else {
-                        console.error('Failed to send message:', response.status);
-                    }
-                } catch (error) {
-                    console.error('Error sending message:', error);
-                }
-            }
-        });
+      }
+    });
+    const notificationEventSource = new EventSource('/notification-stream');
 
-        // Initialize EventSource for chat
-        const chatEventSource = new EventSource('/chat-stream');
-        chatEventSource.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            if (data.message) {
-                addChatMessage(data.message, data.timestamp);
-            } else if (data.error) {
-                console.error('Chat Error:', data.error);
-                const errorElement = document.createElement('div');
-                errorElement.textContent = `Chat Error: ${data.error}`;
-                chatMessages.appendChild(errorElement);
-            }
-        };
+    notificationEventSource.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.notification) {
+        const notificationElement = document.createElement('div');
+        notificationElement.textContent = `Notification: ${data.notification}`;
+        notifications.appendChild(notificationElement);
+      }
+    };
 
-        chatEventSource.onerror = (error) => {
-            console.error("Chat SSE error:", error);
-        };
+    notificationEventSource.onerror = (error) => {
+      console.error("Notification SSE error:", error);
+    };
 
-        // Function to add a notification
-        function addNotification(message) {
-            const notificationElement = document.createElement('div');
-            notificationElement.textContent = `Notification: ${message}`;
-            notifications.appendChild(notificationElement);
+    async function getApiKey() {
+      try {
+        const response = await fetch('/api/stalk/github?username=your_username');
+        const data = await response.json();
+        if (data.result && data.apikey) {
+          apiKeyDisplay.textContent = `API Key: ${data.apikey}`;
+        } else {
+          apiKeyDisplay.textContent = `Error: ${data.message}`;
         }
+      } catch (error) {
+        apiKeyDisplay.textContent = `Error: ${error.message}`;
+      }
+    }
 
-        // SSE Connection for Notifications
-        const notificationEventSource = new EventSource('/notification-stream');
+    getApiKey();
 
-        notificationEventSource.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            if (data.notification) {
-                addNotification(data.notification);
-            }
-        };
-
-        notificationEventSource.onerror = (error) => {
-            console.error("Notification SSE error:", error);
-        };
-
-        async function getApiKey() {
-            try {
-                const response = await fetch('/api/stalk/github?username=wanzbrayy');
-                const data = await response.json();
-                if (data.result && data.apikey) {
-                    apiKeyDisplay.textContent = `API Key: ${data.apikey}`;
-                } else {
-                    apiKeyDisplay.textContent = `Error: ${data.message}`;
-                }
-            } catch (error) {
-                apiKeyDisplay.textContent = `Error: ${error.message}`;
-            }
-        }
-
-        getApiKey();
-
-        const tryItButtons = document.querySelectorAll('.try-it-button');
-        tryItButtons.forEach(button => {
-            button.addEventListener('click', (event) => {
-                const endpoint = event.target.dataset.endpoint;
-                window.open(endpoint, '_blank');
-            });
-        });
-    </script>
+    const tryItButtons = document.querySelectorAll('.try-it-button');
+    tryItButtons.forEach(button => {
+      button.addEventListener('click', (event) => {
+        const endpoint = event.target.dataset.endpoint;
+        window.open(endpoint, '_blank');
+      });
+    });
+    loadChatHistory();
+  </script>
 </body>
+
 </html>
