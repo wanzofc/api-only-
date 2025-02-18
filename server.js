@@ -87,6 +87,9 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+// Declare clients array OUTSIDE all route handlers
+const clients = [];
+
 // SSE Endpoint for Chat
 app.get('/chat-stream', async (req, res) => {
     res.setHeader('Content-Type', 'text/event-stream');
@@ -115,9 +118,6 @@ app.get('/chat-stream', async (req, res) => {
         res.end();
     }
 });
-
-// Declare clients array outside the endpoints
-const clients = [];
 
 // SSE Endpoint for Notifications
 app.get('/notification-stream', (req, res) => {
@@ -371,8 +371,6 @@ app.get('/chat-stream', async (req, res) => {
         res.end();
     }
 });
-// Declare clients array outside the endpoints
-const clients = [];
 
 // SSE Endpoint for Notifications
 app.get('/notification-stream', (req, res) => {
