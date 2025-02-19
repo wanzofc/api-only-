@@ -165,11 +165,91 @@
       text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7); /* Bayangan lebih kuat */
       letter-spacing: 1px; /* Spacing lebih lebar */
     }
+
+    /* Style untuk Search */
+    #endpoint-search-container {
+      margin-bottom: 15px;
+    }
+
+    #endpoint-search-input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      background-color: #1A2029;
+      color: #FFFFFF;
+    }
+
+    .search-results {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      background-color: #1A2029;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      max-height: 200px;
+      overflow-y: auto;
+      display: none; /* Hidden by default */
+    }
+
+    .search-results li {
+      padding: 8px 12px;
+      cursor: pointer;
+      color: #FFFFFF;
+    }
+
+    .search-results li:hover {
+      background-color: #343a40;
+    }
+
+    /* Style untuk Form Input */
+    .api-input-group {
+      margin-top: 5px;
+    }
+
+    .api-input-group input {
+      width: 100%;
+      padding: 8px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      background-color: #1A2029;
+      color: #FFFFFF;
+    }
+
+    /* Music Player Styles */
+    #music-player-container {
+      text-align: center;
+    }
+
+    #music-player-container i {
+      font-size: 2em;
+      color: #00FF9F;
+      cursor: pointer;
+      margin: 0 10px;
+      transition: color 0.3s ease;
+    }
+
+    #music-player-container i:hover {
+      color: #FF4F00;
+    }
+
+    #music-playlist {
+      display: none; /* Hide playlist */
+    }
+
+    /* Ensure playlist URLs are on separate lines */
+    #music-playlist p {
+      margin-bottom: 5px;
+    }
+
+    /* Add the music URLs below */
+    #music-playlist p {
+      word-break: break-all; /* Prevents overflow */
+    }
   </style>
 </head>
 
 <body>
-  <audio id="bg-music" src="https://files.catbox.moe/irf66d.mp3" autoplay loop></audio>
   <div id="particles-js"></div>
   <header class="text-center">
     <h1>WANZOFC TECH</h1>
@@ -200,6 +280,21 @@
         </div>
       </div>
     </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="container" id="music-player-container">
+                <h2 class="container-title"><i class="fas fa-music"></i> Music</h2>
+                <i class="fas fa-play" id="play-pause-icon"></i>
+                <i class="fas fa-stop" id="stop-icon"></i>
+
+                <div id="music-playlist">
+                   <p>https://files.catbox.moe/4m9c5h.mp3</p>
+                   <p>https://files.catbox.moe/irf66d.mp3</p>
+                </div>
+            </div>
+        </div>
+    </div>
   </main>
 
   <main class="container">
@@ -207,28 +302,43 @@
       <div class="col-md-12">
         <div class="container">
           <h2 class="container-title">API Endpoints</h2>
-          <ul>
+
+          <div id="endpoint-search-container">
+            <input type="text" id="endpoint-search-input" placeholder="Search Endpoints...">
+            <ul id="endpoint-search-results" class="search-results"></ul>
+          </div>
+
+          <ul id="api-endpoints-list">
             <li>
-              <a href="#" data-endpoint="/api/stalk/github?user=octocat">
-                <i class="fab fa-github"></i> Get GitHub User (wanzbrayy)
+              <a href="#" data-endpoint="/api/stalk/github">
+                <i class="fab fa-github"></i> Get GitHub User
               </a>
-              <button class="try-it-button btn btn-primary" data-endpoint="/api/stalk/github?user=wanzbrayy">
+              <div class="api-input-group">
+                <input type="text" class="github-user" placeholder="Username">
+              </div>
+              <button class="try-it-button btn btn-primary" data-endpoint="/api/stalk/github">
                 <i class="fas fa-flask"></i> Try It
               </button>
             </li>
             <li>
-              <a href="#" data-endpoint="/api/d/tiktok?url=https://www.tiktok.com/@scout2626/video/7359387817030466821">
+              <a href="#" data-endpoint="/api/d/tiktok">
                 <i class="fab fa-tiktok"></i> TikTok Downloader
               </a>
-              <button class="try-it-button btn btn-primary" data-endpoint="/api/d/tiktok?url=https://www.tiktok.com/@scout2626/video/7359387817030466821">
+              <div class="api-input-group">
+                <input type="text" class="tiktok-url" placeholder="TikTok URL">
+              </div>
+              <button class="try-it-button btn btn-primary" data-endpoint="/api/d/tiktok">
                 <i class="fas fa-flask"></i> Try It
               </button>
             </li>
             <li>
-              <a href="#" data-endpoint="/api/stalk/youtube?username=UCXuqSBlHAE6Xw-yeJA0Tunw">
+              <a href="#" data-endpoint="/api/stalk/youtube">
                 <i class="fab fa-youtube"></i> Stalk YouTube
               </a>
-              <button class="try-it-button btn btn-primary" data-endpoint="/api/stalk/youtube?username=UCXuqSBlHAE6Xw-yeJA0Tunw">
+              <div class="api-input-group">
+                <input type="text" class="youtube-username" placeholder="Username">
+              </div>
+              <button class="try-it-button btn btn-primary" data-endpoint="/api/stalk/youtube">
                 <i class="fas fa-flask"></i> Try It
               </button>
             </li>
@@ -266,8 +376,37 @@
       const apiResponseDiv = $('#api-response');
       const totalRequestsDiv = $('#total-requests');
       const totalVisitorsDiv = $('#total-visitors');
-      const averageBatteryDiv = $('#average-battery'); // div untuk tampilan rata-rata baterai
+      const averageBatteryDiv = $('#average-battery');
+      const endpointSearchInput = $('#endpoint-search-input');
+      const endpointSearchResults = $('#endpoint-search-results');
+      const apiEndpointsList = $('#api-endpoints-list');
+
+      // Music Player Elements
+      const playPauseIcon = $('#play-pause-icon');
+      const stopIcon = $('#stop-icon');
+      const musicPlaylistElement = $('#music-playlist'); // Changed selector
+      let musicPlaylist = []; // Array to store music URLs
+      let currentTrackIndex = 0; // Index of the current playing track
+      let isPlaying = false; // State to track if audio is currently playing
+
+      // Audio Element
+      const audio = new Audio();
+      audio.loop = false; // Disable looping for now
+      audio.volume = 0.5; // Set a default volume
+
+      // Get the music playlist from HTML
+      musicPlaylistElement.find('p').each(function() {
+        musicPlaylist.push($(this).text());
+      });
+
       let batteryLevels = [];
+
+      // Data endpoints (Ganti dengan data API endpoint yang sebenarnya)
+      const endpointsData = [
+        { name: 'Get GitHub User', description: 'Retrieve GitHub user information', endpoint: '/api/stalk/github' },
+        { name: 'TikTok Downloader', description: 'Download TikTok videos', endpoint: '/api/d/tiktok' },
+        { name: 'Stalk YouTube', description: 'Get YouTube channel information', endpoint: '/api/stalk/youtube' },
+      ];
 
       async function getApiKey() {
         try {
@@ -286,15 +425,32 @@
       getApiKey();
 
       tryItButtons.on('click', function(event) {
-        const endpoint = $(this).data('endpoint');
-        fetchApiResponse(endpoint);
+          const endpoint = $(this).data('endpoint');
+          let apiUrl = endpoint + '?';
+          let params = [];
+
+          // Mengambil nilai input berdasarkan endpoint
+          if (endpoint === '/api/stalk/github') {
+              let username = $(this).closest('li').find('.github-user').val();
+              params.push(`user=${username}`);
+          } else if (endpoint === '/api/d/tiktok') {
+              let tiktokUrl = $(this).closest('li').find('.tiktok-url').val();
+              params.push(`url=${tiktokUrl}`);
+          } else if (endpoint === '/api/stalk/youtube') {
+              let youtubeUsername = $(this).closest('li').find('.youtube-username').val();
+              params.push(`username=${youtubeUsername}`);
+          }
+
+          apiUrl += params.join('&'); // Gabungkan parameter
+
+          fetchApiResponse(apiUrl);
       });
 
       async function fetchApiResponse(endpoint) {
         try {
           const response = await fetch(endpoint);
-          const data = await response.text(); // Ambil response sebagai text
-          apiResponseDiv.text(data); // Tampilkan sebagai text
+          const data = await response.text();
+          apiResponseDiv.text(data);
         } catch (error) {
           apiResponseDiv.text(`Error: ${error}`);
         }
@@ -370,6 +526,113 @@
           averageBatteryDiv.text('Battery API not supported.');
       }
 
+      // Fungsi Pencarian Endpoint
+        endpointSearchInput.on('input', function() {
+            const searchTerm = $(this).val().toLowerCase();
+            const results = endpointsData.filter(endpoint =>
+                endpoint.name.toLowerCase().includes(searchTerm) ||
+                endpoint.description.toLowerCase().includes(searchTerm)
+            );
+
+            displaySearchResults(results);
+        });
+
+        function displaySearchResults(results) {
+            endpointSearchResults.empty();
+
+            if (results.length > 0) {
+                results.forEach(result => {
+                    const li = $('<li/>', {
+                        text: `${result.name} - ${result.description}`,
+                        'data-endpoint': result.endpoint
+                    }).on('click', function() {
+                        // Isi input yang sesuai dengan endpoint yang dipilih
+                        const endpoint = $(this).data('endpoint');
+                        if (endpoint === '/api/stalk/github') {
+                            $(this).closest('main').find('.github-user').focus();
+                        } else if (endpoint === '/api/d/tiktok') {
+                            $(this).closest('main').find('.tiktok-url').focus();
+                        } else if (endpoint === '/api/stalk/youtube') {
+                            $(this).closest('main').find('.youtube-username').focus();
+                        }
+                        endpointSearchInput.val(''); // Kosongkan input search
+                        endpointSearchResults.hide(); // Sembunyikan hasil
+                    });
+                    endpointSearchResults.append(li);
+                });
+                endpointSearchResults.show();
+            } else {
+                endpointSearchResults.hide();
+            }
+        }
+
+        // Hide results on blur (click outside)
+        $(document).on('click', function(event) {
+            if (!$(event.target).closest('#endpoint-search-container').length) {
+                endpointSearchResults.hide();
+            }
+        });
+      
+        // Music Player Functionality
+        function loadTrack(trackIndex) {
+            if (trackIndex < musicPlaylist.length && trackIndex >= 0) {
+                audio.src = musicPlaylist[trackIndex];
+                audio.load();
+                console.log(`Loading track: ${musicPlaylist[trackIndex]}`); // Debugging
+            } else {
+                console.log('Track index out of bounds.');
+            }
+        }
+
+        function playTrack() {
+            if (musicPlaylist.length > 0) {
+                if (!isPlaying) {
+                  loadTrack(currentTrackIndex);
+                  audio.play();
+                  isPlaying = true;
+                  playPauseIcon.removeClass('fa-play').addClass('fa-pause');
+                } else {
+                  audio.pause();
+                  isPlaying = false;
+                  playPauseIcon.removeClass('fa-pause').addClass('fa-play');
+                }
+            } else {
+                alert('Please add music to the playlist first.');
+            }
+        }
+
+        function stopTrack() {
+            audio.pause();
+            audio.currentTime = 0;
+            isPlaying = false;
+            playPauseIcon.removeClass('fa-pause').addClass('fa-play');
+        }
+
+        // Play/Pause functionality
+        playPauseIcon.on('click', playTrack);
+
+        // Stop functionality
+        stopIcon.on('click', stopTrack);
+
+        // When a track ends, play the next one
+        audio.addEventListener('ended', function() {
+            currentTrackIndex++;
+            if (currentTrackIndex < musicPlaylist.length) {
+                loadTrack(currentTrackIndex);
+                audio.play();
+                isPlaying = true;
+            } else {
+                stopTrack();
+                currentTrackIndex = 0;
+                isPlaying = false;
+            }
+            playPauseIcon.removeClass('fa-play').addClass('fa-pause');
+        });
+
+        // Load the first track and autoplay on page load
+        if (musicPlaylist.length > 0) {
+            loadTrack(currentTrackIndex);
+        }
     });
 
     particlesJS('particles-js', {
