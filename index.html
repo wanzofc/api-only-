@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WANZOFC TECH - API 🔥</title>
+  <title>WANZOFC TECH - API Demo</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -198,7 +198,6 @@
         border-radius: 4px;
         padding: 5px;
         margin-right: 5px;
-        width: 200px; /* Lebar input */
     }
 
     .copy-url-button {
@@ -269,62 +268,74 @@
         <div class="container">
           <h2 class="container-title">API Endpoints</h2>
           <ul class="endpoint-list">
-             <li>
-                <div class="endpoint-description">
-                    Get GitHub User Information. Requires a username.
-                </div>
-                <div class="endpoint-url">
-                    <a href="#" data-endpoint="/api/stalk/github">
-                      <i class="fab fa-github"></i> /api/stalk/github
-                    </a>
-                </div>
-                <label for="github-user">Username:</label>
-                <input type="text" class="param-input" id="github-user" placeholder="Enter username" data-param="user">
-                <button class="try-it-button btn btn-primary" data-base-endpoint="/api/stalk/github">
-                    <i class="fas fa-flask"></i> Try It
-                    <span class="loading-indicator">Loading...</span>
-                </button>
-                <button class="copy-url-button" data-base-url="/api/stalk/github">
-                    <i class="fas fa-copy"></i> Copy URL
-                </button>
+            <li>
+              <div class="endpoint-description">
+                Get GitHub User Information. Requires a username.
+              </div>
+              <div class="endpoint-url">
+                <a href="#" data-endpoint="/api/stalk/github?user=wanzbrayy">
+                  <i class="fab fa-github"></i> /api/stalk/github
+                </a>
+              </div>
+              <button class="try-it-button btn btn-primary" data-endpoint="/api/stalk/github?user=wanzbrayy">
+                <i class="fas fa-flask"></i> Try It
+                <span class="loading-indicator">Loading...</span>
+              </button>
+              <button class="copy-url-button" data-url="/api/stalk/github?user=wanzbrayy">
+                <i class="fas fa-copy"></i> Copy URL
+              </button>
             </li>
             <li>
-                <div class="endpoint-description">
-                    Download TikTok video. Requires a TikTok video URL.
-                </div>
-                <div class="endpoint-url">
-                    <a href="#" data-endpoint="/api/d/tiktok">
-                      <i class="fab fa-tiktok"></i> /api/d/tiktok
-                    </a>
-                </div>
-                <label for="tiktok-url">TikTok URL:</label>
-                <input type="text" class="param-input" id="tiktok-url" placeholder="Enter TikTok URL" data-param="url">
-                <button class="try-it-button btn btn-primary" data-base-endpoint="/api/d/tiktok">
-                    <i class="fas fa-flask"></i> Try It
-                    <span class="loading-indicator">Loading...</span>
-                </button>
-                <button class="copy-url-button" data-base-url="/api/d/tiktok">
-                    <i class="fas fa-copy"></i> Copy URL
-                </button>
+              <div class="endpoint-description">
+                Download TikTok video. Requires a TikTok video URL.
+              </div>
+              <div class="endpoint-url">
+                <a href="#" data-endpoint="/api/d/tiktok?url=https://www.tiktok.com/@scout2626/video/7359387817030466821">
+                  <i class="fab fa-tiktok"></i> /api/d/tiktok
+                </a>
+              </div>
+              <button class="try-it-button btn btn-primary" data-endpoint="/api/d/tiktok?url=https://www.tiktok.com/@scout2626/video/7359387817030466821">
+                <i class="fas fa-flask"></i> Try It
+                <span class="loading-indicator">Loading...</span>
+              </button>
+              <button class="copy-url-button" data-url="/api/d/tiktok?url=https://www.tiktok.com/@scout2626/video/7359387817030466821">
+                <i class="fas fa-copy"></i> Copy URL
+              </button>
             </li>
             <li>
-                <div class="endpoint-description">
-                    Stalk a YouTube channel. Requires a YouTube channel username.
-                </div>
-                <div class="endpoint-url">
-                    <a href="#" data-endpoint="/api/stalk/youtube">
-                        <i class="fab fa-youtube"></i> /api/stalk/youtube
-                    </a>
-                </div>
-                <label for="youtube-username">YouTube Username:</label>
-                <input type="text" class="param-input" id="youtube-username" placeholder="Enter YouTube username" data-param="username">
-                <button class="try-it-button btn btn-primary" data-base-endpoint="/api/stalk/youtube">
-                    <i class="fas fa-flask"></i> Try It
-                    <span class="loading-indicator">Loading...</span>
-                </button>
-                <button class="copy-url-button" data-base-url="/api/stalk/youtube">
-                    <i class="fas fa-copy"></i> Copy URL
-                </button>
+              <div class="endpoint-description">
+                Stalk a YouTube channel. Requires a YouTube channel username.
+              </div>
+              <div class="endpoint-url">
+                <a href="#" data-endpoint="/api/stalk/youtube?username=UCXuqSBlHAE6Xw-yeJA0Tunw">
+                  <i class="fab fa-youtube"></i> /api/stalk/youtube
+                </a>
+              </div>
+              <button class="try-it-button btn btn-primary" data-endpoint="/api/stalk/youtube?username=UCXuqSBlHAE6Xw-yeJA0Tunw">
+                <i class="fas fa-flask"></i> Try It
+                <span class="loading-indicator">Loading...</span>
+              </button>
+              <button class="copy-url-button" data-url="/api/stalk/youtube?username=UCXuqSBlHAE6Xw-yeJA0Tunw">
+                <i class="fas fa-copy"></i> Copy URL
+              </button>
+            </li>
+            <li>
+              <div class="endpoint-description">
+                Search TikTok. Requires a query.
+              </div>
+              <div class="endpoint-url">
+                <a href="#" data-endpoint="/api/s/tiktok?query=test">
+                  <i class="fab fa-tiktok"></i> /api/s/tiktok
+                </a>
+              </div>
+              <input type="text" class="param-input" id="tiktok-query" placeholder="Enter query">
+              <button class="try-it-button btn btn-primary" data-endpoint="/api/s/tiktok?query=" id="try-tiktok-search">
+                <i class="fas fa-flask"></i> Try It
+                <span class="loading-indicator">Loading...</span>
+              </button>
+              <button class="copy-url-button" data-url="/api/s/tiktok?query=test">
+                <i class="fas fa-copy"></i> Copy URL
+              </button>
             </li>
           </ul>
         </div>
@@ -379,32 +390,8 @@
 
       getApiKey();
 
-      // Function untuk membuat URL berdasarkan input dan base URL
-        function buildUrl(base, inputs) {
-            let url = base + '?';
-            let params = [];
-            for (const key in inputs) {
-                if (inputs[key]) {
-                    params.push(`${key}=${encodeURIComponent(inputs[key])}`);
-                }
-            }
-            url += params.join('&');
-            return url;
-        }
-
-           // Event listener untuk tombol "Copy URL"
-        $('.copy-url-button').on('click', function(event) {
-            const baseUrl = $(this).data('base-url');
-            const listItem = $(this).closest('li');
-            const inputs = {};
-
-            listItem.find('.param-input').each(function() {
-                const param = $(this).data('param');
-                inputs[param] = $(this).val();
-            });
-
-            const url = buildUrl(baseUrl, inputs);
-
+     $('.copy-url-button').on('click', function(event) {
+            const url = $(this).data('url');
             navigator.clipboard.writeText(url).then(() => {
                 alert('URL copied to clipboard!');
             }).catch(err => {
@@ -412,23 +399,17 @@
             });
         });
 
-      tryItButtons.on('click', function(event) {
-          const baseEndpoint = $(this).data('base-endpoint');
-            const listItem = $(this).closest('li');
-            const inputs = {};
-
-            listItem.find('.param-input').each(function() {
-                const param = $(this).data('param');
-                inputs[param] = $(this).val();
-            });
-
-            const endpoint = buildUrl(baseEndpoint, inputs);
-
+        $('#try-tiktok-search').on('click', function(event) {
+            const query = $('#tiktok-query').val();
+            const endpoint = `/api/s/tiktok?query=${encodeURIComponent(query)}`;
             fetchApiResponse(endpoint);
         });
+      tryItButtons.on('click', function(event) {
+        const endpoint = $(this).data('endpoint');
+        fetchApiResponse(endpoint);
+      });
          // Umum: Fungsi untuk menampilkan/menyembunyikan loading indicator
-        function setLoading(button) {
-          const isLoading = true
+        function setLoading(button, isLoading) {
             const loadingIndicator = $(button).find('.loading-indicator');
             if (isLoading) {
                 loadingIndicator.addClass('active');
@@ -439,8 +420,9 @@
 
          // Modifikasi fungsi fetchApiResponse untuk menggunakan setLoading
          async function fetchApiResponse(endpoint) {
-             const button = $(`[data-base-endpoint='${endpoint}']`);
-             setLoading(button, true); // Menampilkan loading indicator
+            const button = $(`[data-endpoint='${endpoint}']`);
+            setLoading(button, true); // Menampilkan loading indicator
+
             try {
                 const response = await fetch(endpoint);
                 const data = await response.text(); // Ambil response sebagai text
@@ -448,8 +430,7 @@
             } catch (error) {
                 apiResponseDiv.text(`Error: ${error}`);
             } finally {
-                 setLoading(button, false);
-                //setLoading(tryItButtons, false); // Menyembunyikan loading indicator
+                setLoading(button, false); // Menyembunyikan loading indicator
             }
         }
        // Fungsi untuk mendapatkan data statistik secara real-time
