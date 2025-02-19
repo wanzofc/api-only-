@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WANZOFC TECH - 🔥</title>
+  <title>WANZOFC TECH - API 🔥</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -180,22 +180,22 @@
     <div class="row">
       <div class="col-md-4">
         <div class="container stat-box">
-          <h2 class="container-title">Total Requests</h2>
-          <div id="total-requests" class="stat-value">0</div>
+          <h2 class="container-title">TOTAL REQUESTS</h2>
+          <div id="total-requests" class="stat-value">Loading...</div>
         </div>
       </div>
 
       <div class="col-md-4">
         <div class="container stat-box">
-          <h2 class="container-title">Total Visitors</h2>
-          <div id="total-visitors" class="stat-value">0</div>
+          <h2 class="container-title">TOTAL VISITORS</h2>
+          <div id="total-visitors" class="stat-value">Loading...</div>
           <div id="average-battery"></div>
         </div>
       </div>
 
       <div class="col-md-4">
         <div id="api-key-container" class="container">
-          <h2 class="container-title">API Key</h2>
+          <h2 class="container-title">APIKEY</h2>
           <p id="api-key-display">Loading API Key...</p>
         </div>
       </div>
@@ -300,27 +300,25 @@
         }
       }
 
-      // Fungsi untuk mendapatkan data statistik secara real-time
-      function updateStatistics() {
-        $.ajax({
-          url: '/api/statistics',  // Endpoint API untuk mendapatkan statistik
-          type: 'GET',
-          dataType: 'json',
-          success: function(data) {
-            totalRequestsDiv.text(data.totalRequests);
-            totalVisitorsDiv.text(data.totalVisitors);
+       // Fungsi untuk mendapatkan data statistik secara real-time
+       function updateStatistics() {
+            $.ajax({
+                url: '/api/statistics',  // Endpoint API untuk mendapatkan statistik
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    totalRequestsDiv.text(data.totalRequests);
+                    totalVisitorsDiv.text(data.totalVisitors);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Failed to fetch statistics. Status:', status, error);
+                }
+            });
+        }
 
-          },
-          error: function(xhr, status, error) {
-            console.error('Failed to fetch statistics. Status:', status, error);
-          }
-        });
-      }
-
-      // Update statistik setiap beberapa detik (misalnya, 5 detik)
-      setInterval(updateStatistics, 5000);
-      updateStatistics(); // Panggil sekali saat halaman dimuat
-
+        // Update statistik setiap beberapa detik (misalnya, 5 detik)
+        setInterval(updateStatistics, 5000);
+        updateStatistics(); // Panggil sekali saat halaman dimuat
 
        // Fungsi untuk mendapatkan informasi baterai
        async function getBatteryLevel() {
