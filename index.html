@@ -220,7 +220,7 @@
      WANZOFC TECH
   </footer>
 
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
@@ -397,7 +397,18 @@
       console.error("Chat SSE error:", error);
     };
 
-    sendButton.addEventListener('click', async () => {
+    // Tambahkan event listener untuk tombol "Send"
+    sendButton.addEventListener('click', sendMessage);
+
+    // Tambahkan event listener untuk input text agar bisa mengirim pesan dengan menekan Enter
+    messageInput.addEventListener('keypress', function(event) {
+      if (event.key === 'Enter') {
+        event.preventDefault(); // Mencegah form untuk melakukan submit default
+        sendMessage();
+      }
+    });
+
+    async function sendMessage() {
       const message = messageInput.value;
       if (message) {
         try {
@@ -419,7 +430,7 @@
           console.error('Error sending message:', error);
         }
       }
-    });
+    }
     const notificationEventSource = new EventSource('/notification-stream');
 
     notificationEventSource.onmessage = (event) => {
