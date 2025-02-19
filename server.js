@@ -32,8 +32,15 @@ function generateApiKey() {
     }
     return apiKey;
 }
+// ** Statistik Schema dan Model **
+const statisticsSchema = new mongoose.Schema({
+    totalRequests: { type: Number, default: 0 },
+    totalVisitors: { type: Number, default: 0 }
+});
 
-// ** Global Variables **
+const Statistics = mongoose.model('Statistics', statisticsSchema);
+
+// ** Global Variables (Diinisialisasi dari Database) **
 let totalRequests = 0;
 let totalVisitors = 0;
 let batteryLevels = [];
@@ -47,9 +54,17 @@ app.use(express.urlencoded({ extended: true }));
 let appStatus = "Sedang Berjalan";
 
 // Middleware to count total requests
-app.use((req, res, next) => {
+app.use(async (req, res, next) => {
     totalRequests++;
     console.log(`Request to: ${req.url}, Total Requests: ${totalRequests}`);
+
+    // Simpan totalRequests ke database
+    try {
+        await Statistics.updateOne({}, { totalRequests: totalRequests }, { upsert: true });
+    } catch (error) {
+        console.error('Error updating total requests:', error);
+    }
+
     next();
 });
 
@@ -237,7 +252,7 @@ app.get('/api/stalk/github/stalk', apiKeyValidator, async (req, res) => {
         return res.status(400).json({
             creator: "WANZOFC TECH",
             result: false,
-            message: "Tambahkan parameter 'user' (contoh: /api/stalk/github/stalk?user=github_username&username=your_username&apikey=apikey).",
+            message: "Tambahkan parameter 'user' (contoh: /api/stalk/github/stalk?user=github_username&username=wanzofc-tech&apikey=apikey).",
             status: appStatus
         });
     }
@@ -356,8 +371,16 @@ app.get('/api/s/tiktok', async (req, res) => {
 });
 
 // ** Statistik Endpoint **
-app.get('/api/statistics', (req, res) => {
+app.get('/api/statistics', async (req, res) => {
     totalVisitors++; // Setiap kali endpoint ini diakses, anggap sebagai pengunjung baru
+
+    // Simpan totalVisitors ke database
+    try {
+        await Statistics.updateOne({}, { totalVisitors: totalVisitors }, { upsert: true });
+    } catch (error) {
+        console.error('Error updating total visitors:', error);
+    }
+
     res.json({
         totalRequests: totalRequests,
         totalVisitors: totalVisitors,
@@ -460,7 +483,28 @@ app.use((err, req, res, next) => {
     });
 });
 
-// Start the server
-server.listen(PORT, () => {
-    console.log(`Server berjalan di http://localhost:${PORT}`);
+// ** Inisialisasi Data Statistik dari Database **
+async function initializeStatistics() {
+    try {
+        const stats = await Statistics.findOne({});
+        if (stats) {
+            totalRequests = stats.totalRequests;
+            totalVisitors = stats.totalVisitors;
+            console.log('Statistics initialized from database:', { totalRequests, totalVisitors });
+        } else {
+            console.log('No statistics found in database, initializing with default values.');
+            const newStats = new Statistics({ totalRequests: 0, totalVisitors: 0 });
+            await newStats.save();
+        }
+    } catch (error) {
+        console.error('Error initializing statistics:', error);
+    }
+}
+
+// Panggil fungsi inisialisasi saat server dimulai
+initializeStatistics().then(() => {
+    // Start the server
+    server.listen(PORT, () => {
+        console.log(`Server berjalan di http://localhost:${PORT}`);
+    });
 });
