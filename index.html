@@ -102,6 +102,9 @@
             color: #00FF9F;
             text-decoration: none;
             transition: color 0.3s ease;
+            display: flex; /* Menggunakan flexbox untuk tata letak */
+            align-items: center; /* Menyenterkan konten secara vertikal */
+            margin-bottom: 10px; /* Memberikan jarak yang lebih besar di bawah tautan */
         }
 
         #api-endpoints a:hover {
@@ -111,7 +114,6 @@
         .try-it-button {
             background-color: #7928CA; /* Ungu */
             color: #FFFFFF;
-            margin-left: 10px;
             border: none;
             border-radius: 6px;
             cursor: pointer;
@@ -119,6 +121,8 @@
             padding: 8px 16px;
             font-weight: 500;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            margin-left: 15px; /* Jarak yang lebih besar dari tautan */
+            margin-top: 10px; /* Jarak yang lebih besar dari atas */
         }
 
         .try-it-button:hover {
@@ -148,6 +152,7 @@
             background-color: rgba(0, 0, 0, 0.2);
             font-size: 0.9rem;
             line-height: 1.4;
+            display: none; /* Sembunyikan elemen ini */
         }
 
         .stat-box {
@@ -248,27 +253,13 @@
             word-break: break-all; /* Prevents overflow */
         }
 
-        /* Style untuk tombol copy */
-        .copy-button {
-            background-color: #3498db;
-            color: #fff;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.8em;
-            margin-left: 5px;
-            transition: background-color 0.3s ease;
-        }
 
-        .copy-button:hover {
-            background-color: #2980b9;
-        }
-
-        .api-endpoint-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+        .code-icon {
+            font-size: 1.2em; /* Ukuran yang lebih besar */
+            color: #f39c12; /* Warna oranye atau kuning */
+            margin-right: 5px; /* Jarak antara ikon dan teks */
+            display: inline-block; /* Agar sejajar dengan teks */
+            vertical-align: middle; /* Menyenterkan ikon vertikal */
         }
     </style>
 </head>
@@ -305,18 +296,6 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-md-12">
-            <div class="container">
-                <h2 class="container-title">MY TELEGRAM
-                    <button class="copy-button" data-clipboard-text="https://wanzofc.xyz">
-                        <i class="fas fa-copy"></i> 
-                    </button>
-                </h2>
-                <p><code>https://t.me/wanzofc</code></p>
-            </div>
-        </div>
-    </div>
 
 </main>
 
@@ -333,49 +312,25 @@
 
                 <ul id="api-endpoints-list">
                     <li>
-                        <div class="api-endpoint-item">
-                            <a href="#" data-endpoint="/api/stalk/github">
-                                <i class="fab fa-code"></i> Get GitHub User
-                            </a>
-                            <button class="copy-button copy-github" data-endpoint="/api/stalk/github">
-                                <i class="fas fa-copy"></i> 
-                            </button>
-                        </div>
-                        <div class="api-input-group">
-                            <input type="text" class="github-user" placeholder="Username">
-                        </div>
+                        <a href="#" data-endpoint="/api/stalk/github">
+                            <i class="fas fa-code code-icon"></i> Get GitHub User
+                        </a>
                         <button class="try-it-button btn btn-primary" data-endpoint="/api/stalk/github">
                             <i class="fas fa-flask"></i> Try It
                         </button>
                     </li>
                     <li>
-                        <div class="api-endpoint-item">
-                            <a href="#" data-endpoint="/api/d/tiktok">
-                                <i class="fab fa-code"></i> TikTok Downloader
-                            </a>
-                            <button class="copy-button copy-tiktok" data-endpoint="/api/d/tiktok">
-                                <i class="fas fa-copy"></i> 
-                            </button>
-                        </div>
-                        <div class="api-input-group">
-                            <input type="text" class="tiktok-url" placeholder="TikTok URL">
-                        </div>
+                        <a href="#" data-endpoint="/api/d/tiktok">
+                            <i class="fas fa-code code-icon"></i> TikTok Downloader
+                        </a>
                         <button class="try-it-button btn btn-primary" data-endpoint="/api/d/tiktok">
                             <i class="fas fa-flask"></i> Try It
                         </button>
                     </li>
                     <li>
-                        <div class="api-endpoint-item">
-                            <a href="#" data-endpoint="/api/stalk/youtube">
-                                <i class="fab fa-code"></i> Stalk YouTube
-                            </a>
-                            <button class="copy-button copy-youtube" data-endpoint="/api/stalk/youtube">
-                                <i class="fas fa-copy"></i> 
-                            </button>
-                        </div>
-                        <div class="api-input-group">
-                            <input type="text" class="youtube-username" placeholder="Username">
-                        </div>
+                        <a href="#" data-endpoint="/api/stalk/youtube">
+                            <i class="fas fa-code code-icon"></i> Stalk YouTube
+                        </a>
                         <button class="try-it-button btn btn-primary" data-endpoint="/api/stalk/youtube">
                             <i class="fas fa-flask"></i> Try It
                         </button>
@@ -402,11 +357,11 @@
 </footer>
 
 <div id="music-playlist">
-    <audio id="audio" autoplay loop>
-        <source src="https://files.catbox.moe/4m9c5h.mp3" type="audio/mp3">
-        <source src="https://files.catbox.moe/irf66d.mp3" type="audio/mp3">
-        Your browser does not support the audio element.
-    </audio>
+  <audio id="audio" autoplay loop>
+    <source src="https://files.catbox.moe/4m9c5h.mp3" type="audio/mp3">
+    <source src="https://files.catbox.moe/irf66d.mp3" type="audio/mp3">
+    Your browser does not support the audio element.
+  </audio>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -414,7 +369,6 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/clipboard@1/dist/clipboard.min.js"></script>
 
 <script>
     $(document).ready(function () {
@@ -429,9 +383,6 @@
         const apiEndpointsList = $('#api-endpoints-list');
         const audio = document.getElementById('audio');
         let batteryLevels = [];
-
-        // Initialize ClipboardJS
-        const clipboard = new Clipboard('.copy-button');
 
         // Data endpoints (Ganti dengan data API endpoint yang sebenarnya)
         const endpointsData = [
@@ -459,38 +410,6 @@
         }
 
         getApiKey();
-
-        tryItButtons.on('click', function (event) {
-            const endpoint = $(this).data('endpoint');
-            let apiUrl = endpoint + '?';
-            let params = [];
-
-            // Mengambil nilai input berdasarkan endpoint
-            if (endpoint === '/api/stalk/github') {
-                let username = $(this).closest('li').find('.github-user').val();
-                params.push(`user=${username}`);
-            } else if (endpoint === '/api/d/tiktok') {
-                let tiktokUrl = $(this).closest('li').find('.tiktok-url').val();
-                params.push(`url=${tiktokUrl}`);
-            } else if (endpoint === '/api/stalk/youtube') {
-                let youtubeUsername = $(this).closest('li').find('.youtube-username').val();
-                params.push(`username=${youtubeUsername}`);
-            }
-
-            apiUrl += params.join('&'); // Gabungkan parameter
-
-            fetchApiResponse(apiUrl);
-        });
-
-        async function fetchApiResponse(endpoint) {
-            try {
-                const response = await fetch(endpoint);
-                const data = await response.text();
-                apiResponseDiv.text(data);
-            } catch (error) {
-                apiResponseDiv.text(`Error: ${error}`);
-            }
-        }
 
         // Fungsi untuk mendapatkan data statistik secara real-time
         function updateStatistics() {
@@ -609,45 +528,15 @@
             }
         });
 
-        // Fungsi untuk menyalin endpoint dengan parameter
-        $('.copy-button').on('click', function (e) {
-            e.preventDefault();
+        $('.try-it-button').on('click', function () {
             const endpoint = $(this).data('endpoint');
-            let fullUrl = 'https://wanzofc.xyz' + endpoint + '?';
-            let params = [];
-
-            const listItem = $(this).closest('li');
-
-            if (endpoint === '/api/stalk/github') {
-                let username = listItem.find('.github-user').val();
-                if (username) {
-                    params.push(`user=${username}`);
-                }
-            } else if (endpoint === '/api/d/tiktok') {
-                let tiktokUrl = listItem.find('.tiktok-url').val();
-                if (tiktokUrl) {
-                    params.push(`url=${tiktokUrl}`);
-                }
-            } else if (endpoint === '/api/stalk/youtube') {
-                let youtubeUsername = listItem.find('.youtube-username').val();
-                if (youtubeUsername) {
-                    params.push(`username=${youtubeUsername}`);
-                }
-            }
-
-            fullUrl += params.join('&');
-
-            // Salin ke clipboard
-            navigator.clipboard.writeText(fullUrl).then(() => {
-                alert('Endpoint berhasil disalin: ' + fullUrl);
-            }, (err) => {
-                console.error('Gagal menyalin endpoint: ', err);
-            });
+            // Mengarahkan ke halaman JSON API
+            window.location.href = endpoint;
         });
 
         //Mulai Otomatis
         audio.play().catch(error => {
-            console.error("Autoplay dicegah:", error);
+          console.error("Autoplay dicegah:", error);
         });
 
     });
