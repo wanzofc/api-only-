@@ -227,20 +227,152 @@
   <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 
   <script>
-    async function loadChatHistory() {
-      try {
-        const response = await fetch('/chat-history');
-        const chatHistory = await response.json();
-        chatHistory.forEach(msg => {
+    $(document).ready(function() {
+      console.log("Document is ready!"); // Debug: Check if document is ready
+
+      const chatMessages = document.getElementById('chat-messages');
+      const messageInput = document.getElementById('message-input');
+      const sendButton = document.getElementById('send-button');
+      const notifications = document.getElementById('notifications');
+      const apiKeyDisplay = document.getElementById('api-key-display');
+
+      console.log("sendButton:", sendButton); // Debug: Check if button is found
+      console.log("messageInput:", messageInput); // Debug: Check if input is found
+
+      if (!sendButton || !messageInput) {
+        console.error("Error: sendButton or messageInput is null. Check your IDs.");
+        return; // Stop execution if elements are not found
+      }
+
+      sendButton.addEventListener('click', sendMessage);
+
+      messageInput.addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          sendMessage();
+        }
+      });
+
+      async function sendMessage() {
+        const message = messageInput.value;
+        console.log("Message:", message); // Debug: Check if message is captured
+
+        if (message) {
+          try {
+            const response = await fetch('/chat-message', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                message: message
+              })
+            });
+
+            console.log("Response:", response); // Debug: Check the full response
+
+            if (response.ok) {
+              messageInput.value = '';
+              console.log("Message sent successfully"); // Debug: Confirm successful send
+
+               // Add message to chat immediately for better UX
+              const messageElement = document.createElement('div');
+              messageElement.textContent = `${message} - Just now`;
+              chatMessages.appendChild(messageElement);
+              chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            } else {
+              console.error('Failed to send message. Status:', response.status, response.statusText);
+              try {
+                const errorData = await response.json(); // Attempt to parse error response
+                console.error('Error Data:', errorData);
+              } catch (e) {
+                console.error('Failed to parse error response:', e);
+              }
+            }
+          } catch (error) {
+            console.error('Error sending message:', error);
+          }
+        }
+      }
+
+      const chatEventSource = new EventSource('/chat-stream');
+      chatEventSource.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        if (data.message) {
           const messageElement = document.createElement('div');
-          messageElement.textContent = `${msg.message} - ${new Date(msg.timestamp).toLocaleTimeString()}`;
+          messageElement.textContent = `${data.message} - ${new Date(data.timestamp).toLocaleTimeString()}`;
           chatMessages.appendChild(messageElement);
           chatMessages.scrollTop = chatMessages.scrollHeight;
-        });
-      } catch (error) {
-        console.error('Error loading chat history:', error);
+        } else if (data.error) {
+          console.error('Chat Error:', data.error);
+          const errorElement = document.createElement('div');
+          errorElement.textContent = `Chat Error: ${data.error}`;
+          chatMessages.appendChild(errorElement);
+        }
+      };
+
+      chatEventSource.onerror = (error) => {
+        console.error("Chat SSE error:", error);
+      };
+
+
+      const notificationEventSource = new EventSource('/notification-stream');
+
+      notificationEventSource.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        if (data.notification) {
+          const notificationElement = document.createElement('div');
+          notificationElement.textContent = `Notification: ${data.notification}`;
+          notifications.appendChild(notificationElement);
+        }
+      };
+
+      notificationEventSource.onerror = (error) => {
+        console.error("Notification SSE error:", error);
+      };
+
+      async function getApiKey() {
+        try {
+          const response = await fetch('/api/stalk/github?username=your_username');
+          const data = await response.json();
+          if (data.result && data.apikey) {
+            apiKeyDisplay.textContent = `API Key: ${data.apikey}`;
+          } else {
+            apiKeyDisplay.textContent = `Error: ${data.message}`;
+          }
+        } catch (error) {
+          apiKeyDisplay.textContent = `Error: ${error.message}`;
+        }
       }
-    }
+
+      getApiKey();
+
+      const tryItButtons = document.querySelectorAll('.try-it-button');
+      tryItButtons.forEach(button => {
+        button.addEventListener('click', (event) => {
+          const endpoint = event.target.dataset.endpoint;
+          window.open(endpoint, '_blank');
+        });
+      });
+
+      async function loadChatHistory() {
+        try {
+          const response = await fetch('/chat-history');
+          const chatHistory = await response.json();
+          chatHistory.forEach(msg => {
+            const messageElement = document.createElement('div');
+            messageElement.textContent = `${msg.message} - ${new Date(msg.timestamp).toLocaleTimeString()}`;
+            chatMessages.appendChild(messageElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+          });
+        } catch (error) {
+          console.error('Error loading chat history:', error);
+        }
+      }
+
+      loadChatHistory();
+    });
 
     particlesJS('particles-js', {
       "particles": {
@@ -370,107 +502,6 @@
       delay: 1,
       ease: "power2.out"
     });
-
-    const chatMessages = document.getElementById('chat-messages');
-    const messageInput = document.getElementById('message-input');
-    const sendButton = document.getElementById('send-button');
-    const notifications = document.getElementById('notifications');
-    const apiKeyDisplay = document.getElementById('api-key-display');
-
-    const chatEventSource = new EventSource('/chat-stream');
-    chatEventSource.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      if (data.message) {
-        const messageElement = document.createElement('div');
-        messageElement.textContent = `${data.message} - ${new Date(data.timestamp).toLocaleTimeString()}`;
-        chatMessages.appendChild(messageElement);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-      } else if (data.error) {
-        console.error('Chat Error:', data.error);
-        const errorElement = document.createElement('div');
-        errorElement.textContent = `Chat Error: ${data.error}`;
-        chatMessages.appendChild(errorElement);
-      }
-    };
-
-    chatEventSource.onerror = (error) => {
-      console.error("Chat SSE error:", error);
-    };
-
-    // Tambahkan event listener untuk tombol "Send"
-    sendButton.addEventListener('click', sendMessage);
-
-    // Tambahkan event listener untuk input text agar bisa mengirim pesan dengan menekan Enter
-    messageInput.addEventListener('keypress', function(event) {
-      if (event.key === 'Enter') {
-        event.preventDefault(); // Mencegah form untuk melakukan submit default
-        sendMessage();
-      }
-    });
-
-    async function sendMessage() {
-      const message = messageInput.value;
-      if (message) {
-        try {
-          const response = await fetch('/chat-message', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              message: message
-            })
-          });
-          if (response.ok) {
-            messageInput.value = '';
-          } else {
-            console.error('Failed to send message:', response.status);
-          }
-        } catch (error) {
-          console.error('Error sending message:', error);
-        }
-      }
-    }
-    const notificationEventSource = new EventSource('/notification-stream');
-
-    notificationEventSource.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      if (data.notification) {
-        const notificationElement = document.createElement('div');
-        notificationElement.textContent = `Notification: ${data.notification}`;
-        notifications.appendChild(notificationElement);
-      }
-    };
-
-    notificationEventSource.onerror = (error) => {
-      console.error("Notification SSE error:", error);
-    };
-
-    async function getApiKey() {
-      try {
-        const response = await fetch('/api/stalk/github?username=your_username');
-        const data = await response.json();
-        if (data.result && data.apikey) {
-          apiKeyDisplay.textContent = `API Key: ${data.apikey}`;
-        } else {
-          apiKeyDisplay.textContent = `Error: ${data.message}`;
-        }
-      } catch (error) {
-        apiKeyDisplay.textContent = `Error: ${error.message}`;
-      }
-    }
-
-    getApiKey();
-
-    const tryItButtons = document.querySelectorAll('.try-it-button');
-    tryItButtons.forEach(button => {
-      button.addEventListener('click', (event) => {
-        const endpoint = event.target.dataset.endpoint;
-        window.open(endpoint, '_blank');
-      });
-    });
-    loadChatHistory();
   </script>
 </body>
-
 </html>
