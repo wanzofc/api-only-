@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WANZOFC TECH - API Demo</title>
+  <title>WANZOFC TECH - API 🔥</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -165,66 +165,6 @@
       text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7); /* Bayangan lebih kuat */
       letter-spacing: 1px; /* Spacing lebih lebar */
     }
-
-    .endpoint-list {
-        list-style: none;
-        padding: 0;
-    }
-
-    .endpoint-list li {
-        margin-bottom: 20px;
-        padding: 15px;
-        border: 1px solid rgba(0, 255, 159, 0.2);
-        border-radius: 8px;
-        background-color: rgba(0, 0, 0, 0.2);
-    }
-
-    .endpoint-description {
-        font-size: 0.9rem;
-        color: #ccc;
-        margin-bottom: 10px;
-    }
-
-    .endpoint-url {
-        font-size: 1rem;
-        color: #00FF9F;
-        margin-bottom: 5px;
-    }
-
-    .param-input {
-        background-color: rgba(255, 255, 255, 0.05);
-        color: #fff;
-        border: 1px solid rgba(0, 255, 159, 0.2);
-        border-radius: 4px;
-        padding: 5px;
-        margin-right: 5px;
-    }
-
-    .copy-url-button {
-        background-color: #FF4F00;
-        color: #fff;
-        border: none;
-        border-radius: 4px;
-        padding: 5px 10px;
-        cursor: pointer;
-        font-size: 0.8rem;
-        transition: background-color 0.3s ease;
-    }
-
-    .copy-url-button:hover {
-        background-color: #fff;
-        color: #FF4F00;
-    }
-
-    .loading-indicator {
-        display: none;
-        margin-left: 10px;
-    }
-
-    .loading-indicator.active {
-        display: inline-block;
-    }
-
   </style>
 </head>
 
@@ -267,74 +207,29 @@
       <div class="col-md-12">
         <div class="container">
           <h2 class="container-title">API Endpoints</h2>
-          <ul class="endpoint-list">
+          <ul>
             <li>
-              <div class="endpoint-description">
-                Get GitHub User Information. Requires a username.
-              </div>
-              <div class="endpoint-url">
-                <a href="#" data-endpoint="/api/stalk/github?user=wanzbrayy">
-                  <i class="fab fa-github"></i> /api/stalk/github
-                </a>
-              </div>
+              <a href="#" data-endpoint="/api/stalk/github?user=octocat">
+                <i class="fab fa-github"></i> Get GitHub User (wanzbrayy)
+              </a>
               <button class="try-it-button btn btn-primary" data-endpoint="/api/stalk/github?user=wanzbrayy">
                 <i class="fas fa-flask"></i> Try It
-                <span class="loading-indicator">Loading...</span>
-              </button>
-              <button class="copy-url-button" data-url="/api/stalk/github?user=wanzbrayy">
-                <i class="fas fa-copy"></i> Copy URL
               </button>
             </li>
             <li>
-              <div class="endpoint-description">
-                Download TikTok video. Requires a TikTok video URL.
-              </div>
-              <div class="endpoint-url">
-                <a href="#" data-endpoint="/api/d/tiktok?url=https://www.tiktok.com/@scout2626/video/7359387817030466821">
-                  <i class="fab fa-tiktok"></i> /api/d/tiktok
-                </a>
-              </div>
+              <a href="#" data-endpoint="/api/d/tiktok?url=https://www.tiktok.com/@scout2626/video/7359387817030466821">
+                <i class="fab fa-tiktok"></i> TikTok Downloader
+              </a>
               <button class="try-it-button btn btn-primary" data-endpoint="/api/d/tiktok?url=https://www.tiktok.com/@scout2626/video/7359387817030466821">
                 <i class="fas fa-flask"></i> Try It
-                <span class="loading-indicator">Loading...</span>
-              </button>
-              <button class="copy-url-button" data-url="/api/d/tiktok?url=https://www.tiktok.com/@scout2626/video/7359387817030466821">
-                <i class="fas fa-copy"></i> Copy URL
               </button>
             </li>
             <li>
-              <div class="endpoint-description">
-                Stalk a YouTube channel. Requires a YouTube channel username.
-              </div>
-              <div class="endpoint-url">
-                <a href="#" data-endpoint="/api/stalk/youtube?username=UCXuqSBlHAE6Xw-yeJA0Tunw">
-                  <i class="fab fa-youtube"></i> /api/stalk/youtube
-                </a>
-              </div>
+              <a href="#" data-endpoint="/api/stalk/youtube?username=UCXuqSBlHAE6Xw-yeJA0Tunw">
+                <i class="fab fa-youtube"></i> Stalk YouTube
+              </a>
               <button class="try-it-button btn btn-primary" data-endpoint="/api/stalk/youtube?username=UCXuqSBlHAE6Xw-yeJA0Tunw">
                 <i class="fas fa-flask"></i> Try It
-                <span class="loading-indicator">Loading...</span>
-              </button>
-              <button class="copy-url-button" data-url="/api/stalk/youtube?username=UCXuqSBlHAE6Xw-yeJA0Tunw">
-                <i class="fas fa-copy"></i> Copy URL
-              </button>
-            </li>
-            <li>
-              <div class="endpoint-description">
-                Search TikTok. Requires a query.
-              </div>
-              <div class="endpoint-url">
-                <a href="#" data-endpoint="/api/s/tiktok?query=test">
-                  <i class="fab fa-tiktok"></i> /api/s/tiktok
-                </a>
-              </div>
-              <input type="text" class="param-input" id="tiktok-query" placeholder="Enter query">
-              <button class="try-it-button btn btn-primary" data-endpoint="/api/s/tiktok?query=" id="try-tiktok-search">
-                <i class="fas fa-flask"></i> Try It
-                <span class="loading-indicator">Loading...</span>
-              </button>
-              <button class="copy-url-button" data-url="/api/s/tiktok?query=test">
-                <i class="fas fa-copy"></i> Copy URL
               </button>
             </li>
           </ul>
@@ -390,49 +285,21 @@
 
       getApiKey();
 
-     $('.copy-url-button').on('click', function(event) {
-            const url = $(this).data('url');
-            navigator.clipboard.writeText(url).then(() => {
-                alert('URL copied to clipboard!');
-            }).catch(err => {
-                console.error('Failed to copy URL: ', err);
-            });
-        });
-
-        $('#try-tiktok-search').on('click', function(event) {
-            const query = $('#tiktok-query').val();
-            const endpoint = `/api/s/tiktok?query=${encodeURIComponent(query)}`;
-            fetchApiResponse(endpoint);
-        });
       tryItButtons.on('click', function(event) {
         const endpoint = $(this).data('endpoint');
         fetchApiResponse(endpoint);
       });
-         // Umum: Fungsi untuk menampilkan/menyembunyikan loading indicator
-        function setLoading(button, isLoading) {
-            const loadingIndicator = $(button).find('.loading-indicator');
-            if (isLoading) {
-                loadingIndicator.addClass('active');
-            } else {
-                loadingIndicator.removeClass('active');
-            }
-        }
 
-         // Modifikasi fungsi fetchApiResponse untuk menggunakan setLoading
-         async function fetchApiResponse(endpoint) {
-            const button = $(`[data-endpoint='${endpoint}']`);
-            setLoading(button, true); // Menampilkan loading indicator
-
-            try {
-                const response = await fetch(endpoint);
-                const data = await response.text(); // Ambil response sebagai text
-                apiResponseDiv.text(data); // Tampilkan sebagai text
-            } catch (error) {
-                apiResponseDiv.text(`Error: ${error}`);
-            } finally {
-                setLoading(button, false); // Menyembunyikan loading indicator
-            }
+      async function fetchApiResponse(endpoint) {
+        try {
+          const response = await fetch(endpoint);
+          const data = await response.text(); // Ambil response sebagai text
+          apiResponseDiv.text(data); // Tampilkan sebagai text
+        } catch (error) {
+          apiResponseDiv.text(`Error: ${error}`);
         }
+      }
+
        // Fungsi untuk mendapatkan data statistik secara real-time
        function updateStatistics() {
             $.ajax({
@@ -472,7 +339,7 @@
             $.ajax({
                 url: '/api/battery-level',
                 type: 'POST',
-                contentType': 'application/json',
+                contentType: 'application/json',
                 data: JSON.stringify({ batteryLevel: level }),
                 success: function(response) {
                     console.log('Battery level sent successfully:', response);
