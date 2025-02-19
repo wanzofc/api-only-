@@ -1,16 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WANZOFC TECH - API Demo</title>
+  <title>WANZOFC TECH - 🔥</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: 'Arial', sans-serif;
-      background: linear-gradient(to bottom, #3498db, #2c3e50);
-      color: #ecf0f1;
+      font-family: 'Poppins', sans-serif;
+      background-color: #0D1117;
+      color: #FFFFFF;
       overflow-x: hidden;
       height: auto;
       padding-bottom: 50px;
@@ -23,6 +26,7 @@
       z-index: -1;
       top: 0;
       left: 0;
+      background-color: #0D1117; /* Latar belakang gelap */
     }
 
     header {
@@ -31,13 +35,13 @@
       left: 0;
       width: 100%;
       height: 100px;
-      background: rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(10px);
-      color: #fff;
+      background-color: rgba(0, 255, 159, 0.1); /* Hijau neon transparan */
+      color: #00FF9F;
       text-align: center;
       padding: 15px 0;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
       z-index: 100;
+      border-bottom: 2px solid #00FF9F;
     }
 
     main {
@@ -49,92 +53,117 @@
     .container-title {
       text-align: center;
       margin-bottom: 10px;
-      color: #fff;
+      color: #7928CA; /* Ungu */
     }
 
     .container {
-      background-color: rgba(255, 255, 255, 0.1);
+      background-color: rgba(255, 255, 255, 0.05);
       border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      backdrop-filter: blur(5px);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
       padding: 20px;
       margin-bottom: 20px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease; /* Efek hover yang lebih lengkap */
+    }
+
+    .container:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 8px rgba(0, 255, 159, 0.3); /* Efek glow saat hover */
     }
 
     h1,
     h2 {
-      color: #fff;
-      font-weight: lighter;
+      color: #00FF9F; /* Hijau Neon */
+      font-weight: 600; /* Lebih tebal */
       margin-bottom: 0.75rem;
-      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-    }
-
-    #chat-messages {
-      height: 150px;
-      overflow-y: auto;
-      padding: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      background-color: rgba(255, 255, 255, 0.05);
-      border-radius: 5px;
-      color: #fff;
-      font-size: 0.9rem;
-    }
-
-    input[type="text"] {
-      background-color: rgba(255, 255, 255, 0.1);
-      color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 4px;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+      letter-spacing: 0.5px; /* Sedikit spacing */
     }
 
     button {
-      background-color: #2ecc71;
-      transition: background-color 0.3s ease;
+      background-color: #FF4F00; /* Oranye */
+      color: #FFFFFF;
+      transition: background-color 0.3s ease, transform 0.3s ease; /* Efek hover */
       border: none;
-      border-radius: 4px;
+      border-radius: 6px;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-weight: 500;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     }
 
     button:hover {
-      background-color: #27ae60;
+      background-color: #FFFFFF;
+      color: #FF4F00;
+      transform: scale(1.05); /* Efek zoom kecil */
     }
 
     #api-endpoints a {
-      color: #3498db;
+      color: #00FF9F;
       text-decoration: none;
       transition: color 0.3s ease;
     }
 
     #api-endpoints a:hover {
-      text-decoration: underline;
-      color: #fff;
+      color: #FF4F00; /* Oranye */
     }
 
     .try-it-button {
-      background-color: #3498db;
+      background-color: #7928CA; /* Ungu */
+      color: #FFFFFF;
       margin-left: 10px;
       border: none;
-      border-radius: 4px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+      padding: 8px 16px;
+      font-weight: 500;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .try-it-button:hover {
+      background-color: #FF4F00; /* Oranye */
+      transform: scale(1.05);
+      color: #FFFFFF;
     }
 
     footer {
       text-align: center;
       padding: 20px;
-      color: #fff;
-      background-color: rgba(0, 0, 0, 0.3);
+      color: #00FF9F;
+      background-color: rgba(0, 255, 159, 0.1); /* Hijau neon transparan */
       position: relative;
       z-index: 1;
       margin-top: 50px;
+      border-top: 2px solid #00FF9F;
     }
 
-    #notifications {
-      min-height: 50px;
-      padding: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      background-color: rgba(255, 255, 255, 0.05);
-      border-radius: 5px;
-      color: #fff;
+    #api-response {
+      white-space: pre-wrap;
+      word-break: break-all;
+      color: #FFFFFF;
+      padding: 15px;
+      border: 1px solid rgba(0, 255, 159, 0.2); /* Hijau neon border */
+      border-radius: 8px;
+      background-color: rgba(0, 0, 0, 0.2);
       font-size: 0.9rem;
-      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+
+    .stat-box {
+      text-align: center;
+      padding: 20px;
+      border: 1px solid rgba(0, 255, 159, 0.2); /* Hijau neon border */
+      border-radius: 8px;
+      margin-bottom: 20px;
+      background-color: rgba(0, 0, 0, 0.2); /* Latar belakang lebih gelap */
+    }
+
+    .stat-value {
+      font-size: 2.5em; /* Lebih besar */
+      font-weight: 700; /* Lebih tebal */
+      color: #00FF9F; /* Hijau Neon */
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7); /* Bayangan lebih kuat */
+      letter-spacing: 1px; /* Spacing lebih lebar */
     }
   </style>
 </head>
@@ -150,24 +179,17 @@
   <main class="container">
     <div class="row">
       <div class="col-md-4">
-        <div class="container">
-          <h2 class="container-title">Chat Room</h2>
-          <div id="chat-messages"></div>
-          <div class="input-group">
-            <input type="text" id="message-input" class="form-control" placeholder="Enter your message">
-            <div class="input-group-append">
-              <button id="send-button" class="btn btn-success">
-                <i class="fas fa-paper-plane"></i> Send
-              </button>
-            </div>
-          </div>
+        <div class="container stat-box">
+          <h2 class="container-title">Total Requests</h2>
+          <div id="total-requests" class="stat-value">0</div>
         </div>
       </div>
 
       <div class="col-md-4">
-        <div class="container">
-          <h2 class="container-title">Notifications</h2>
-          <div id="notifications"></div>
+        <div class="container stat-box">
+          <h2 class="container-title">Total Visitors</h2>
+          <div id="total-visitors" class="stat-value">0</div>
+          <div id="average-battery"></div>
         </div>
       </div>
 
@@ -184,10 +206,10 @@
     <div class="row">
       <div class="col-md-12">
         <div class="container">
-          <h2 class="container-title">API Endpoints</h2>
+          <h2 class="container-title">API ENDPOINTS</h2>
           <ul>
             <li>
-              <a href="#" data-endpoint="/api/stalk/github?user=octocat">
+              <a href="#" data-endpoint="/api/stalk/github?user=wanzbrayy">
                 <i class="fab fa-github"></i> Get GitHub User (wanzbrayy)
               </a>
               <button class="try-it-button btn btn-primary" data-endpoint="/api/stalk/github?user=wanzbrayy">
@@ -216,6 +238,17 @@
     </div>
   </main>
 
+  <main class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="container">
+          <h2 class="container-title">API Response</h2>
+          <div id="api-response"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
   <footer>
      WANZOFC TECH
   </footer>
@@ -228,100 +261,13 @@
 
   <script>
     $(document).ready(function() {
-      console.log("Document is ready!");
-
-      const chatMessages = $('#chat-messages');  // Use jQuery
-      const messageInput = $('#message-input');  // Use jQuery
-      const sendButton = $('#send-button');  // Use jQuery
-      const notifications = $('#notifications'); // Use jQuery
-      const apiKeyDisplay = $('#api-key-display'); // Use jQuery
-
-      console.log("sendButton:", sendButton);
-      console.log("messageInput:", messageInput);
-
-      if (!sendButton.length || !messageInput.length) {
-          console.error("Error: sendButton or messageInput not found. Check your IDs.");
-          return;
-      }
-
-      sendButton.on('click', sendMessage); // Use jQuery
-
-      messageInput.on('keypress', function(event) { // Use jQuery
-          if (event.key === 'Enter') {
-              event.preventDefault();
-              sendMessage();
-          }
-      });
-
-      function sendMessage() {  // Removed async keyword (not needed here)
-        const message = messageInput.val(); // Use .val() for jQuery
-
-        console.log("Message:", message);
-
-        if (message) {
-            $.ajax({ // Use jQuery's AJAX
-                url: '/chat-message',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({ message: message }),
-                success: function(response) {
-                    console.log("Message sent successfully:", response);
-                    messageInput.val(''); // Clear input
-
-                    // Add message to chat immediately for better UX
-                    const messageElement = $('<div>').text(`${message} - Just now`);  // Use jQuery
-                    chatMessages.append(messageElement); // Use jQuery
-                    chatMessages.scrollTop(chatMessages[0].scrollHeight); // Use jQuery for scrolling
-                },
-                error: function(xhr, status, error) {
-                    console.error('Failed to send message. Status:', status, error);
-                    try {
-                        const errorData = JSON.parse(xhr.responseText);
-                        console.error('Error Data:', errorData);
-                    } catch (e) {
-                        console.error('Failed to parse error response:', e);
-                    }
-                }
-            });
-        }
-      }
-
-
-      const chatEventSource = new EventSource('/chat-stream');
-      chatEventSource.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        if (data.message) {
-          const messageElement = document.createElement('div');
-          messageElement.textContent = `${data.message} - ${new Date(data.timestamp).toLocaleTimeString()}`;
-          chatMessages.append(messageElement);
-          chatMessages.scrollTop = chatMessages[0].scrollHeight;
-        } else if (data.error) {
-          console.error('Chat Error:', data.error);
-          const errorElement = document.createElement('div');
-          errorElement.textContent = `Chat Error: ${data.error}`;
-          chatMessages.append(errorElement);
-          chatMessages.scrollTop = chatMessages[0].scrollHeight;
-        }
-      };
-
-      chatEventSource.onerror = (error) => {
-        console.error("Chat SSE error:", error);
-      };
-
-      const notificationEventSource = new EventSource('/notification-stream');
-
-      notificationEventSource.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        if (data.notification) {
-          const notificationElement = document.createElement('div');
-          notificationElement.textContent = `Notification: ${data.notification}`;
-          notifications.append(notificationElement);
-        }
-      };
-
-      notificationEventSource.onerror = (error) => {
-        console.error("Notification SSE error:", error);
-      };
+      const apiKeyDisplay = $('#api-key-display');
+      const tryItButtons = $('.try-it-button');
+      const apiResponseDiv = $('#api-response');
+      const totalRequestsDiv = $('#total-requests');
+      const totalVisitorsDiv = $('#total-visitors');
+      const averageBatteryDiv = $('#average-battery'); // div untuk tampilan rata-rata baterai
+      let batteryLevels = [];
 
       async function getApiKey() {
         try {
@@ -339,40 +285,106 @@
 
       getApiKey();
 
-      const tryItButtons = $('.try-it-button'); // Use jQuery
-      tryItButtons.on('click', function(event) { // Use jQuery
-          const endpoint = $(this).data('endpoint');  // Use jQuery
-          window.open(endpoint, '_blank');
+      tryItButtons.on('click', function(event) {
+        const endpoint = $(this).data('endpoint');
+        fetchApiResponse(endpoint);
       });
 
-      async function loadChatHistory() {
+      async function fetchApiResponse(endpoint) {
         try {
-            const response = await fetch('/chat-history');
-            const chatHistory = await response.json();
-            chatHistory.forEach(msg => {
-              const messageElement = document.createElement('div');
-              messageElement.textContent = `${msg.message} - ${new Date(msg.timestamp).toLocaleTimeString()}`;
-              chatMessages.append(messageElement);
-              chatMessages.scrollTop = chatMessages[0].scrollHeight;
-            });
-          } catch (error) {
-            console.error('Error loading chat history:', error);
-          }
+          const response = await fetch(endpoint);
+          const data = await response.text(); // Ambil response sebagai text
+          apiResponseDiv.text(data); // Tampilkan sebagai text
+        } catch (error) {
+          apiResponseDiv.text(`Error: ${error}`);
+        }
       }
-        loadChatHistory();
+
+      // Fungsi untuk mendapatkan data statistik secara real-time
+      function updateStatistics() {
+        $.ajax({
+          url: '/api/statistics',  // Endpoint API untuk mendapatkan statistik
+          type: 'GET',
+          dataType: 'json',
+          success: function(data) {
+            totalRequestsDiv.text(data.totalRequests);
+            totalVisitorsDiv.text(data.totalVisitors);
+
+          },
+          error: function(xhr, status, error) {
+            console.error('Failed to fetch statistics. Status:', status, error);
+          }
+        });
+      }
+
+      // Update statistik setiap beberapa detik (misalnya, 5 detik)
+      setInterval(updateStatistics, 5000);
+      updateStatistics(); // Panggil sekali saat halaman dimuat
+
+
+       // Fungsi untuk mendapatkan informasi baterai
+       async function getBatteryLevel() {
+            try {
+                const battery = await navigator.getBattery();
+                const level = battery.level * 100;
+                batteryLevels.push(level);
+                sendBatteryLevel(level); // Kirim level baterai ke backend
+                updateAverageBattery(); // update tampilan rata-rata
+            } catch (error) {
+                console.error('Error getting battery level:', error);
+                averageBatteryDiv.text('Battery info not available.');
+            }
+        }
+
+        // Fungsi untuk mengirim level baterai ke backend
+        function sendBatteryLevel(level) {
+            $.ajax({
+                url: '/api/battery-level',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ batteryLevel: level }),
+                success: function(response) {
+                    console.log('Battery level sent successfully:', response);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Failed to send battery level. Status:', status, error);
+                }
+            });
+        }
+
+      // Fungsi untuk menghitung dan menampilkan rata-rata persentase baterai
+      function updateAverageBattery() {
+          if (batteryLevels.length === 0) {
+              averageBatteryDiv.text('No battery data available.');
+              return;
+          }
+
+          const sum = batteryLevels.reduce((acc, val) => acc + val, 0);
+          const average = sum / batteryLevels.length;
+
+          averageBatteryDiv.text(`Average Battery: ${average.toFixed(2)}%`);
+      }
+
+      // Dapatkan level baterai saat halaman dimuat
+      if (navigator.getBattery) {
+          getBatteryLevel();
+      } else {
+          averageBatteryDiv.text('Battery API not supported.');
+      }
+
     });
 
     particlesJS('particles-js', {
       "particles": {
         "number": {
-          "value": 80,
+          "value": 100,
           "density": {
             "enable": true,
             "value_area": 800
           }
         },
         "color": {
-          "value": "#ffffff"
+          "value": "#00FF9F" /* Warna partikel Hijau Neon */
         },
         "shape": {
           "type": "circle",
@@ -390,17 +402,17 @@
           }
         },
         "opacity": {
-          "value": 0.5,
-          "random": false,
+          "value": 0.7,
+          "random": true,
           "anim": {
-            "enable": false,
-            "speed": 1,
+            "enable": true,
+            "speed": 0.7,
             "opacity_min": 0.1,
             "sync": false
           }
         },
         "size": {
-          "value": 5,
+          "value": 3,
           "random": true,
           "anim": {
             "enable": false,
@@ -412,13 +424,13 @@
         "line_linked": {
           "enable": true,
           "distance": 150,
-          "color": "#ffffff",
+          "color": "#00FF9F", /* Warna garis Hijau Neon */
           "opacity": 0.4,
           "width": 1
         },
         "move": {
           "enable": true,
-          "speed": 6,
+          "speed": 5,
           "direction": "none",
           "random": false,
           "straight": false,
@@ -489,6 +501,24 @@
       opacity: 0,
       delay: 1,
       ease: "power2.out"
+    });
+
+    // Animasi GSAP tambahan
+    gsap.utils.toArray(".container").forEach(container => {
+      gsap.from(container, {
+        duration: 1,
+        opacity: 0,
+        y: 50,
+        delay: 0.3,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: container,
+          start: "top 80%",
+          end: "bottom 20%",
+          markers: false,
+          toggleActions: "restart pause resume reset"
+        }
+      });
     });
   </script>
 </body>
