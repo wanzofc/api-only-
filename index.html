@@ -220,7 +220,7 @@
      WANZOFC TECH
   </footer>
 
-  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
@@ -228,73 +228,64 @@
 
   <script>
     $(document).ready(function() {
-      console.log("Document is ready!"); // Debug: Check if document is ready
+      console.log("Document is ready!");
 
-      const chatMessages = document.getElementById('chat-messages');
-      const messageInput = document.getElementById('message-input');
-      const sendButton = document.getElementById('send-button');
-      const notifications = document.getElementById('notifications');
-      const apiKeyDisplay = document.getElementById('api-key-display');
+      const chatMessages = $('#chat-messages');  // Use jQuery
+      const messageInput = $('#message-input');  // Use jQuery
+      const sendButton = $('#send-button');  // Use jQuery
+      const notifications = $('#notifications'); // Use jQuery
+      const apiKeyDisplay = $('#api-key-display'); // Use jQuery
 
-      console.log("sendButton:", sendButton); // Debug: Check if button is found
-      console.log("messageInput:", messageInput); // Debug: Check if input is found
+      console.log("sendButton:", sendButton);
+      console.log("messageInput:", messageInput);
 
-      if (!sendButton || !messageInput) {
-        console.error("Error: sendButton or messageInput is null. Check your IDs.");
-        return; // Stop execution if elements are not found
+      if (!sendButton.length || !messageInput.length) {
+          console.error("Error: sendButton or messageInput not found. Check your IDs.");
+          return;
       }
 
-      sendButton.addEventListener('click', sendMessage);
+      sendButton.on('click', sendMessage); // Use jQuery
 
-      messageInput.addEventListener('keypress', function(event) {
-        if (event.key === 'Enter') {
-          event.preventDefault();
-          sendMessage();
-        }
+      messageInput.on('keypress', function(event) { // Use jQuery
+          if (event.key === 'Enter') {
+              event.preventDefault();
+              sendMessage();
+          }
       });
 
-      async function sendMessage() {
-        const message = messageInput.value;
-        console.log("Message:", message); // Debug: Check if message is captured
+      function sendMessage() {  // Removed async keyword (not needed here)
+        const message = messageInput.val(); // Use .val() for jQuery
+
+        console.log("Message:", message);
 
         if (message) {
-          try {
-            const response = await fetch('/chat-message', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                message: message
-              })
+            $.ajax({ // Use jQuery's AJAX
+                url: '/chat-message',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ message: message }),
+                success: function(response) {
+                    console.log("Message sent successfully:", response);
+                    messageInput.val(''); // Clear input
+
+                    // Add message to chat immediately for better UX
+                    const messageElement = $('<div>').text(`${message} - Just now`);  // Use jQuery
+                    chatMessages.append(messageElement); // Use jQuery
+                    chatMessages.scrollTop(chatMessages[0].scrollHeight); // Use jQuery for scrolling
+                },
+                error: function(xhr, status, error) {
+                    console.error('Failed to send message. Status:', status, error);
+                    try {
+                        const errorData = JSON.parse(xhr.responseText);
+                        console.error('Error Data:', errorData);
+                    } catch (e) {
+                        console.error('Failed to parse error response:', e);
+                    }
+                }
             });
-
-            console.log("Response:", response); // Debug: Check the full response
-
-            if (response.ok) {
-              messageInput.value = '';
-              console.log("Message sent successfully"); // Debug: Confirm successful send
-
-               // Add message to chat immediately for better UX
-              const messageElement = document.createElement('div');
-              messageElement.textContent = `${message} - Just now`;
-              chatMessages.appendChild(messageElement);
-              chatMessages.scrollTop = chatMessages.scrollHeight;
-
-            } else {
-              console.error('Failed to send message. Status:', response.status, response.statusText);
-              try {
-                const errorData = await response.json(); // Attempt to parse error response
-                console.error('Error Data:', errorData);
-              } catch (e) {
-                console.error('Failed to parse error response:', e);
-              }
-            }
-          } catch (error) {
-            console.error('Error sending message:', error);
-          }
         }
       }
+
 
       const chatEventSource = new EventSource('/chat-stream');
       chatEventSource.onmessage = (event) => {
@@ -302,20 +293,20 @@
         if (data.message) {
           const messageElement = document.createElement('div');
           messageElement.textContent = `${data.message} - ${new Date(data.timestamp).toLocaleTimeString()}`;
-          chatMessages.appendChild(messageElement);
-          chatMessages.scrollTop = chatMessages.scrollHeight;
+          chatMessages.append(messageElement);
+          chatMessages.scrollTop = chatMessages[0].scrollHeight;
         } else if (data.error) {
           console.error('Chat Error:', data.error);
           const errorElement = document.createElement('div');
           errorElement.textContent = `Chat Error: ${data.error}`;
-          chatMessages.appendChild(errorElement);
+          chatMessages.append(errorElement);
+          chatMessages.scrollTop = chatMessages[0].scrollHeight;
         }
       };
 
       chatEventSource.onerror = (error) => {
         console.error("Chat SSE error:", error);
       };
-
 
       const notificationEventSource = new EventSource('/notification-stream');
 
@@ -324,7 +315,7 @@
         if (data.notification) {
           const notificationElement = document.createElement('div');
           notificationElement.textContent = `Notification: ${data.notification}`;
-          notifications.appendChild(notificationElement);
+          notifications.append(notificationElement);
         }
       };
 
@@ -337,41 +328,38 @@
           const response = await fetch('/api/stalk/github?username=your_username');
           const data = await response.json();
           if (data.result && data.apikey) {
-            apiKeyDisplay.textContent = `API Key: ${data.apikey}`;
+            apiKeyDisplay.text(`API Key: ${data.apikey}`);
           } else {
-            apiKeyDisplay.textContent = `Error: ${data.message}`;
+            apiKeyDisplay.text(`Error: ${data.message}`);
           }
         } catch (error) {
-          apiKeyDisplay.textContent = `Error: ${error.message}`;
+          apiKeyDisplay.text(`Error: ${error.message}`);
         }
       }
 
       getApiKey();
 
-      const tryItButtons = document.querySelectorAll('.try-it-button');
-      tryItButtons.forEach(button => {
-        button.addEventListener('click', (event) => {
-          const endpoint = event.target.dataset.endpoint;
+      const tryItButtons = $('.try-it-button'); // Use jQuery
+      tryItButtons.on('click', function(event) { // Use jQuery
+          const endpoint = $(this).data('endpoint');  // Use jQuery
           window.open(endpoint, '_blank');
-        });
       });
 
       async function loadChatHistory() {
         try {
-          const response = await fetch('/chat-history');
-          const chatHistory = await response.json();
-          chatHistory.forEach(msg => {
-            const messageElement = document.createElement('div');
-            messageElement.textContent = `${msg.message} - ${new Date(msg.timestamp).toLocaleTimeString()}`;
-            chatMessages.appendChild(messageElement);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-          });
-        } catch (error) {
-          console.error('Error loading chat history:', error);
-        }
+            const response = await fetch('/chat-history');
+            const chatHistory = await response.json();
+            chatHistory.forEach(msg => {
+              const messageElement = document.createElement('div');
+              messageElement.textContent = `${msg.message} - ${new Date(msg.timestamp).toLocaleTimeString()}`;
+              chatMessages.append(messageElement);
+              chatMessages.scrollTop = chatMessages[0].scrollHeight;
+            });
+          } catch (error) {
+            console.error('Error loading chat history:', error);
+          }
       }
-
-      loadChatHistory();
+        loadChatHistory();
     });
 
     particlesJS('particles-js', {
