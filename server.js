@@ -33,6 +33,11 @@ function generateApiKey() {
     return apiKey;
 }
 
+// ** Global Variables **
+let totalRequests = 0;
+let totalVisitors = 0;
+let batteryLevels = [];
+
 // Middleware
 app.use(cors({ origin: 'https://wanzofc-ai.biz.id' }));
 app.use(express.json());
@@ -40,6 +45,13 @@ app.use(express.urlencoded({ extended: true }));
 
 // Status Aplikasi
 let appStatus = "Sedang Berjalan";
+
+// Middleware to count total requests
+app.use((req, res, next) => {
+    totalRequests++;
+    console.log(`Request to: ${req.url}, Total Requests: ${totalRequests}`);
+    next();
+});
 
 // Middleware untuk validasi API key
 const apiKeyValidator = (req, res, next) => {
@@ -340,6 +352,27 @@ app.get('/api/s/tiktok', async (req, res) => {
         res.json({ creator: "WANZOFC TECH", result: true, message: "TikTok Search", data: data });
     } catch {
         res.status(500).json({ creator: "WANZOFC TECH", result: false, message: "TikTok Search bermasalah." });
+    }
+});
+
+// ** Statistik Endpoint **
+app.get('/api/statistics', (req, res) => {
+    totalVisitors++; // Setiap kali endpoint ini diakses, anggap sebagai pengunjung baru
+    res.json({
+        totalRequests: totalRequests,
+        totalVisitors: totalVisitors,
+    });
+});
+
+// ** Battery Level Endpoint **
+app.post('/api/battery-level', (req, res) => {
+    const batteryLevel = req.body.batteryLevel;
+    if (batteryLevel !== undefined) {
+        batteryLevels.push(batteryLevel);
+        console.log(`Received battery level: ${batteryLevel}`);
+        res.status(200).send('Battery level received successfully');
+    } else {
+        res.status(400).send('Battery level is required');
     }
 });
 
