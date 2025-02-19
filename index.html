@@ -1,472 +1,454 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WANZOFC TECH - API 🔥</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background-color: #0D1117;
-      color: #FFFFFF;
-      overflow-x: hidden;
-      height: auto;
-      padding-bottom: 50px;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WANZOFC TECH - API 🔥</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #0D1117;
+            color: #FFFFFF;
+            overflow-x: hidden;
+            height: auto;
+            padding-bottom: 50px;
+        }
 
-    #particles-js {
-      position: fixed;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      top: 0;
-      left: 0;
-      background-color: #0D1117; /* Latar belakang gelap */
-    }
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            top: 0;
+            left: 0;
+            background-color: #0D1117; /* Latar belakang gelap */
+        }
 
-    header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100px;
-      background-color: rgba(0, 255, 159, 0.1); /* Hijau neon transparan */
-      color: #00FF9F;
-      text-align: center;
-      padding: 15px 0;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-      z-index: 100;
-      border-bottom: 2px solid #00FF9F;
-    }
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background-color: rgba(0, 255, 159, 0.1); /* Hijau neon transparan */
+            color: #00FF9F;
+            text-align: center;
+            padding: 15px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            border-bottom: 2px solid #00FF9F;
+        }
 
-    main {
-      margin-top: 120px;
-      position: relative;
-      z-index: 1;
-    }
+        main {
+            margin-top: 120px;
+            position: relative;
+            z-index: 1;
+        }
 
-    .container-title {
-      text-align: center;
-      margin-bottom: 10px;
-      color: #7928CA; /* Ungu */
-    }
+        .container-title {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #7928CA; /* Ungu */
+        }
 
-    .container {
-      background-color: rgba(255, 255, 255, 0.05);
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-      padding: 20px;
-      margin-bottom: 20px;
-      transition: transform 0.3s ease, box-shadow 0.3s ease; /* Efek hover yang lebih lengkap */
-    }
+        .container {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Efek hover yang lebih lengkap */
+        }
 
-    .container:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 4px 8px rgba(0, 255, 159, 0.3); /* Efek glow saat hover */
-    }
+        .container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0, 255, 159, 0.3); /* Efek glow saat hover */
+        }
 
-    h1,
-    h2 {
-      color: #00FF9F; /* Hijau Neon */
-      font-weight: 600; /* Lebih tebal */
-      margin-bottom: 0.75rem;
-      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
-      letter-spacing: 0.5px; /* Sedikit spacing */
-    }
+        h1,
+        h2 {
+            color: #00FF9F; /* Hijau Neon */
+            font-weight: 600; /* Lebih tebal */
+            margin-bottom: 0.75rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+            letter-spacing: 0.5px; /* Sedikit spacing */
+        }
 
-    button {
-      background-color: #FF4F00; /* Oranye */
-      color: #FFFFFF;
-      transition: background-color 0.3s ease, transform 0.3s ease; /* Efek hover */
-      border: none;
-      border-radius: 6px;
-      padding: 10px 20px;
-      cursor: pointer;
-      font-weight: 500;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    }
+        button {
+            background-color: #FF4F00; /* Oranye */
+            color: #FFFFFF;
+            transition: background-color 0.3s ease, transform 0.3s ease; /* Efek hover */
+            border: none;
+            border-radius: 6px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 500;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
 
-    button:hover {
-      background-color: #FFFFFF;
-      color: #FF4F00;
-      transform: scale(1.05); /* Efek zoom kecil */
-    }
+        button:hover {
+            background-color: #FFFFFF;
+            color: #FF4F00;
+            transform: scale(1.05); /* Efek zoom kecil */
+        }
 
-    #api-endpoints a {
-      color: #00FF9F;
-      text-decoration: none;
-      transition: color 0.3s ease;
-    }
+        #api-endpoints a {
+            color: #00FF9F;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
 
-    #api-endpoints a:hover {
-      color: #FF4F00; /* Oranye */
-    }
+        #api-endpoints a:hover {
+            color: #FF4F00; /* Oranye */
+        }
 
-    .try-it-button {
-      background-color: #7928CA; /* Ungu */
-      color: #FFFFFF;
-      margin-left: 10px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background-color 0.3s ease, transform 0.3s ease;
-      padding: 8px 16px;
-      font-weight: 500;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    }
+        .try-it-button {
+            background-color: #7928CA; /* Ungu */
+            color: #FFFFFF;
+            margin-left: 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            padding: 8px 16px;
+            font-weight: 500;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
 
-    .try-it-button:hover {
-      background-color: #FF4F00; /* Oranye */
-      transform: scale(1.05);
-      color: #FFFFFF;
-    }
+        .try-it-button:hover {
+            background-color: #FF4F00; /* Oranye */
+            transform: scale(1.05);
+            color: #FFFFFF;
+        }
 
-    footer {
-      text-align: center;
-      padding: 20px;
-      color: #00FF9F;
-      background-color: rgba(0, 255, 159, 0.1); /* Hijau neon transparan */
-      position: relative;
-      z-index: 1;
-      margin-top: 50px;
-      border-top: 2px solid #00FF9F;
-    }
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #00FF9F;
+            background-color: rgba(0, 255, 159, 0.1); /* Hijau neon transparan */
+            position: relative;
+            z-index: 1;
+            margin-top: 50px;
+            border-top: 2px solid #00FF9F;
+        }
 
-    #api-response {
-      white-space: pre-wrap;
-      word-break: break-all;
-      color: #FFFFFF;
-      padding: 15px;
-      border: 1px solid rgba(0, 255, 159, 0.2); /* Hijau neon border */
-      border-radius: 8px;
-      background-color: rgba(0, 0, 0, 0.2);
-      font-size: 0.9rem;
-      line-height: 1.4;
-    }
+        #api-response {
+            white-space: pre-wrap;
+            word-break: break-all;
+            color: #FFFFFF;
+            padding: 15px;
+            border: 1px solid rgba(0, 255, 159, 0.2); /* Hijau neon border */
+            border-radius: 8px;
+            background-color: rgba(0, 0, 0, 0.2);
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
 
-    .stat-box {
-      text-align: center;
-      padding: 20px;
-      border: 1px solid rgba(0, 255, 159, 0.2); /* Hijau neon border */
-      border-radius: 8px;
-      margin-bottom: 20px;
-      background-color: rgba(0, 0, 0, 0.2); /* Latar belakang lebih gelap */
-    }
+        .stat-box {
+            text-align: center;
+            padding: 20px;
+            border: 1px solid rgba(0, 255, 159, 0.2); /* Hijau neon border */
+            border-radius: 8px;
+            margin-bottom: 20px;
+            background-color: rgba(0, 0, 0, 0.2); /* Latar belakang lebih gelap */
+        }
 
-    .stat-value {
-      font-size: 2.5em; /* Lebih besar */
-      font-weight: 700; /* Lebih tebal */
-      color: #00FF9F; /* Hijau Neon */
-      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7); /* Bayangan lebih kuat */
-      letter-spacing: 1px; /* Spacing lebih lebar */
-    }
+        .stat-value {
+            font-size: 2.5em; /* Lebih besar */
+            font-weight: 700; /* Lebih tebal */
+            color: #00FF9F; /* Hijau Neon */
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7); /* Bayangan lebih kuat */
+            letter-spacing: 1px; /* Spacing lebih lebar */
+        }
 
-    /* Style untuk Search */
-    #endpoint-search-container {
-      margin-bottom: 15px;
-    }
+        /* Style untuk Search */
+        #endpoint-search-container {
+            margin-bottom: 15px;
+        }
 
-    #endpoint-search-input {
-      width: 100%;
-      padding: 10px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      background-color: #1A2029;
-      color: #FFFFFF;
-    }
+        #endpoint-search-input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            background-color: #1A2029;
+            color: #FFFFFF;
+        }
 
-    .search-results {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      background-color: #1A2029;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      max-height: 200px;
-      overflow-y: auto;
-      display: none; /* Hidden by default */
-    }
+        .search-results {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            background-color: #1A2029;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none; /* Hidden by default */
+        }
 
-    .search-results li {
-      padding: 8px 12px;
-      cursor: pointer;
-      color: #FFFFFF;
-    }
+        .search-results li {
+            padding: 8px 12px;
+            cursor: pointer;
+            color: #FFFFFF;
+        }
 
-    .search-results li:hover {
-      background-color: #343a40;
-    }
+        .search-results li:hover {
+            background-color: #343a40;
+        }
 
-    /* Style untuk Form Input */
-    .api-input-group {
-      margin-top: 5px;
-    }
+        /* Style untuk Form Input */
+        .api-input-group {
+            margin-top: 5px;
+        }
 
-    .api-input-group input {
-      width: 100%;
-      padding: 8px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      background-color: #1A2029;
-      color: #FFFFFF;
-    }
+        .api-input-group input {
+            width: 100%;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            background-color: #1A2029;
+            color: #FFFFFF;
+        }
 
-    /* Music Player Styles */
-    #music-player-container {
-      text-align: center;
-    }
+        /* Music Player Styles */
+        #music-player-container {
+            text-align: center;
+        }
 
-    #music-player-container i {
-      font-size: 2em;
-      color: #00FF9F;
-      cursor: pointer;
-      margin: 0 10px;
-      transition: color 0.3s ease;
-    }
+        #music-player-container i {
+            font-size: 2em;
+            color: #00FF9F;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: color 0.3s ease;
+        }
 
-    #music-player-container i:hover {
-      color: #FF4F00;
-    }
+        #music-player-container i:hover {
+            color: #FF4F00;
+        }
 
-    #music-playlist {
-      display: none; /* Hide playlist */
-    }
+        #music-playlist {
+            display: none; /* Hide playlist */
+        }
 
-    /* Ensure playlist URLs are on separate lines */
-    #music-playlist p {
-      margin-bottom: 5px;
-    }
+        /* Ensure playlist URLs are on separate lines */
+        #music-playlist p {
+            margin-bottom: 5px;
+        }
 
-    /* Add the music URLs below */
-    #music-playlist p {
-      word-break: break-all; /* Prevents overflow */
-    }
-  </style>
+        /* Add the music URLs below */
+        #music-playlist p {
+            word-break: break-all; /* Prevents overflow */
+        }
+    </style>
 </head>
 
 <body>
-  <div id="particles-js"></div>
-  <header class="text-center">
+<div id="particles-js"></div>
+<header class="text-center">
     <h1>WANZOFC TECH</h1>
     <p>HANYA GABUT</p>
-  </header>
+</header>
 
-  <main class="container">
+<main class="container">
     <div class="row">
-      <div class="col-md-4">
-        <div class="container stat-box">
-          <h2 class="container-title">Total Requests</h2>
-          <div id="total-requests" class="stat-value">Loading...</div>
+        <div class="col-md-4">
+            <div class="container stat-box">
+                <h2 class="container-title">Total Requests</h2>
+                <div id="total-requests" class="stat-value">Loading...</div>
+            </div>
         </div>
-      </div>
 
-      <div class="col-md-4">
-        <div class="container stat-box">
-          <h2 class="container-title">Total Visitors</h2>
-          <div id="total-visitors" class="stat-value">Loading...</div>
-          <div id="average-battery"></div>
+        <div class="col-md-4">
+            <div class="container stat-box">
+                <h2 class="container-title">Total Visitors</h2>
+                <div id="total-visitors" class="stat-value">Loading...</div>
+                <div id="average-battery"></div>
+            </div>
         </div>
-      </div>
 
-      <div class="col-md-4">
-        <div id="api-key-container" class="container">
-          <h2 class="container-title">API Key</h2>
-          <p id="api-key-display">Loading API Key...</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-12">
-            <div class="container" id="music-player-container">
-                <h2 class="container-title"><i class="fas fa-music"></i> Music</h2>
-                <i class="fas fa-play" id="play-pause-icon"></i>
-                <i class="fas fa-stop" id="stop-icon"></i>
-
-                <div id="music-playlist">
-                   <p>https://files.catbox.moe/4m9c5h.mp3</p>
-                   <p>https://files.catbox.moe/irf66d.mp3</p>
-                </div>
+        <div class="col-md-4">
+            <div id="api-key-container" class="container">
+                <h2 class="container-title">API Key</h2>
+                <p id="api-key-display">Loading API Key...</p>
             </div>
         </div>
     </div>
-  </main>
 
-  <main class="container">
+
+</main>
+
+<main class="container">
     <div class="row">
-      <div class="col-md-12">
-        <div class="container">
-          <h2 class="container-title">API Endpoints</h2>
+        <div class="col-md-12">
+            <div class="container">
+                <h2 class="container-title">API Endpoints</h2>
 
-          <div id="endpoint-search-container">
-            <input type="text" id="endpoint-search-input" placeholder="Search Endpoints...">
-            <ul id="endpoint-search-results" class="search-results"></ul>
-          </div>
+                <div id="endpoint-search-container">
+                    <input type="text" id="endpoint-search-input" placeholder="Search Endpoints...">
+                    <ul id="endpoint-search-results" class="search-results"></ul>
+                </div>
 
-          <ul id="api-endpoints-list">
-            <li>
-              <a href="#" data-endpoint="/api/stalk/github">
-                <i class="fab fa-github"></i> Get GitHub User
-              </a>
-              <div class="api-input-group">
-                <input type="text" class="github-user" placeholder="Username">
-              </div>
-              <button class="try-it-button btn btn-primary" data-endpoint="/api/stalk/github">
-                <i class="fas fa-flask"></i> Try It
-              </button>
-            </li>
-            <li>
-              <a href="#" data-endpoint="/api/d/tiktok">
-                <i class="fab fa-tiktok"></i> TikTok Downloader
-              </a>
-              <div class="api-input-group">
-                <input type="text" class="tiktok-url" placeholder="TikTok URL">
-              </div>
-              <button class="try-it-button btn btn-primary" data-endpoint="/api/d/tiktok">
-                <i class="fas fa-flask"></i> Try It
-              </button>
-            </li>
-            <li>
-              <a href="#" data-endpoint="/api/stalk/youtube">
-                <i class="fab fa-youtube"></i> Stalk YouTube
-              </a>
-              <div class="api-input-group">
-                <input type="text" class="youtube-username" placeholder="Username">
-              </div>
-              <button class="try-it-button btn btn-primary" data-endpoint="/api/stalk/youtube">
-                <i class="fas fa-flask"></i> Try It
-              </button>
-            </li>
-          </ul>
+                <ul id="api-endpoints-list">
+                    <li>
+                        <a href="#" data-endpoint="/api/stalk/github">
+                            <i class="fab fa-github"></i> Get GitHub User
+                        </a>
+                        <div class="api-input-group">
+                            <input type="text" class="github-user" placeholder="Username">
+                        </div>
+                        <button class="try-it-button btn btn-primary" data-endpoint="/api/stalk/github">
+                            <i class="fas fa-flask"></i> Try It
+                        </button>
+                    </li>
+                    <li>
+                        <a href="#" data-endpoint="/api/d/tiktok">
+                            <i class="fab fa-tiktok"></i> TikTok Downloader
+                        </a>
+                        <div class="api-input-group">
+                            <input type="text" class="tiktok-url" placeholder="TikTok URL">
+                        </div>
+                        <button class="try-it-button btn btn-primary" data-endpoint="/api/d/tiktok">
+                            <i class="fas fa-flask"></i> Try It
+                        </button>
+                    </li>
+                    <li>
+                        <a href="#" data-endpoint="/api/stalk/youtube">
+                            <i class="fab fa-youtube"></i> Stalk YouTube
+                        </a>
+                        <div class="api-input-group">
+                            <input type="text" class="youtube-username" placeholder="Username">
+                        </div>
+                        <button class="try-it-button btn btn-primary" data-endpoint="/api/stalk/youtube">
+                            <i class="fas fa-flask"></i> Try It
+                        </button>
+                    </li>
+                </ul>
+            </div>
         </div>
-      </div>
     </div>
-  </main>
+</main>
 
-  <main class="container">
+<main class="container">
     <div class="row">
-      <div class="col-md-12">
-        <div class="container">
-          <h2 class="container-title">API Response</h2>
-          <div id="api-response"></div>
+        <div class="col-md-12">
+            <div class="container">
+                <h2 class="container-title">API Response</h2>
+                <div id="api-response"></div>
+            </div>
         </div>
-      </div>
     </div>
-  </main>
+</main>
 
-  <footer>
-     WANZOFC TECH
-  </footer>
+<footer>
+    WANZOFC TECH
+</footer>
 
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+<div id="music-playlist">
+  <audio id="audio" autoplay loop>
+    <source src="https://files.catbox.moe/4m9c5h.mp3" type="audio/mp3">
+    <source src="https://files.catbox.moe/irf66d.mp3" type="audio/mp3">
+    Your browser does not support the audio element.
+  </audio>
+</div>
 
-  <script>
-    $(document).ready(function() {
-      const apiKeyDisplay = $('#api-key-display');
-      const tryItButtons = $('.try-it-button');
-      const apiResponseDiv = $('#api-response');
-      const totalRequestsDiv = $('#total-requests');
-      const totalVisitorsDiv = $('#total-visitors');
-      const averageBatteryDiv = $('#average-battery');
-      const endpointSearchInput = $('#endpoint-search-input');
-      const endpointSearchResults = $('#endpoint-search-results');
-      const apiEndpointsList = $('#api-endpoints-list');
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 
-      // Music Player Elements
-      const playPauseIcon = $('#play-pause-icon');
-      const stopIcon = $('#stop-icon');
-      const musicPlaylistElement = $('#music-playlist'); // Changed selector
-      let musicPlaylist = []; // Array to store music URLs
-      let currentTrackIndex = 0; // Index of the current playing track
-      let isPlaying = false; // State to track if audio is currently playing
+<script>
+    $(document).ready(function () {
+        const apiKeyDisplay = $('#api-key-display');
+        const tryItButtons = $('.try-it-button');
+        const apiResponseDiv = $('#api-response');
+        const totalRequestsDiv = $('#total-requests');
+        const totalVisitorsDiv = $('#total-visitors');
+        const averageBatteryDiv = $('#average-battery');
+        const endpointSearchInput = $('#endpoint-search-input');
+        const endpointSearchResults = $('#endpoint-search-results');
+        const apiEndpointsList = $('#api-endpoints-list');
+        const audio = document.getElementById('audio');
+        let batteryLevels = [];
 
-      // Audio Element
-      const audio = new Audio();
-      audio.loop = false; // Disable looping for now
-      audio.volume = 0.5; // Set a default volume
+        // Data endpoints (Ganti dengan data API endpoint yang sebenarnya)
+        const endpointsData = [
+            {name: 'Get GitHub User', description: 'Retrieve GitHub user information', endpoint: '/api/stalk/github'},
+            {name: 'TikTok Downloader', description: 'Download TikTok videos', endpoint: '/api/d/tiktok'},
+            {
+                name: 'Stalk YouTube',
+                description: 'Get YouTube channel information',
+                endpoint: '/api/stalk/youtube'
+            },
+        ];
 
-      // Get the music playlist from HTML
-      musicPlaylistElement.find('p').each(function() {
-        musicPlaylist.push($(this).text());
-      });
-
-      let batteryLevels = [];
-
-      // Data endpoints (Ganti dengan data API endpoint yang sebenarnya)
-      const endpointsData = [
-        { name: 'Get GitHub User', description: 'Retrieve GitHub user information', endpoint: '/api/stalk/github' },
-        { name: 'TikTok Downloader', description: 'Download TikTok videos', endpoint: '/api/d/tiktok' },
-        { name: 'Stalk YouTube', description: 'Get YouTube channel information', endpoint: '/api/stalk/youtube' },
-      ];
-
-      async function getApiKey() {
-        try {
-          const response = await fetch('/api/stalk/github?username=your_username');
-          const data = await response.json();
-          if (data.result && data.apikey) {
-            apiKeyDisplay.text(`API Key: ${data.apikey}`);
-          } else {
-            apiKeyDisplay.text(`Error: ${data.message}`);
-          }
-        } catch (error) {
-          apiKeyDisplay.text(`Error: ${error.message}`);
+        async function getApiKey() {
+            try {
+                const response = await fetch('/api/stalk/github?username=your_username');
+                const data = await response.json();
+                if (data.result && data.apikey) {
+                    apiKeyDisplay.text(`API Key: ${data.apikey}`);
+                } else {
+                    apiKeyDisplay.text(`Error: ${data.message}`);
+                }
+            } catch (error) {
+                apiKeyDisplay.text(`Error: ${error.message}`);
+            }
         }
-      }
 
-      getApiKey();
+        getApiKey();
 
-      tryItButtons.on('click', function(event) {
-          const endpoint = $(this).data('endpoint');
-          let apiUrl = endpoint + '?';
-          let params = [];
+        tryItButtons.on('click', function (event) {
+            const endpoint = $(this).data('endpoint');
+            let apiUrl = endpoint + '?';
+            let params = [];
 
-          // Mengambil nilai input berdasarkan endpoint
-          if (endpoint === '/api/stalk/github') {
-              let username = $(this).closest('li').find('.github-user').val();
-              params.push(`user=${username}`);
-          } else if (endpoint === '/api/d/tiktok') {
-              let tiktokUrl = $(this).closest('li').find('.tiktok-url').val();
-              params.push(`url=${tiktokUrl}`);
-          } else if (endpoint === '/api/stalk/youtube') {
-              let youtubeUsername = $(this).closest('li').find('.youtube-username').val();
-              params.push(`username=${youtubeUsername}`);
-          }
+            // Mengambil nilai input berdasarkan endpoint
+            if (endpoint === '/api/stalk/github') {
+                let username = $(this).closest('li').find('.github-user').val();
+                params.push(`user=${username}`);
+            } else if (endpoint === '/api/d/tiktok') {
+                let tiktokUrl = $(this).closest('li').find('.tiktok-url').val();
+                params.push(`url=${tiktokUrl}`);
+            } else if (endpoint === '/api/stalk/youtube') {
+                let youtubeUsername = $(this).closest('li').find('.youtube-username').val();
+                params.push(`username=${youtubeUsername}`);
+            }
 
-          apiUrl += params.join('&'); // Gabungkan parameter
+            apiUrl += params.join('&'); // Gabungkan parameter
 
-          fetchApiResponse(apiUrl);
-      });
+            fetchApiResponse(apiUrl);
+        });
 
-      async function fetchApiResponse(endpoint) {
-        try {
-          const response = await fetch(endpoint);
-          const data = await response.text();
-          apiResponseDiv.text(data);
-        } catch (error) {
-          apiResponseDiv.text(`Error: ${error}`);
+        async function fetchApiResponse(endpoint) {
+            try {
+                const response = await fetch(endpoint);
+                const data = await response.text();
+                apiResponseDiv.text(data);
+            } catch (error) {
+                apiResponseDiv.text(`Error: ${error}`);
+            }
         }
-      }
 
-       // Fungsi untuk mendapatkan data statistik secara real-time
-       function updateStatistics() {
+        // Fungsi untuk mendapatkan data statistik secara real-time
+        function updateStatistics() {
             $.ajax({
                 url: '/api/statistics',  // Endpoint API untuk mendapatkan statistik
                 type: 'GET',
                 dataType: 'json',
-                success: function(data) {
+                success: function (data) {
                     totalRequestsDiv.text(data.totalRequests);
                     totalVisitorsDiv.text(data.totalVisitors);
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.error('Failed to fetch statistics. Status:', status, error);
                 }
             });
@@ -476,8 +458,8 @@
         setInterval(updateStatistics, 5000);
         updateStatistics(); // Panggil sekali saat halaman dimuat
 
-       // Fungsi untuk mendapatkan informasi baterai
-       async function getBatteryLevel() {
+        // Fungsi untuk mendapatkan informasi baterai
+        async function getBatteryLevel() {
             try {
                 const battery = await navigator.getBattery();
                 const level = battery.level * 100;
@@ -496,38 +478,38 @@
                 url: '/api/battery-level',
                 type: 'POST',
                 contentType: 'application/json',
-                data: JSON.stringify({ batteryLevel: level }),
-                success: function(response) {
+                data: JSON.stringify({batteryLevel: level}),
+                success: function (response) {
                     console.log('Battery level sent successfully:', response);
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.error('Failed to send battery level. Status:', status, error);
                 }
             });
         }
 
-      // Fungsi untuk menghitung dan menampilkan rata-rata persentase baterai
-      function updateAverageBattery() {
-          if (batteryLevels.length === 0) {
-              averageBatteryDiv.text('No battery data available.');
-              return;
-          }
+        // Fungsi untuk menghitung dan menampilkan rata-rata persentase baterai
+        function updateAverageBattery() {
+            if (batteryLevels.length === 0) {
+                averageBatteryDiv.text('No battery data available.');
+                return;
+            }
 
-          const sum = batteryLevels.reduce((acc, val) => acc + val, 0);
-          const average = sum / batteryLevels.length;
+            const sum = batteryLevels.reduce((acc, val) => acc + val, 0);
+            const average = sum / batteryLevels.length;
 
-          averageBatteryDiv.text(`Average Battery: ${average.toFixed(2)}%`);
-      }
+            averageBatteryDiv.text(`Average Battery: ${average.toFixed(2)}%`);
+        }
 
-      // Dapatkan level baterai saat halaman dimuat
-      if (navigator.getBattery) {
-          getBatteryLevel();
-      } else {
-          averageBatteryDiv.text('Battery API not supported.');
-      }
+        // Dapatkan level baterai saat halaman dimuat
+        if (navigator.getBattery) {
+            getBatteryLevel();
+        } else {
+            averageBatteryDiv.text('Battery API not supported.');
+        }
 
-      // Fungsi Pencarian Endpoint
-        endpointSearchInput.on('input', function() {
+        // Fungsi Pencarian Endpoint
+        endpointSearchInput.on('input', function () {
             const searchTerm = $(this).val().toLowerCase();
             const results = endpointsData.filter(endpoint =>
                 endpoint.name.toLowerCase().includes(searchTerm) ||
@@ -545,7 +527,7 @@
                     const li = $('<li/>', {
                         text: `${result.name} - ${result.description}`,
                         'data-endpoint': result.endpoint
-                    }).on('click', function() {
+                    }).on('click', function () {
                         // Isi input yang sesuai dengan endpoint yang dipilih
                         const endpoint = $(this).data('endpoint');
                         if (endpoint === '/api/stalk/github') {
@@ -567,220 +549,165 @@
         }
 
         // Hide results on blur (click outside)
-        $(document).on('click', function(event) {
+        $(document).on('click', function (event) {
             if (!$(event.target).closest('#endpoint-search-container').length) {
                 endpointSearchResults.hide();
             }
         });
-      
-        // Music Player Functionality
-        function loadTrack(trackIndex) {
-            if (trackIndex < musicPlaylist.length && trackIndex >= 0) {
-                audio.src = musicPlaylist[trackIndex];
-                audio.load();
-                console.log(`Loading track: ${musicPlaylist[trackIndex]}`); // Debugging
-            } else {
-                console.log('Track index out of bounds.');
-            }
-        }
 
-        function playTrack() {
-            if (musicPlaylist.length > 0) {
-                if (!isPlaying) {
-                  loadTrack(currentTrackIndex);
-                  audio.play();
-                  isPlaying = true;
-                  playPauseIcon.removeClass('fa-play').addClass('fa-pause');
-                } else {
-                  audio.pause();
-                  isPlaying = false;
-                  playPauseIcon.removeClass('fa-pause').addClass('fa-play');
-                }
-            } else {
-                alert('Please add music to the playlist first.');
-            }
-        }
-
-        function stopTrack() {
-            audio.pause();
-            audio.currentTime = 0;
-            isPlaying = false;
-            playPauseIcon.removeClass('fa-pause').addClass('fa-play');
-        }
-
-        // Play/Pause functionality
-        playPauseIcon.on('click', playTrack);
-
-        // Stop functionality
-        stopIcon.on('click', stopTrack);
-
-        // When a track ends, play the next one
-        audio.addEventListener('ended', function() {
-            currentTrackIndex++;
-            if (currentTrackIndex < musicPlaylist.length) {
-                loadTrack(currentTrackIndex);
-                audio.play();
-                isPlaying = true;
-            } else {
-                stopTrack();
-                currentTrackIndex = 0;
-                isPlaying = false;
-            }
-            playPauseIcon.removeClass('fa-play').addClass('fa-pause');
+        //Mulai Otomatis
+        audio.play().catch(error => {
+          console.error("Autoplay dicegah:", error);
         });
 
-        // Load the first track and autoplay on page load
-        if (musicPlaylist.length > 0) {
-            loadTrack(currentTrackIndex);
-        }
     });
 
     particlesJS('particles-js', {
-      "particles": {
-        "number": {
-          "value": 100,
-          "density": {
-            "enable": true,
-            "value_area": 800
-          }
-        },
-        "color": {
-          "value": "#00FF9F" /* Warna partikel Hijau Neon */
-        },
-        "shape": {
-          "type": "circle",
-          "stroke": {
-            "width": 0,
-            "color": "#000000"
-          },
-          "polygon": {
-            "nb_sides": 5
-          },
-          "image": {
-            "src": "img/github.svg",
-            "width": 100,
-            "height": 100
-          }
-        },
-        "opacity": {
-          "value": 0.7,
-          "random": true,
-          "anim": {
-            "enable": true,
-            "speed": 0.7,
-            "opacity_min": 0.1,
-            "sync": false
-          }
-        },
-        "size": {
-          "value": 3,
-          "random": true,
-          "anim": {
-            "enable": false,
-            "speed": 40,
-            "size_min": 0.1,
-            "sync": false
-          }
-        },
-        "line_linked": {
-          "enable": true,
-          "distance": 150,
-          "color": "#00FF9F", /* Warna garis Hijau Neon */
-          "opacity": 0.4,
-          "width": 1
-        },
-        "move": {
-          "enable": true,
-          "speed": 5,
-          "direction": "none",
-          "random": false,
-          "straight": false,
-          "out_mode": "out",
-          "attract": {
-            "enable": false,
-            "rotateX": 600,
-            "rotateY": 1200
-          }
-        }
-      },
-      "interactivity": {
-        "detect_on": "canvas",
-        "events": {
-          "onhover": {
-            "enable": true,
-            "mode": "grab"
-          },
-          "onclick": {
-            "enable": true,
-            "mode": "push"
-          },
-          "resize": true
-        },
-        "modes": {
-          "grab": {
-            "distance": 140,
+        "particles": {
+            "number": {
+                "value": 100,
+                "density": {
+                    "enable": true,
+                    "value_area": 800
+                }
+            },
+            "color": {
+                "value": "#00FF9F" /* Warna partikel Hijau Neon */
+            },
+            "shape": {
+                "type": "circle",
+                "stroke": {
+                    "width": 0,
+                    "color": "#000000"
+                },
+                "polygon": {
+                    "nb_sides": 5
+                },
+                "image": {
+                    "src": "img/github.svg",
+                    "width": 100,
+                    "height": 100
+                }
+            },
+            "opacity": {
+                "value": 0.7,
+                "random": true,
+                "anim": {
+                    "enable": true,
+                    "speed": 0.7,
+                    "opacity_min": 0.1,
+                    "sync": false
+                }
+            },
+            "size": {
+                "value": 3,
+                "random": true,
+                "anim": {
+                    "enable": false,
+                    "speed": 40,
+                    "size_min": 0.1,
+                    "sync": false
+                }
+            },
             "line_linked": {
-              "opacity": 1
+                "enable": true,
+                "distance": 150,
+                "color": "#00FF9F", /* Warna garis Hijau Neon */
+                "opacity": 0.4,
+                "width": 1
+            },
+            "move": {
+                "enable": true,
+                "speed": 5,
+                "direction": "none",
+                "random": false,
+                "straight": false,
+                "out_mode": "out",
+                "attract": {
+                    "enable": false,
+                    "rotateX": 600,
+                    "rotateY": 1200
+                }
             }
-          },
-          "bubble": {
-            "distance": 400,
-            "size": 40,
-            "duration": 2,
-            "opacity": 8,
-            "speed": 3
-          },
-          "repulse": {
-            "distance": 200
-          },
-          "push": {
-            "particles_nb": 4
-          },
-          "remove": {
-            "particles_nb": 2
-          }
-        }
-      },
-      "retina_detect": true,
+        },
+        "interactivity": {
+            "detect_on": "canvas",
+            "events": {
+                "onhover": {
+                    "enable": true,
+                    "mode": "grab"
+                },
+                "onclick": {
+                    "enable": true,
+                    "mode": "push"
+                },
+                "resize": true
+            },
+            "modes": {
+                "grab": {
+                    "distance": 140,
+                    "line_linked": {
+                        "opacity": 1
+                    }
+                },
+                "bubble": {
+                    "distance": 400,
+                    "size": 40,
+                    "duration": 2,
+                    "opacity": 8,
+                    "speed": 3
+                },
+                "repulse": {
+                    "distance": 200
+                },
+                "push": {
+                    "particles_nb": 4
+                },
+                "remove": {
+                    "particles_nb": 2
+                }
+            }
+        },
+        "retina_detect": true,
     });
 
     gsap.from("header", {
-      duration: 1,
-      y: -100,
-      opacity: 0,
-      ease: "power2.out"
+        duration: 1,
+        y: -100,
+        opacity: 0,
+        ease: "power2.out"
     });
     gsap.from("main", {
-      duration: 1,
-      opacity: 0,
-      delay: 0.5,
-      ease: "power2.out"
+        duration: 1,
+        opacity: 0,
+        delay: 0.5,
+        ease: "power2.out"
     });
     gsap.from("footer", {
-      duration: 1,
-      y: 100,
-      opacity: 0,
-      delay: 1,
-      ease: "power2.out"
+        duration: 1,
+        y: 100,
+        opacity: 0,
+        delay: 1,
+        ease: "power2.out"
     });
 
     // Animasi GSAP tambahan
     gsap.utils.toArray(".container").forEach(container => {
-      gsap.from(container, {
-        duration: 1,
-        opacity: 0,
-        y: 50,
-        delay: 0.3,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: container,
-          start: "top 80%",
-          end: "bottom 20%",
-          markers: false,
-          toggleActions: "restart pause resume reset"
-        }
-      });
+        gsap.from(container, {
+            duration: 1,
+            opacity: 0,
+            y: 50,
+            delay: 0.3,
+            ease: "power3.out",
+            scrollTrigger: {
+                trigger: container,
+                start: "top 80%",
+                end: "bottom 20%",
+                markers: false,
+                toggleActions: "restart pause resume reset"
+            }
+        });
     });
-  </script>
+</script>
 </body>
 </html>
