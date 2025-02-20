@@ -4,16 +4,33 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
 const axios = require('axios');
-const TelegramBot = require('node-telegram-bot-api'); // Tambahkan ini
+const TelegramBot = require('node-telegram-bot-api');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const fs = require('fs');
+const nodemailer = require('nodemailer'); // Tambahkan nodemailer
 
 const app = express();
 const server = http.createServer(app);
 
 const PORT = process.env.PORT || 8080;
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://zanssxploit:pISqUYgJJDfnLW9b@cluster0.fgram.mongodb.net/?retryWrites=true&w=majority';
-const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '7816642406:AAG0s14OnY3Msv7oRa9YO-lvEgamMt--lgc'; // Ganti dengan token bot Anda
-const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || '7096521481'; // Ganti dengan chat ID Anda
-const ADMIN_TELEGRAM_ID = process.env.ADMIN_TELEGRAM_ID || '7096521481'; // Ganti dengan ID Telegram admin
+const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '7816642406:AAG0s14OnY3Msv7oRa9YO-lvEgamMt--lgc';
+const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || '7096521481';
+const ADMIN_TELEGRAM_ID = process.env.ADMIN_TELEGRAM_ID || '7096521481';
+const JWT_SECRET = process.env.JWT_SECRET || 'ABCDEFGHI'; // Ganti dengan secret key yang kuat
+
+// Konfigurasi nodemailer
+const transporter = nodemailer.createTransport({
+    service: 'gmail', // Atau layanan email lain yang Anda gunakan
+    auth: {
+        user: 'berlianawan498@gmail.com', // Alamat email aplikasi Anda
+        pass: 'olre djtq lzyu oaxg' // Password aplikasi Anda
+    }
+});
+
+// Objek untuk menyimpan kode verifikasi sementara
+const verificationCodes = {};
 
 mongoose.set('strictQuery', false);
 mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -28,7 +45,22 @@ const chatMessageSchema = new mongoose.Schema({
 const ChatMessage = mongoose.model('ChatMessage', chatMessageSchema);
 
 // API Key Storage (Temporary - Use a proper database for production)
-const apiKeys = new Map();
+let apiKeys = loadApiKeys();
+
+function loadApiKeys() {
+    try {
+        const data = fs.readFileSync('database.json', 'utf8');
+        return JSON.parse(data);
+    } catch (err) {
+        console.error('Gagal membaca database.json:', err);
+        return {};
+    }
+}
+
+function saveApiKeys() {
+    fs.writeFileSync('database.json', JSON.stringify(apiKeys), 'utf8');
+}
+
 function generateApiKey() {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let apiKey = '';
@@ -45,6 +77,15 @@ const statisticsSchema = new mongoose.Schema({
 
 const Statistics = mongoose.model('Statistics', statisticsSchema);
 
+// User Schema and Model
+const userSchema = new mongoose.Schema({
+    username: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    apiKey: { type: String } // Tambahkan kolom apiKey
+});
+
+const User = mongoose.model('User', userSchema);
 // ** Global Variables (Diinisialisasi dari Database) **
 let totalRequests = 0;
 let totalVisitors = 0;
@@ -58,6 +99,10 @@ try {
 } catch (error) {
     console.error('Gagal terhubung ke Telegram Bot:', error);
     // Anda mungkin ingin keluar dari aplikasi atau mencoba lagi nanti
+}
+// ** Fungsi untuk membuat token JWT **
+function generateToken(user) {
+    return jwt.sign({ id: user._id, username: user.username }, JWT_SECRET, { expiresIn: '1h' });
 }
 
 // ** Telegram Bot Commands (Contoh) **
@@ -95,9 +140,11 @@ if (bot) {
 
         if (apiKeys.has(username)) {
             apiKeys.set(username, newApiKey);
+             saveApiKeys();
             bot.sendMessage(chatId, `API key untuk username ${username} berhasil diubah menjadi ${newApiKey}.`);
         } else {
             apiKeys.set(username, newApiKey);
+            saveApiKeys();
             bot.sendMessage(chatId, `API key baru untuk username ${username} berhasil dibuat: ${newApiKey}.`);
         }
     });
@@ -125,6 +172,99 @@ app.use(async (req, res, next) => {
     next();
 });
 
+// Endpoint untuk mengirim kode verifikasi
+app.post('/api/send-verification-code', async (req, res) => {
+    const { email } = req.body;
+
+    // Generate kode verifikasi acak
+    const verificationCode = Math.floor(100000 + Math.random() * 900000); // Kode 6 digit
+
+    // Simpan kode verifikasi dengan email terkait
+    verificationCodes[email] = verificationCode;
+
+    // Konfigurasi email
+    const mailOptions = {
+        from: 'berlianawan498@gmail.com', // Alamat email aplikasi Anda
+        to: email,
+        subject: 'Kode Verifikasi Pendaftaran',
+        text: `Kode verifikasi Anda adalah: ${verificationCode}`
+    };
+
+    // Kirim email
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            console.error('Gagal mengirim email:', error);
+            return res.status(500).json({ success: false, message: 'Gagal mengirim kode verifikasi. Silakan coba lagi.' });
+        }
+        console.log('Email terkirim:', info.response);
+        res.json({ success: true, message: 'Kode verifikasi telah dikirim ke email Anda.' });
+    });
+});
+// Endpoint Pendaftaran
+app.post('/api/register', async (req, res) => {
+    try {
+        const { username, password, email, verificationCode } = req.body;
+
+        // Verifikasi kode verifikasi
+        if (verificationCodes[email] !== parseInt(verificationCode)) {
+            return res.status(400).json({ success: false, message: 'Kode verifikasi tidak valid.' });
+        }
+
+        // Cek apakah username atau email sudah ada
+        const existingUser = await User.findOne({ $or: [{ username }, { email }] });
+        if (existingUser) {
+            return res.status(400).json({ success: false, message: 'Username atau email sudah terdaftar.' });
+        }
+
+        // Hash password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Buat pengguna baru
+        const newUser = new User({
+            username,
+            password: hashedPassword,
+            email,
+            apiKey: generateApiKey() // Generate API key saat pendaftaran
+        });
+
+        await newUser.save();
+
+        // Hapus kode verifikasi setelah pendaftaran berhasil
+        delete verificationCodes[email];
+
+        res.status(201).json({ success: true, message: 'Pendaftaran berhasil. Silakan login.' });
+
+    } catch (error) {
+        console.error('Gagal mendaftar:', error);
+        res.status(500).json({ success: false, message: 'Terjadi kesalahan saat mendaftar.' });
+    }
+});
+
+// Endpoint Login
+app.post('/api/signin', async (req, res) => {
+    try {
+        const { username, password } = req.body;
+
+        // Cari pengguna berdasarkan username
+        const user = await User.findOne({ username });
+        if (!user) {
+            return res.status(401).json({ message: 'Kredensial tidak valid.', result: false });
+        }
+
+        // Verifikasi password
+        const passwordMatch = await bcrypt.compare(password, user.password);
+        if (!passwordMatch) {
+            return res.status(401).json({ message: 'Kredensial tidak valid.',  result: false});
+        }
+          // Generate JWT token
+        const token = generateToken(user);
+        res.json({ message: 'Login berhasil.', apiKey: user.apiKey, token: token, result: true });
+
+    } catch (error) {
+        console.error('Gagal login:', error);
+        res.status(500).json({ message: 'Terjadi kesalahan saat login.',  result: false });
+    }
+});
 // Middleware untuk validasi API key
 const apiKeyValidator = (req, res, next) => {
     const username = req.query.username;
@@ -147,8 +287,10 @@ const apiKeyValidator = (req, res, next) => {
             status: appStatus
         });
     }
+      // Load API keys dari database.json
+     apiKeys = loadApiKeys();
 
-    if (apiKeys.get(username) !== apiKey) {
+    if (apiKeys[username] !== apiKey) {
         return res.status(403).json({
             creator: "WANZOFC TECH",
             result: false,
@@ -159,7 +301,6 @@ const apiKeyValidator = (req, res, next) => {
 
     next();
 };
-
 // Serve static files (HTML, CSS, JS)
 app.use(express.static(path.join(__dirname)));
 
@@ -192,10 +333,9 @@ app.get('/chat-stream', async (req, res) => {
         });
 
         req.on('close', () => {
-            console.log('Client disconnected from chat-stream');
-            changeStream.close();
+            console.log(`${clientId} Connection closed`);
+            clients = clients.filter(client => client.id !== clientId);
         });
-
     } catch (error) {
         console.error('Error streaming updates:', error);
         res.write(`data: ${JSON.stringify({ error: 'Error streaming updates.' })}\n\n`);
@@ -265,7 +405,7 @@ app.get('/chat-history', async (req, res) => {
     }
 });
 // All the Other A P I
-app.get('/api/stalk/github', async (req, res) => {
+app.get('/api/stalk/github', apiKeyValidator, async (req, res) => {
     const username = req.query.username;
 
     if (!username) {
@@ -287,9 +427,9 @@ app.get('/api/stalk/github', async (req, res) => {
         });
     }
 
-    const newApiKey = generateApiKey();
-    apiKeys.set(username, newApiKey);
-
+     const newApiKey = generateApiKey();
+    apiKeys[username] = newApiKey;
+    saveApiKeys()
     res.status(201).json({
         creator: "WANZOFC TECH",
         result: true,
