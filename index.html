@@ -227,11 +227,6 @@
             margin: 0;
         }
 
-        .message-container { /* Container untuk pesan dan tombol reply */
-            position: relative;
-            width: 100%;
-        }
-
         .message {
             padding: 8px 12px;
             border-radius: 10px;
@@ -239,7 +234,6 @@
             word-break: break-word;
             max-width: 70%;
             color: var(--message-text-color);
-            transition: transform 0.3s ease; /* Transisi untuk efek geser */
         }
 
         .sent {
@@ -253,35 +247,17 @@
         }
 
         .reply-button {
-            position: absolute; /* Positioning tombol reply */
-            top: 50%;
-            right: 10px;
-            transform: translateY(-50%);
             background-color: transparent;
             border: none;
             color: var(--link-color);
             cursor: pointer;
             font-size: 0.8em;
-            padding: 5px;
-            opacity: 0; /* Sembunyikan tombol reply secara default */
-            transition: opacity 0.3s ease;
+            padding: 0;
+            margin-left: 5px;
         }
 
-        .message-container:hover .reply-button {
-            opacity: 1; /* Tampilkan tombol reply saat hover */
-        }
-
-        .message.replying { /* Style saat pesan sedang dalam mode reply */
-            transform: translateX(20px);
-        }
-
-        .reply-area {
-            display: none;
-            margin-top: 5px;
-        }
-
-        .reply-area.show {
-            display: block;
+        .reply-button:hover {
+            color: var(--link-hover-color);
         }
 
         .dark-mode-button {
@@ -637,40 +613,13 @@ $(document).ready(function() {
                 messagesContainer.empty();
 
                 messages.forEach(function(message) {
-                    const messageContainer = $('<div class="message-container"></div>'); // Container
                     const messageElement = $('<div class="message"></div>')
                         .addClass(message.sender === 'me' ? 'sent' : 'received')
                         .text(message.text);
 
                     const replyButton = $('<button class="reply-button">Balas</button>');
-                    messageContainer.append(messageElement); // Masukkan pesan ke container
-                    messageContainer.append(replyButton);    // Masukkan tombol reply ke container
-                    messagesContainer.append(messageContainer); // Tambahkan container ke messages-container
-                    messagesContainer.scrollTop(messagesContainer[0].scrollHeight);
-
-                     replyButton.click(function(e) {
-                        e.stopPropagation(); // Stop event bubbling
-                        messageElement.toggleClass('replying');
-
-                        // Tambahkan atau tampilkan area reply
-                        let replyArea = messageContainer.find('.reply-area');
-                        if (replyArea.length === 0) {
-                            replyArea = $('<div class="reply-area"><input type="text" class="form-control reply-input" placeholder="Balas pesan ini..."><button class="btn btn-primary reply-send">Kirim</button></div>');
-                            messageContainer.append(replyArea);
-                            replyArea.find('.reply-send').click(function() {
-                                const replyText = replyArea.find('.reply-input').val();
-                                if (replyText.trim() !== '') {
-                                    // Kirim balasan menggunakan AJAX atau fungsi lain
-                                    console.log("Membalas:", replyText, "ke pesan:", message.id);
-                                    replyArea.find('.reply-input').val('');
-                                    replyArea.removeClass('show');
-                                    messageElement.removeClass('replying');
-                                    // Di sini Anda akan mengirimkan balasan ke server
-                                }
-                            });
-                        }
-                        replyArea.toggleClass('show');
-                    });
+                    messageElement.append(replyButton);
+                    messagesContainer.append(messageElement);
                 });
 
                 messagesContainer.scrollTop(messagesContainer[0].scrollHeight);
