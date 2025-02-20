@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.9/dist/sweetalert2.min.css">
   <style>
     body {
       font-family: 'Poppins', sans-serif;
@@ -428,13 +429,7 @@
                         <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
                         <div id="signupEmailError" class="error-message"></div>
                     </div>
-                    <button type="button" class="btn btn-primary" id="sendVerificationCode">Send Verification Code</button>
-                    <div class="form-group" id="verificationCodeGroup" style="display: none;">
-                        <label for="verificationCode">Verification Code</label>
-                        <input type="text" class="form-control" id="verificationCode" placeholder="Enter verification code" required>
-                        <div id="verificationCodeError" class="error-message"></div>
-                    </div>
-                    <button type="submit" class="btn btn-primary" id="signupSubmit" style="display: none;">Sign Up</button>
+                    <button type="submit" class="btn btn-primary" id="signupSubmit">Sign Up</button>
                 </form>
             </div>
         </div>
@@ -482,6 +477,7 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.9/dist/sweetalert2.all.min.js"></script>
 
 <script>
  $(document).ready(function () {
@@ -502,14 +498,9 @@
         const signupEmailInput = $('#signupEmail');
         const signupUsernameInput = $('#signupUsername');
         const signupPasswordInput = $('#signupPassword');
-        const sendVerificationCodeButton = $('#sendVerificationCode');
-        const verificationCodeGroup = $('#verificationCodeGroup');
-        const verificationCodeInput = $('#verificationCode');
-        const signupSubmitButton = $('#signupSubmit');
 
         // Error message elements
         const signupEmailError = $('#signupEmailError');
-        const verificationCodeError = $('#verificationCodeError');
         const signinForm = $('#signinForm');
         const signinUsernameInput = $('#signinUsername');
         const signinPasswordInput = $('#signinPassword');
@@ -670,80 +661,59 @@
         });
 
     // Sign-Up Functionality
-    sendVerificationCodeButton.on('click', function () {
-        const email = signupEmailInput.val();
-        if (!email) {
-            signupEmailError.text('Please enter your email address.');
-            return;
-        } else {
-            signupEmailError.text('');
-        }
+    signupForm.on('submit', function (e) {
+        e.preventDefault();
 
-        // Kirim permintaan AJAX ke backend untuk mengirim kode verifikasi
+        const username = signupUsernameInput.val();
+        const password = signupPasswordInput.val();
+        const email = signupEmailInput.val();
+
+        // Lakukan validasi sisi klien di sini jika diperlukan
+
+        // Kirim permintaan AJAX ke backend untuk pendaftaran
         $.ajax({
-            url: '/api/send-verification-code', // Ganti dengan endpoint yang sesuai
+            url: '/api/signup', // Ganti dengan endpoint yang sesuai
             type: 'POST',
             contentType: 'application/json',
-            data: JSON.stringify({email: email}),
+            data: JSON.stringify({
+                username: username,
+                password: password,
+                email: email
+            }),
             success: function (response) {
                 if (response.success) {
-                    alert('Verification code sent to your email.');
-                    verificationCodeGroup.show();
-                    signupSubmitButton.show();
-                    sendVerificationCodeButton.hide();
-
+                    // Tampilkan notifikasi sukses menggunakan SweetAlert2
+                    Swal.fire({
+                        title: 'Success!',
+                        text: response.message, // Pesan dari backend
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        // Tutup modal dan reset form setelah notifikasi ditutup
+                        $('#signupModal').modal('hide');
+                        signupForm[0].reset();
+                    });
                 } else {
-                    signupEmailError.text(response.message || 'Failed to send verification code.');
+                    // Tampilkan notifikasi error menggunakan SweetAlert2
+                    Swal.fire({
+                        title: 'Error!',
+                        text: response.message,
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
                 }
             },
             error: function (xhr, status, error) {
-                signupEmailError.text('Failed to send verification code. Please try again.');
+                // Tampilkan notifikasi error jika terjadi kesalahan AJAX
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Registration failed. Please try again.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
             }
         });
     });
-
-    signupForm.on('submit', function (e) {
-            e.preventDefault();
-
-            const username = signupUsernameInput.val();
-            const password = signupPasswordInput.val();
-            const email = signupEmailInput.val();
-            const verificationCode = verificationCodeInput.val();
-
-            if (!username || !password || !email || !verificationCode) {
-                alert('Please fill in all fields.');
-                return;
-            }
-
-            // Kirim data pendaftaran ke backend untuk verifikasi dan penyimpanan
-            $.ajax({
-                url: '/api/register', // Ganti dengan endpoint yang sesuai
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({
-                    username: username,
-                    password: password,
-                    email: email,
-                    verificationCode: verificationCode
-                }),
-                success: function (response) {
-                    if (response.success) {
-                        alert('Registration successful! Please sign in.');
-                        $('#signupModal').modal('hide');
-                        signupForm[0].reset();
-                        verificationCodeGroup.hide();
-                        signupSubmitButton.hide();
-                        sendVerificationCodeButton.show();
-                    } else {
-                        verificationCodeError.text(response.message || 'Registration failed.');
-                    }
-                },
-                error: function (xhr, status, error) {
-                    verificationCodeError.text('Registration failed. Please try again.');
-                }
-            });
-        });
-
         // Sign-In Functionality
     signinForm.on('submit', function (e) {
         e.preventDefault();
@@ -752,23 +722,38 @@
 
         // Kirim permintaan AJAX ke backend untuk proses sign-in
         $.ajax({
-            url: '/api/login', // Ganti dengan endpoint yang sesuai
+            url: '/api/signin', // Ganti dengan endpoint yang sesuai
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({username: username, password: password}),
             success: function (response) {
                 if (response.success) {
-                    alert('Sign in successful!');
-                    $('#signinModal').modal('hide');
-                    signinForm[0].reset();
-                    // Lakukan sesuatu setelah berhasil sign-in, contoh:
-                    // Redirect ke halaman dashboard atau perbarui tampilan
+                     Swal.fire({
+                        title: 'Success!',
+                        text: 'Login berhasil.',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        $('#signinModal').modal('hide');
+                        signinForm[0].reset();
+                        apiKeyDisplay.text(`API Key: ${response.apiKey}`); // Menampilkan API key setelah login
+                    });
                 } else {
-                    alert(response.message || 'Sign in failed.');
+                    Swal.fire({
+                        title: 'Error!',
+                        text: response.message,
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
                 }
             },
             error: function (xhr, status, error) {
-                alert('Sign in failed. Please try again.');
+                 Swal.fire({
+                    title: 'Error!',
+                    text: 'Sign in failed. Please try again.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
             }
         });
     });
@@ -895,7 +880,7 @@
         delay: 0.5,
         ease: "power2.out"
     });
-        gsap.from("footer", {
+    gsap.from("footer", {
         duration: 1,
         y: 100,
         opacity: 0,
