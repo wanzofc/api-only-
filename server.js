@@ -4,12 +4,17 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
 const axios = require('axios');
+const TelegramBot = require('node-telegram-bot-api'); // Tambahkan ini
 
 const app = express();
 const server = http.createServer(app);
 
 const PORT = process.env.PORT || 8080;
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://zanssxploit:pISqUYgJJDfnLW9b@cluster0.fgram.mongodb.net/?retryWrites=true&w=majority';
+const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || 'YOUR_TELEGRAM_BOT_TOKEN'; // Ganti dengan token bot Anda
+const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || 'YOUR_TELEGRAM_CHAT_ID'; // Ganti dengan chat ID Anda
+const ADMIN_TELEGRAM_ID = process.env.ADMIN_TELEGRAM_ID || 'YOUR_ADMIN_TELEGRAM_ID'; // Ganti dengan ID Telegram admin
+
 mongoose.set('strictQuery', false);
 mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('Connected to MongoDB'))
@@ -45,6 +50,58 @@ let totalRequests = 0;
 let totalVisitors = 0;
 let batteryLevels = [];
 
+// ** Telegram Bot Initialization **
+let bot; // Deklarasikan bot di luar blok try
+try {
+    bot = new TelegramBot(TELEGRAM_BOT_TOKEN, { polling: true }); // Aktifkan polling
+    console.log('Telegram Bot terhubung!');
+} catch (error) {
+    console.error('Gagal terhubung ke Telegram Bot:', error);
+    // Anda mungkin ingin keluar dari aplikasi atau mencoba lagi nanti
+}
+
+// ** Telegram Bot Commands (Contoh) **
+if (bot) {
+    bot.onText(/\/start/, (msg) => {
+        bot.sendMessage(msg.chat.id, "Halo! Saya adalah bot notifikasi untuk WANZOFC TECH.");
+    });
+
+    bot.onText(/\/stats/, async (msg) => {
+        try {
+            const stats = await Statistics.findOne({});
+            const message = `Total Requests: ${stats.totalRequests}\nTotal Visitors: ${stats.totalVisitors}`;
+            bot.sendMessage(msg.chat.id, message);
+        } catch (error) {
+            console.error('Error fetching stats:', error);
+            bot.sendMessage(msg.chat.id, "Gagal mendapatkan statistik.");
+        }
+    });
+       // Custom API Key command
+    bot.onText(/\/customapikey (.+)/, (msg, match) => {
+        const chatId = msg.chat.id;
+        const message = match[1];
+        const args = message.split(' ');
+
+        if (msg.from.id.toString() !== ADMIN_TELEGRAM_ID) {
+            return bot.sendMessage(chatId, "Hanya admin yang dapat menggunakan perintah ini.");
+        }
+
+        if (args.length !== 2) {
+            return bot.sendMessage(chatId, "Format perintah salah. Gunakan: /customapikey username newapikey");
+        }
+
+        const username = args[0];
+        const newApiKey = args[1];
+
+        if (apiKeys.has(username)) {
+            apiKeys.set(username, newApiKey);
+            bot.sendMessage(chatId, `API key untuk username ${username} berhasil diubah menjadi ${newApiKey}.`);
+        } else {
+            apiKeys.set(username, newApiKey);
+            bot.sendMessage(chatId, `API key baru untuk username ${username} berhasil dibuat: ${newApiKey}.`);
+        }
+    });
+}
 // Middleware
 app.use(cors({ origin: 'https://wanzofc-ai.biz.id' }));
 app.use(express.json());
@@ -241,70 +298,8 @@ app.get('/api/stalk/github', async (req, res) => {
         apikey: newApiKey
     });
 });
-app.get('/api/berita/cnn', async (req, res) => {
-    try {
-        const { data } = await axios.get(`https://api.siputzx.my.id/api/berita/cnn`);
-        res.json({ creator: "WANZOFC TECH", result: true, message: "Berita - CNN", data: data });
-    } catch {
-        res.status(500).json({ creator: "WANZOFC TECH", result: false, message: "Berita - CNN bermasalah." });
-    }
-});
-app.get('/api/berita/cnbcindonesia', async (req, res) => {
-    try {
-        const { data } = await axios.get(`https://api.siputzx.my.id/api/berita/cnbcindonesia`);
-        res.json({ creator: "WANZOFC TECH", result: true, message: "Berita - CNBC Indonesia", data: data });
-    } catch {
-        res.status(500).json({ creator: "WANZOFC TECH", result: false, message: "Berita - CNBC Indonesia bermasalah." });
-    }
-});
-app.get('/api/berita/antara', async (req, res) => {
-    try {
-        const { data } = await axios.get(`https://api.siputzx.my.id/api/berita/antara`);
-        res.json({ creator: "WANZOFC TECH", result: true, message: "Berita - Antara", data: data });
-    } catch {
-        res.status(500).json({ creator: "WANZOFC TECH", result: false, message: "Berita - Antara bermasalah." });
-    }
-});
-app.get('/api/berita/tribunnews', async (req, res) => {
-    try {
-        const { data } = await axios.get(`https://api.siputzx.my.id/api/berita/tribunnews`);
-        res.json({ creator: "WANZOFC TECH", result: true, message: "Berita - Tribunnews", data: data });
-    } catch {
-        res.status(500).json({ creator: "WANZOFC TECH", result: false, message: "Berita - Tribunnews bermasalah." });
-    }
-});
-app.get('/api/berita/suara', async (req, res) => {
-    try {
-        const { data } = await axios.get(`https://api.siputzx.my.id/api/berita/suara`);
-        res.json({ creator: "WANZOFC TECH", result: true, message: "Berita - Suara", data: data });
-    } catch {
-        res.status(500).json({ creator: "WANZOFC TECH", result: false, message: "Berita - Suara bermasalah." });
-    }
-});
-app.get('/api/berita/merdeka', async (req, res) => {
-    try {
-        const { data } = await axios.get(`https://api.siputzx.my.id/api/berita/merdeka`);
-        res.json({ creator: "WANZOFC TECH", result: true, message: "Berita - Merdeka", data: data });
-    } catch {
-        res.status(500).json({ creator: "WANZOFC TECH", result: false, message: "Berita - Merdeka bermasalah." });
-    }
-});
-app.get('/api/berita/sindonews', async (req, res) => {
-    try {
-        const { data } = await axios.get(`https://api.siputzx.my.id/api/berita/sindonews`);
-        res.json({ creator: "WANZOFC TECH", result: true, message: "Berita - Sindonews", data: data });
-    } catch {
-        res.status(500).json({ creator: "WANZOFC TECH", result: false, message: "Berita - Sindonews bermasalah." });
-    }
-});
-app.get('/api/berita/liputan6', async (req, res) => {
-    try {
-        const { data } = await axios.get(`https://api.siputzx.my.id/api/berita/liputan6`);
-        res.json({ creator: "WANZOFC TECH", result: true, message: "Berita - Liputan6", data: data });
-    } catch {
-        res.status(500).json({ creator: "WANZOFC TECH", result: false, message: "Berita - Liputan6 bermasalah." });
-    }
-});
+
+// Protected Endpoint
 app.get('/api/stalk/github/stalk', apiKeyValidator, async (req, res) => {
     const user = req.query.user;
     const username = req.query.username;
@@ -314,7 +309,7 @@ app.get('/api/stalk/github/stalk', apiKeyValidator, async (req, res) => {
         return res.status(400).json({
             creator: "WANZOFC TECH",
             result: false,
-            message: "Tambahkan parameter 'user' (contoh: /api/stalk/github/stalk?user=github_username&username=wanzofc-tech&apikey=apikey).",
+            message: "Tambahkan parameter 'user' (contoh: /api/stalk/github/stalk?user=github_username&username=your_username&apikey=apikey).",
             status: appStatus
         });
     }
@@ -479,10 +474,9 @@ app.get('/chat-stream', async (req, res) => {
         });
 
         req.on('close', () => {
-            console.log('Client disconnected from chat-stream');
-            changeStream.close();
+            console.log(`${clientId} Connection closed`);
+            clients = clients.filter(client => client.id !== clientId);
         });
-
     } catch (error) {
         console.error('Error streaming updates:', error);
         res.write(`data: ${JSON.stringify({ error: 'Error streaming updates.' })}\n\n`);
@@ -562,11 +556,25 @@ async function initializeStatistics() {
         console.error('Error initializing statistics:', error);
     }
 }
-
+// ** Inisialisasi Telegram Bot **
+if (bot) {
+    // Kirim notifikasi saat server dimulai
+    bot.sendMessage(TELEGRAM_CHAT_ID, 'Server telah dimulai!');
+}
 // Panggil fungsi inisialisasi saat server dimulai
 initializeStatistics().then(() => {
     // Start the server
     server.listen(PORT, () => {
         console.log(`Server berjalan di http://localhost:${PORT}`);
+        // Kirim notifikasi saat server dimulai (setelah statistik diinisialisasi)
+        if (bot) {
+             bot.sendMessage(TELEGRAM_CHAT_ID, 'Server telah berhasil dijalankan, statistic berhasil di inisialisasi!');
+        }
     });
+}).catch((error) => {
+    console.error("Gagal inisialisasi statistik:", error);
+    // Handle jika inisialisasi statistik gagal
+    if (bot) {
+        bot.sendMessage(TELEGRAM_CHAT_ID, 'Server Gagal dijalankan, statistic gagal di inisialisasi!');
+    }
 });
