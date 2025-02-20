@@ -435,7 +435,7 @@ app.get('/api/gita', async (req, res) => {
 });
 
 // Mongoose Connection
-const mongoDBURL = process.env.MONGODB_URI || 'mongodb+srv://zanssxploit:pISqUYgJJDfnLW9b@cluster0.fgram.mongodb.net/?retryWrites=true&w=majority.'; // Default local MongoDB
+const mongoDBURL = process.env.MONGODB_URI || 'mongodb+srv://zanssxploit:pISqUYgJJDfnLW9b@cluster0.fgram.mongodb.net/?retryWrites=true&w=majority'; // Default local MongoDB
 mongoose.connect(mongoDBURL, {
     useNewUrlParser: true,
     useUnifiedTopology: true
