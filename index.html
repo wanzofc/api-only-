@@ -1,23 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>WANZOFC TECH API</title>
-
-    <!-- AMP (Accelerated Mobile Pages) -->
     <link rel="amphtml" href="amp/index.html">
     <link rel="canonical" href="index.html">
-
-    <!-- Stylesheets -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-
     <style>
-        /* Palet Warna yang Harmonis (Contoh) */
         :root {
             --bg-color: #0d1117;
             --text-color: #c6c6c6;
@@ -29,71 +22,58 @@
             --primary-color: #238636;
             --primary-hover-color: #2ea043;
         }
-
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
             font-family: 'Roboto', sans-serif;
             overflow-x: hidden;
+            overscroll-behavior: contain;
         }
-
         a {
             color: var(--link-color);
         }
-
         a:hover {
             color: var(--link-hover-color);
             text-decoration: none;
         }
-
         .jumbotron {
             background-color: var(--jumbotron-bg);
             border-bottom: 1px solid var(--border-color);
             padding: 3rem 1rem;
             text-align: center;
         }
-
         .card {
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
             transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
         }
-
-        /* Desain Kartu Lebih Interaktif */
         .card:hover {
             transform: translateY(-8px);
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
         }
-
         .card .card-body {
             padding: 1.5rem;
         }
-
         .card .card-title {
             font-size: 1.25rem;
             margin-bottom: 0.75rem;
         }
-
         .btn-primary {
             background-color: var(--primary-color);
             border-color: var(--primary-color);
             transition: background-color 0.3s ease;
         }
-
         .btn-primary:hover {
             background-color: var(--primary-hover-color);
             border-color: var(--primary-hover-color);
         }
-
         ul {
             list-style: none;
             padding-left: 0;
         }
-
         ul li {
             margin-bottom: 8px;
         }
-
         ul li a {
             display: block;
             padding: 10px 15px;
@@ -102,18 +82,14 @@
             border-radius: 5px;
             transition: background-color 0.3s ease, transform 0.2s ease;
         }
-
         ul li a:hover {
             background-color: var(--border-color);
             transform: translateX(5px);
         }
-
-        /* Efek Hover Microinteraction pada Tombol */
         .btn {
             position: relative;
             overflow: hidden;
         }
-
         .btn::before {
             content: "";
             position: absolute;
@@ -125,34 +101,96 @@
             opacity: 0;
             transition: opacity 0.3s ease;
         }
-
         .btn:hover::before {
             opacity: 1;
         }
-
-        /* Tipografi (Contoh) */
-        h1,
-        h2,
-        h3,
-        h4,
-        h5,
-        h6 {
+        h1, h2, h3, h4, h5, h6 {
             font-weight: 700;
+        }
+        .sidebar-nav {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: -250px;
+            width: 250px;
+            padding: 0;
+            background-color: var(--jumbotron-bg);
+            border-right: 1px solid transparent;
+            overflow-x: hidden;
+            overflow-y: auto;
+            transition: left 0.3s ease;
+            z-index: 1000;
+        }
+        .sidebar-nav.open {
+            left: 0;
+        }
+        .sidebar-nav .nav-link {
+            padding: 1rem;
+            color: var(--text-color);
+        }
+        .sidebar-nav .nav-link:hover {
+            background-color: var(--border-color);
+            color: var(--link-hover-color);
+        }
+        .content {
+            margin-left: 0;
+            padding: 20px;
+            transition: margin-left 0.3s ease;
+        }
+        .content.open {
+            margin-left: 250px;
+        }
+        #navButton {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+        #navButton.open {
+            display: none;
+        }
+        #video-gallery video {
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 20px;
         }
     </style>
 </head>
-
 <body>
-    <!-- Latar Belakang particlesJS -->
     <div id="particles-js" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;"></div>
-
-    <!-- Audio Autoplay (Perhatikan Kebijakan Browser) -->
     <audio id="backgroundAudio" loop autoplay muted>
         <source src="background-music.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
-
-    <div class="container mt-5">
+    <button id="navButton"><i class="fas fa-bars"></i> </button>
+    <nav class="sidebar-nav">
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link active" href="#">Beranda</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#endpoints">Endpoint Unggulan</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#documentation">Dokumentasi</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#gallery">Galeri</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/kebijakan">Kebijakan</a>
+            </li>
+            <li class="nav-item">
+                <button id="closeNavButton" class="nav-link"><i class="fas fa-times"></i> </button>
+            </li>
+        </ul>
+    </nav>
+    <div class="content">
         <div class="jumbotron text-center">
             <h1 class="display-4 animate__animated animate__fadeInDown">WANZOFC TECH API</h1>
             <p class="lead animate__animated animate__fadeInUp animate__delay-1s">Platform Canggih untuk AI dan Tools</p>
@@ -160,17 +198,10 @@
             <p class="animate__animated animate__fadeIn animate__delay-2s">
                 Dokumentasi API lengkap tersedia di <a href="/api-docs">Swagger UI</a>.
             </p>
-
-            <!-- AR/VR: Link untuk Pengalaman VR (Contoh) -->
-            <a class="btn btn-info btn-lg animate__animated animate__fadeIn animate__delay-2s"
-                href="/vr-experience" role="button">Lihat dalam VR <i class="fas fa-vr-cardboard"></i></a>
-
             <a class="btn btn-primary btn-lg animate__animated animate__fadeIn animate__delay-2s"
                 href="/api-docs" role="button">Lihat Dokumentasi <i class="fas fa-external-link-alt"></i></a>
         </div>
-
-        <h2 class="mt-4 animate__animated animate__fadeIn">Endpoint Unggulan</h2>
-
+        <h2 class="mt-4 animate__animated animate__fadeIn" id="endpoints">Endpoint Unggulan</h2>
         <div class="row">
             <div class="col-md-4 mb-4 animate__animated animate__fadeInUp card-wrapper">
                 <div class="card">
@@ -233,13 +264,24 @@
                 </div>
             </div>
         </div>
-        <h2 class="mt-4 animate__animated animate__fadeIn">Navigasi</h2>
-        <ul class="animate__animated animate__fadeInUp">
-            <li><a href="/kebijakan"><i class="fas fa-shield-alt"></i> Kebijakan</a></li>
-        </ul>
+        <h2 class="mt-4 animate__animated animate__fadeIn" id="documentation">Dokumentasi</h2>
+        <p class="animate__animated animate__fadeInUp">
+            Dokumentasi API lengkap tersedia di <a href="/api-docs">Swagger UI</a>.
+        </p>
+        <h2 class="mt-4 animate__animated animate__fadeIn" id="gallery">Galeri Vidio</h2>
+        <div id="video-gallery">
+            <video controls autoplay loop muted>
+                <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+                    type="video/mp4">
+            </video>
+            <video controls autoplay loop muted>
+                <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
+                    type="video/mp4">
+            </video>
+        </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
@@ -247,7 +289,6 @@
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 
     <script>
-        // Inisialisasi particlesJS
         particlesJS('particles-js', {
             "particles": {
                 "number": {
@@ -258,7 +299,7 @@
                     }
                 },
                 "color": {
-                    "value": "#ffffff"
+                    "value": "#00ffff"
                 },
                 "shape": {
                     "type": "circle",
@@ -298,7 +339,7 @@
                 "line_linked": {
                     "enable": true,
                     "distance": 150,
-                    "color": "#ffffff",
+                    "color": "#00ffff",
                     "opacity": 0.4,
                     "width": 1
                 },
@@ -364,21 +405,14 @@
             }
         });
 
-        // GSAP Animations
         gsap.registerPlugin(ScrollTrigger);
-
-        //Jumbotron Animation
         gsap.from(".jumbotron h1", { opacity: 0, duration: 1, y: -50, ease: "power3.out" });
         gsap.from(".jumbotron p", { opacity: 0, duration: 1, y: 50, delay: 0.5, ease: "power3.out" });
         gsap.from(".jumbotron .btn", { opacity: 0, duration: 1, delay: 1, y: 50, ease: "power3.out" });
-
-        // Card Animations dengan ScrollTrigger dan Parallax
         gsap.utils.toArray(".card-wrapper").forEach((wrapper, index) => {
             let card = wrapper.querySelector(".card");
-
-            // Parallax effect
             gsap.to(card, {
-                y: 50, // Adjust the parallax intensity
+                y: 50,
                 ease: "none",
                 scrollTrigger: {
                     trigger: wrapper,
@@ -387,7 +421,6 @@
                     scrub: true,
                 }
             });
-
             gsap.from(card, {
                 opacity: 0,
                 x: index % 2 === 0 ? -100 : 100,
@@ -400,25 +433,31 @@
                 }
             });
         });
-
-        //Microinteraction (Contoh Sederhana)
         const buttons = document.querySelectorAll('.btn');
-
         buttons.forEach(button => {
             button.addEventListener('mouseenter', () => {
                 gsap.to(button, { scale: 1.05, duration: 0.2 });
             });
-
             button.addEventListener('mouseleave', () => {
                 gsap.to(button, { scale: 1, duration: 0.2 });
             });
         });
-        // Autoplay audio (Pastikan ijin browser diberikan)
         document.getElementById('backgroundAudio').play().catch(error => {
             console.error("Autoplay prevented:", error);
-            // Tambahkan tombol atau logika untuk memungkinkan pengguna memulai audio
+        });
+
+        $(document).ready(function() {
+            $("#navButton").click(function() {
+                $(".sidebar-nav").addClass("open");
+                $(".content").addClass("open");
+                $(this).hide();
+            });
+            $("#closeNavButton").click(function() {
+                $(".sidebar-nav").removeClass("open");
+                $(".content").removeClass("open");
+                $("#navButton").show();
+            });
         });
     </script>
 </body>
-
 </html>
