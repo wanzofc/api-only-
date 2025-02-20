@@ -8,7 +8,8 @@ const TelegramBot = require('node-telegram-bot-api');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
-const nodemailer = require('nodemailer'); // Tambahkan nodemailer
+const nodemailer = require('nodemailer');
+const crypto = require('crypto'); // Tambahkan crypto untuk token
 
 const app = express();
 const server = http.createServer(app);
@@ -18,7 +19,8 @@ const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://zanssxploit:pISqUY
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '7816642406:AAG0s14OnY3Msv7oRa9YO-lvEgamMt--lgc';
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || '7096521481';
 const ADMIN_TELEGRAM_ID = process.env.ADMIN_TELEGRAM_ID || '7096521481';
-const JWT_SECRET = process.env.JWT_SECRET || 'ABCDEFGHI'; // Ganti dengan secret key yang kuat
+const JWT_SECRET = process.env.JWT_SECRET || 'abcdegf'; // Ganti dengan secret key yang kuat
+const APP_URL = process.env.APP_URL || 'https://wanzofc.xyz'; // URL aplikasi Anda
 
 // Konfigurasi nodemailer
 const transporter = nodemailer.createTransport({
@@ -29,8 +31,8 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-// Objek untuk menyimpan kode verifikasi sementara
-const verificationCodes = {};
+// Objek untuk menyimpan token verifikasi sementara (ganti dengan database di production)
+const verificationTokens = {};
 
 mongoose.set('strictQuery', false);
 mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -82,7 +84,8 @@ const userSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    apiKey: { type: String } // Tambahkan kolom apiKey
+    apiKey: { type: String }, // Tambahkan kolom apiKey
+    isActive: { type: Boolean, default: false } // Tambahkan status aktif
 });
 
 const User = mongoose.model('User', userSchema);
@@ -121,6 +124,18 @@ if (bot) {
             bot.sendMessage(msg.chat.id, "Gagal mendapatkan statistik.");
         }
     });
+
+    bot.onText(/\/listuser/, async (msg) => {
+        try {
+            const users = await User.find({});
+            const userList = users.map(user => user.username).join('\n');
+            bot.sendMessage(msg.chat.id, `Daftar Pengguna:\n${userList || 'Tidak ada pengguna terdaftar.'}`);
+        } catch (error) {
+            console.error('Gagal mendapatkan daftar pengguna:', error);
+            bot.sendMessage(msg.chat.id, "Gagal mendapatkan daftar pengguna.");
+        }
+    });
+
        // Custom API Key command
     bot.onText(/\/customapikey (.+)/, (msg, match) => {
         const chatId = msg.chat.id;
@@ -172,43 +187,10 @@ app.use(async (req, res, next) => {
     next();
 });
 
-// Endpoint untuk mengirim kode verifikasi
-app.post('/api/send-verification-code', async (req, res) => {
-    const { email } = req.body;
-
-    // Generate kode verifikasi acak
-    const verificationCode = Math.floor(100000 + Math.random() * 900000); // Kode 6 digit
-
-    // Simpan kode verifikasi dengan email terkait
-    verificationCodes[email] = verificationCode;
-
-    // Konfigurasi email
-    const mailOptions = {
-        from: 'berlianawan498@gmail.com', // Alamat email aplikasi Anda
-        to: email,
-        subject: 'Kode Verifikasi Pendaftaran',
-        text: `Kode verifikasi Anda adalah: ${verificationCode}`
-    };
-
-    // Kirim email
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            console.error('Gagal mengirim email:', error);
-            return res.status(500).json({ success: false, message: 'Gagal mengirim kode verifikasi. Silakan coba lagi.' });
-        }
-        console.log('Email terkirim:', info.response);
-        res.json({ success: true, message: 'Kode verifikasi telah dikirim ke email Anda.' });
-    });
-});
 // Endpoint Pendaftaran
-app.post('/api/register', async (req, res) => {
+app.post('/api/signup', async (req, res) => {
     try {
-        const { username, password, email, verificationCode } = req.body;
-
-        // Verifikasi kode verifikasi
-        if (verificationCodes[email] !== parseInt(verificationCode)) {
-            return res.status(400).json({ success: false, message: 'Kode verifikasi tidak valid.' });
-        }
+        const { username, password, email } = req.body;
 
         // Cek apakah username atau email sudah ada
         const existingUser = await User.findOne({ $or: [{ username }, { email }] });
@@ -219,24 +201,76 @@ app.post('/api/register', async (req, res) => {
         // Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
 
+        // Generate token verifikasi
+        const verificationToken = crypto.randomBytes(20).toString('hex');
+
         // Buat pengguna baru
         const newUser = new User({
             username,
             password: hashedPassword,
             email,
-            apiKey: generateApiKey() // Generate API key saat pendaftaran
+            apiKey: generateApiKey(), // Generate API key saat pendaftaran
+            isActive: false // Akun belum aktif
         });
 
         await newUser.save();
 
-        // Hapus kode verifikasi setelah pendaftaran berhasil
-        delete verificationCodes[email];
+        // Simpan token verifikasi
+        verificationTokens[verificationToken] = newUser._id;
 
-        res.status(201).json({ success: true, message: 'Pendaftaran berhasil. Silakan login.' });
+        // Buat tautan verifikasi
+        const verificationLink = `${APP_URL}/api/verify-email?token=${verificationToken}`;
+
+        // Konfigurasi email
+        const mailOptions = {
+            from: 'berlianawan498@gmail.com', // Alamat email aplikasi Anda
+            to: email,
+            subject: 'Verifikasi Pendaftaran Akun',
+            html: `<p>Silakan klik tautan berikut untuk mengaktifkan akun Anda: <a href="${verificationLink}">${verificationLink}</a></p>`
+        };
+
+        // Kirim email
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.error('Gagal mengirim email:', error);
+                return res.status(500).json({ success: false, message: 'Gagal mengirim email verifikasi. Silakan coba lagi.' });
+            }
+            console.log('Email terkirim:', info.response);
+            res.json({ success: true, message: 'Pendaftaran berhasil! Silakan periksa email Anda untuk tautan verifikasi.' });
+        });
 
     } catch (error) {
         console.error('Gagal mendaftar:', error);
         res.status(500).json({ success: false, message: 'Terjadi kesalahan saat mendaftar.' });
+    }
+});
+
+// Endpoint Verifikasi Email
+app.get('/api/verify-email', async (req, res) => {
+    const { token } = req.query;
+
+    try {
+        // Dapatkan ID pengguna dari token
+        const userId = verificationTokens[token];
+
+        if (!userId) {
+            return res.status(400).send('Tautan verifikasi tidak valid atau sudah kadaluarsa.');
+        }
+
+        // Cari dan aktifkan pengguna
+        const user = await User.findByIdAndUpdate(userId, { isActive: true }, { new: true });
+
+        if (!user) {
+            return res.status(404).send('Pengguna tidak ditemukan.');
+        }
+
+        // Hapus token verifikasi
+        delete verificationTokens[token];
+
+        res.send('Akun Anda telah berhasil diaktifkan! Silakan login.');
+    } catch (error) {
+        console.error('Gagal memverifikasi email:', error);
+        res.status(500).send('Terjadi kesalahan saat memverifikasi email.');
     }
 });
 
@@ -254,15 +288,25 @@ app.post('/api/signin', async (req, res) => {
         // Verifikasi password
         const passwordMatch = await bcrypt.compare(password, user.password);
         if (!passwordMatch) {
-            return res.status(401).json({ message: 'Kredensial tidak valid.',  result: false});
+            return res.status(401).json({ message: 'Kredensial tidak valid.', result: false });
         }
-          // Generate JWT token
+
+        // Periksa apakah akun aktif
+        if (!user.isActive) {
+            return res.status(403).json({ message: 'Akun Anda belum diaktifkan. Silakan periksa email Anda untuk tautan verifikasi.', result: false });
+        }
+
+        // Generate JWT token
         const token = generateToken(user);
+		// Buat atau perbarui API Keys di database.json
+        apiKeys[username] = user.apiKey; // Gunakan apiKey yang sudah ada
+        saveApiKeys();
+
         res.json({ message: 'Login berhasil.', apiKey: user.apiKey, token: token, result: true });
 
     } catch (error) {
         console.error('Gagal login:', error);
-        res.status(500).json({ message: 'Terjadi kesalahan saat login.',  result: false });
+        res.status(500).json({ message: 'Terjadi kesalahan saat login.', result: false });
     }
 });
 // Middleware untuk validasi API key
