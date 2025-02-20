@@ -267,6 +267,15 @@
             font-size: 1.2em;
             color: var(--dark-mode-toggle-color);
         }
+
+        /* Style untuk card music player */
+        #music-player-card {
+            margin-bottom: 20px;
+        }
+
+        #music-player {
+            width: 100%;
+        }
     </style>
 </head>
 <body>
@@ -304,10 +313,10 @@
             <p class="lead animate__animated animate__fadeInUp animate__delay-1s">Platform Canggih untuk AI dan Tools</p>
             <hr class="my-4">
             <p class="animate__animated animate__fadeIn animate__delay-2s">
-                Dokumentasi API lengkap tersedia di <a href="/api-docs">Swagger UI</a>.
+                <a href="/api-docs">docs</a>.
             </p>
             <a class="btn btn-primary btn-lg animate__animated animate__fadeIn animate__delay-2s"
-                href="/api-docs" role="button">Lihat Dokumentasi <i class="fas fa-external-link-alt"></i></a>
+                href="/api-docs" role="button"> <i class="fas fa-external-link-alt"></i></a>
         </div>
 
         <div class="row justify-content-center">
@@ -317,7 +326,7 @@
                         <div class="forum-header">
                             <div class="forum-header-left">
                                 <img src="https://via.placeholder.com/50" alt="Forum Logo">
-                                <h5 class="card-title">Support API</h5>
+                                <h5 class="card-title">dukungan</h5>
                             </div>
                             <button id="dark-mode-toggle" class="dark-mode-button">🌙</button>
                         </div>
@@ -325,14 +334,14 @@
                             <!-- Pesan-pesan akan ditampilkan di sini -->
                         </div>
                         <div class="input-group">
-                            <input type="text" class="form-control" id="message-input" placeholder="Ketik pesan Anda...">
+                            <input type="text" class="form-control" id="message-input" placeholder="ketik pesan Anda...">
                             <div class="input-group-append">
                             <div class="custom-file">
                                     <input type="file" class="custom-file-input" id="file-input">
-                                    <label class="custom-file-label" for="file-input">Pilih file</label>
+                                    <label class="custom-file-label" for="file-input"></label>
                                 </div>
                                 <button class="btn btn-primary" type="button" id="send-button">
-                                    <i class="fas fa-paper-plane"></i> Kirim
+                                    <i class="fas fa-paper-plane"></i> 
                                 </button>
                             </div>
                         </div>
@@ -340,8 +349,22 @@
                 </div>
             </div>
         </div>
-
-        <h2 class="mt-4 animate__animated animate__fadeIn" id="endpoints">Endpoint Unggulan</h2>
+         <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card" id="music-player-card">
+                    <div class="card-body">
+                        <h5 class="card-title">my songs </h5>
+                        <audio id="music-player" src="https://files.catbox.moe/yizd1x.mp3" controls></audio>
+                        <div class="mt-2">
+                            <button id="play-pause-button" class="btn btn-primary">
+                                <i class="fas fa-play"></i> 
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h2 class="mt-4 animate__animated animate__fadeIn" id="endpoints">endpoint unggulan</h2>
         <div class="row">
         <div class="col-md-4 mb-4 animate__animated animate__fadeInUp card-wrapper">
                 <div class="card">
@@ -471,13 +494,13 @@
                     "distance": 150,
                     "color": "#00ffff",
                     "opacity": 0.4,
-                    "width": 1
+                    "width": 3
                 },
                 "move": {
                     "enable": true,
                     "speed": 6,
                     "direction": "none",
-                    "random": false,
+                    "random": true,
                     "straight": false,
                     "out_mode": "out",
                     "attract": {
@@ -674,11 +697,25 @@ $(document).ready(function() {
             $('.custom-file-label').text('Pilih file');
         }
     });
-
-
     loadMessages();
     setInterval(loadMessages, 5000);
 });
+    </script>
+     <script>
+        $(document).ready(function() {
+            const audio = document.getElementById('music-player');
+            const playPauseButton = $('#play-pause-button');
+
+            playPauseButton.click(function() {
+                if (audio.paused) {
+                    audio.play();
+                    playPauseButton.html('<i class="fas fa-pause"></i> ');
+                } else {
+                    audio.pause();
+                    playPauseButton.html('<i class="fas fa-play"></i> ');
+                }
+            });
+        });
     </script>
 </body>
 </html>
