@@ -1,16 +1,24 @@
+// server.js
 const express = require('express');
 const axios = require('axios');
 const path = require('path');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+require('dotenv').config(); // Load environment variables from .env file
+
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-// Swagger UI
-const swaggerUi = require('swagger-ui-express');
-
-app.use(express.json());
+// Middleware
+app.use(cors());
+app.use(bodyParser.json());
 app.use(express.static(__dirname));
 
 const formatParagraph = (text) => text ? text.replace(/\.\s+/g, ".\n\n") : "Tidak ada jawaban.";
+
+// Swagger UI
+const swaggerUi = require('swagger-ui-express');
 
 // Konfigurasi Swagger definition
 const swaggerDefinition = {
@@ -18,11 +26,11 @@ const swaggerDefinition = {
     info: {
         title: 'WANZOFC TECH API 🔥',
         version: '1.0.0',
-        description: 'Dokumentasi API  WANZOFC TECH.',
+        description: 'Dokumentasi API WANZOFC TECH.',
     },
     servers: [
         {
-            url: `https://only-awan.biz.id`, // Sesuaikan dengan URL server Anda
+            url: process.env.SWAGGER_SERVER_URL || `http://localhost:${PORT}`, // Sesuaikan dengan URL server Anda atau gunakan variabel lingkungan
             description: 'Development server',
         },
     ],
@@ -114,7 +122,8 @@ app.get('/api/ai/deepseek-chat', async (req, res) => {
     try {
         const { data } = await axios.get(`https://api.siputzx.my.id/api/ai/deepseek-llm-67b-chat?content=${encodeURIComponent(query)}`);
         res.json({ creator: "WANZOFC TECH", result: true, message: "Deepseek Chat", data: formatParagraph(data?.data) });
-    } catch {
+    } catch (error) {
+        console.error('Error calling Deepseek Chat API:', error);
         res.status(500).json({ creator: "WANZOFC TECH", result: false, message: "Deepseek Chat bermasalah." });
     }
 });
@@ -176,7 +185,8 @@ app.get('/api/ai/gemini-pro', async (req, res) => {
            ({ creator: "WANZOFC TECH",
              result: true, message: "Gemini Pro AI",
              data: formatParagraph(data?.data) });
-    } catch {
+    } catch (error) {
+        console.error('Error calling Gemini Pro API:', error);
         res.status(500).json
             ({ creator: "WANZOFC TECH",
               result: false, 
@@ -238,7 +248,8 @@ app.get('/api/ai/meta-llama', async (req, res) => {
     try {
         const { data } = await axios.get(`https://api.siputzx.my.id/api/ai/meta-llama-33-70B-instruct-turbo?content=${encodeURIComponent(query)}`);
         res.json({ creator: "WANZOFC TECH", result: true, message: "Meta Llama", data: formatParagraph(data?.data) });
-    } catch {
+    } catch (error) {
+        console.error('Error calling Meta Llama API:', error);
         res.status(500).json({ creator: "WANZOFC TECH", result: false, message: "Meta Llama bermasalah." });
     }
 });
@@ -297,7 +308,8 @@ app.get('/api/ai/dbrx-instruct', async (req, res) => {
     try {
         const { data } = await axios.get(`https://api.siputzx.my.id/api/ai/dbrx-instruct?content=${encodeURIComponent(query)}`);
         res.json({ creator: "WANZOFC TECH", result: true, message: "DBRX Instruct", data: formatParagraph(data?.data) });
-    } catch {
+    } catch (error) {
+         console.error('Error calling DBRX Instruct API:', error);
         res.status(500).json({ creator: "WANZOFC TECH", result: false, message: "DBRX Instruct bermasalah." });
     }
 });
@@ -356,7 +368,8 @@ app.get('/api/ai/deepseek-r1', async (req, res) => {
     try {
         const { data } = await axios.get(`https://api.siputzx.my.id/api/ai/deepseek-r1?content=${encodeURIComponent(query)}`);
         res.json({ creator: "WANZOFC TECH", result: true, message: "Deepseek R1", data: formatParagraph(data?.data) });
-    } catch {
+    } catch (error) {
+        console.error('Error calling Deepseek R1 API:', error);
         res.status(500).json({ creator: "WANZOFC TECH", result: false, message: "Deepseek R1 bermasalah." });
     }
 });
@@ -415,8 +428,141 @@ app.get('/api/gita', async (req, res) => {
     try {
         const { data } = await axios.get(`https://api.siputzx.my.id/api/gita?q=${encodeURIComponent(query)}`);
         res.json({ creator: "WANZOFC TECH", result: true, message: "Gita AI", data: formatParagraph(data?.data) });
-    } catch {
+    } catch (error) {
+        console.error('Error calling Gita AI API:', error);
         res.status(500).json({ creator: "WANZOFC TECH", result: false, message: "Gita AI bermasalah." });
+    }
+});
+
+// Mongoose Connection
+const mongoDBURL = process.env.MONGODB_URI || 'mongodb://localhost:27017/wanzofc-tech'; // Default local MongoDB
+mongoose.connect(mongoDBURL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+})
+.then(() => console.log('Connected to MongoDB'))
+.catch(err => {
+    console.error('MongoDB connection error:', err);
+    process.exit(1); // Exit process on fatal error
+});
+
+// Skema Pesan (Mongoose)
+const messageSchema = new mongoose.Schema({
+    text: String,
+    timestamp: { type: Date, default: Date.now } // Add timestamp
+});
+
+const Message = mongoose.model('Message', messageSchema);
+
+/**
+ * @openapi
+ * /api/messages:
+ *   get:
+ *     summary: Mendapatkan semua pesan forum
+ *     description: Mengembalikan daftar semua pesan yang tersimpan di database.
+ *     responses:
+ *       200:
+ *         description: Berhasil mendapatkan daftar pesan.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   text:
+ *                     type: string
+ *                     description: Isi pesan.
+ *                   timestamp:
+ *                     type: string
+ *                     format: date-time
+ *                     description: Waktu pesan dikirim.
+ *       500:
+ *         description: Terjadi kesalahan saat mengambil pesan.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Pesan kesalahan.
+ */
+// Endpoint untuk mendapatkan semua pesan forum
+app.get('/api/messages', async (req, res) => {
+    try {
+        const messages = await Message.find().sort({ timestamp: 1 }); // Sort by timestamp ascending
+        res.json(messages);
+    } catch (error) {
+        console.error('Error fetching messages:', error);
+        res.status(500).json({ error: 'Failed to fetch messages' });
+    }
+});
+
+/**
+ * @openapi
+ * /api/messages:
+ *   post:
+ *     summary: Membuat pesan forum baru
+ *     description: Membuat pesan baru dan menyimpannya ke database.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               text:
+ *                 type: string
+ *                 description: Isi pesan.
+ *     responses:
+ *       201:
+ *         description: Pesan berhasil dibuat.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Pesan sukses.
+ *       400:
+ *         description: Isi pesan tidak valid.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Pesan kesalahan.
+ *       500:
+ *         description: Terjadi kesalahan saat membuat pesan.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Pesan kesalahan.
+ */
+// Endpoint untuk membuat pesan forum baru
+app.post('/api/messages', async (req, res) => {
+    try {
+        const { text } = req.body;
+
+        // Validation
+        if (!text || text.trim() === '') {
+            return res.status(400).json({ error: 'Message text is required' });
+        }
+
+        const newMessage = new Message({ text });
+        await newMessage.save();
+        res.status(201).json({ message: 'Message created successfully' });
+    } catch (error) {
+        console.error('Error creating message:', error);
+        res.status(500).json({ error: 'Failed to create message' });
     }
 });
 
