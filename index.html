@@ -1,267 +1,310 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WANZOFC TECH - API 🔥</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-          rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #0D1117;
-            color: #FFFFFF;
-            overflow-x: hidden;
-            height: auto;
-            padding-bottom: 50px;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WANZOFC TECH - API Demo</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #0D1117;
+      color: #FFFFFF;
+      overflow-x: hidden;
+      height: auto;
+      padding-bottom: 50px;
+    }
 
-        #particles-js {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            top: 0;
-            left: 0;
-            background-color: #0D1117; /* Latar belakang gelap */
-        }
+    #particles-js {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      top: 0;
+      left: 0;
+      background-color: #0D1117; /* Latar belakang gelap */
+    }
 
-        header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100px;
-            background-color: rgba(0, 255, 159, 0.1); /* Hijau neon transparan */
-            color: #00FF9F;
-            text-align: center;
-            padding: 15px 0;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-            z-index: 100;
-            border-bottom: 2px solid #00FF9F;
-        }
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100px;
+      background-color: rgba(0, 255, 159, 0.1); /* Hijau neon transparan */
+      color: #00FF9F;
+      text-align: center;
+      padding: 15px 0;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      border-bottom: 2px solid #00FF9F;
+    }
 
-        main {
-            margin-top: 120px;
-            position: relative;
-            z-index: 1;
-        }
+    main {
+      margin-top: 120px;
+      position: relative;
+      z-index: 1;
+    }
 
-        .container-title {
-            text-align: center;
-            margin-bottom: 10px;
-            color: #7928CA; /* Ungu */
-        }
+    .container-title {
+      text-align: center;
+      margin-bottom: 10px;
+      color: #7928CA; /* Ungu */
+    }
 
-        .container {
-            background-color: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-            padding: 20px;
-            margin-bottom: 20px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Efek hover yang lebih lengkap */
-        }
+    .container {
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+      padding: 20px;
+      margin-bottom: 20px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease; /* Efek hover yang lebih lengkap */
+    }
 
-        .container:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 8px rgba(0, 255, 159, 0.3); /* Efek glow saat hover */
-        }
+    .container:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 8px rgba(0, 255, 159, 0.3); /* Efek glow saat hover */
+    }
 
-        h1,
-        h2 {
-            color: #00FF9F; /* Hijau Neon */
-            font-weight: 600; /* Lebih tebal */
-            margin-bottom: 0.75rem;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
-            letter-spacing: 0.5px; /* Sedikit spacing */
-        }
+    h1,
+    h2 {
+      color: #00FF9F; /* Hijau Neon */
+      font-weight: 600; /* Lebih tebal */
+      margin-bottom: 0.75rem;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+      letter-spacing: 0.5px; /* Sedikit spacing */
+    }
 
-        button {
-            background-color: #FF4F00; /* Oranye */
-            color: #FFFFFF;
-            transition: background-color 0.3s ease, transform 0.3s ease; /* Efek hover */
-            border: none;
-            border-radius: 6px;
-            padding: 10px 20px;
-            cursor: pointer;
-            font-weight: 500;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        }
+    button {
+      background-color: #FF4F00; /* Oranye */
+      color: #FFFFFF;
+      transition: background-color 0.3s ease, transform 0.3s ease; /* Efek hover */
+      border: none;
+      border-radius: 6px;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-weight: 500;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
 
-        button:hover {
-            background-color: #FFFFFF;
-            color: #FF4F00;
-            transform: scale(1.05); /* Efek zoom kecil */
-        }
+    button:hover {
+      background-color: #FFFFFF;
+      color: #FF4F00;
+      transform: scale(1.05); /* Efek zoom kecil */
+    }
 
-        #api-endpoints a {
-            color: #00FF9F;
-            text-decoration: none;
-            transition: color 0.3s ease;
-            display: flex; /* Menggunakan flexbox untuk tata letak */
-            align-items: center; /* Menyenterkan konten secara vertikal */
-            margin-bottom: 10px; /* Memberikan jarak yang lebih besar di bawah tautan */
-        }
+    #api-endpoints a {
+      color: #00FF9F;
+      text-decoration: none;
+      transition: color 0.3s ease;
+      display: flex; /* Menggunakan flexbox untuk tata letak */
+      align-items: center; /* Menyenterkan konten secara vertikal */
+      margin-bottom: 10px; /* Memberikan jarak yang lebih besar di bawah tautan */
+    }
 
-        #api-endpoints a:hover {
-            color: #FF4F00; /* Oranye */
-        }
+    #api-endpoints a:hover {
+      color: #FF4F00; /* Oranye */
+    }
 
-        .try-it-button {
-            background-color: #7928CA; /* Ungu */
-            color: #FFFFFF;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.3s ease;
-            padding: 8px 16px;
-            font-weight: 500;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-            margin-left: 15px; /* Jarak yang lebih besar dari tautan */
-            margin-top: 10px; /* Jarak yang lebih besar dari atas */
-        }
+    .try-it-button {
+      background-color: #7928CA; /* Ungu */
+      color: #FFFFFF;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+      padding: 8px 16px;
+      font-weight: 500;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      margin-left: 15px; /* Jarak yang lebih besar dari tautan */
+      margin-top: 10px; /* Jarak yang lebih besar dari atas */
+    }
 
-        .try-it-button:hover {
-            background-color: #FF4F00; /* Oranye */
-            transform: scale(1.05);
-            color: #FFFFFF;
-        }
+    .try-it-button:hover {
+      background-color: #FF4F00; /* Oranye */
+      transform: scale(1.05);
+      color: #FFFFFF;
+    }
 
-        footer {
-            text-align: center;
-            padding: 20px;
-            color: #00FF9F;
-            background-color: rgba(0, 255, 159, 0.1); /* Hijau neon transparan */
-            position: relative;
-            z-index: 1;
-            margin-top: 50px;
-            border-top: 2px solid #00FF9F;
-        }
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: #00FF9F;
+      background-color: rgba(0, 255, 159, 0.1); /* Hijau neon transparan */
+      position: relative;
+      z-index: 1;
+      margin-top: 50px;
+      border-top: 2px solid #00FF9F;
+    }
 
-        #api-response {
-            white-space: pre-wrap;
-            word-break: break-all;
-            color: #FFFFFF;
-            padding: 15px;
-            border: 1px solid rgba(0, 255, 159, 0.2); /* Hijau neon border */
-            border-radius: 8px;
-            background-color: rgba(0, 0, 0, 0.2);
-            font-size: 0.9rem;
-            line-height: 1.4;
-            display: none; /* Sembunyikan elemen ini */
-        }
+    #api-response {
+      white-space: pre-wrap;
+      word-break: break-all;
+      color: #FFFFFF;
+      padding: 15px;
+      border: 1px solid rgba(0, 255, 159, 0.2); /* Hijau neon border */
+      border-radius: 8px;
+      background-color: rgba(0, 0, 0, 0.2);
+      font-size: 0.9rem;
+      line-height: 1.4;
+      display: none; /* Sembunyikan elemen ini */
+    }
 
-        .stat-box {
-            text-align: center;
-            padding: 20px;
-            border: 1px solid rgba(0, 255, 159, 0.2); /* Hijau neon border */
-            border-radius: 8px;
-            margin-bottom: 20px;
-            background-color: rgba(0, 0, 0, 0.2); /* Latar belakang lebih gelap */
-        }
+    .stat-box {
+      text-align: center;
+      padding: 20px;
+      border: 1px solid rgba(0, 255, 159, 0.2); /* Hijau neon border */
+      border-radius: 8px;
+      margin-bottom: 20px;
+      background-color: rgba(0, 0, 0, 0.2); /* Latar belakang lebih gelap */
+    }
 
-        .stat-value {
-            font-size: 2.5em; /* Lebih besar */
-            font-weight: 700; /* Lebih tebal */
-            color: #00FF9F; /* Hijau Neon */
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7); /* Bayangan lebih kuat */
-            letter-spacing: 1px; /* Spacing lebih lebar */
-        }
+    .stat-value {
+      font-size: 2.5em; /* Lebih besar */
+      font-weight: 700; /* Lebih tebal */
+      color: #00FF9F; /* Hijau Neon */
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7); /* Bayangan lebih kuat */
+      letter-spacing: 1px; /* Spacing lebih lebar */
+    }
 
-        /* Style untuk Search */
-        #endpoint-search-container {
-            margin-bottom: 15px;
-        }
+    /* Style untuk Search */
+    #endpoint-search-container {
+      margin-bottom: 15px;
+    }
 
-        #endpoint-search-input {
-            width: 100%;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            background-color: #1A2029;
-            color: #FFFFFF;
-        }
+    #endpoint-search-input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      background-color: #1A2029;
+      color: #FFFFFF;
+    }
 
-        .search-results {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            background-color: #1A2029;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            max-height: 200px;
-            overflow-y: auto;
-            display: none; /* Hidden by default */
-        }
+    .search-results {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      background-color: #1A2029;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      max-height: 200px;
+      overflow-y: auto;
+      display: none; /* Hidden by default */
+    }
 
-        .search-results li {
-            padding: 8px 12px;
-            cursor: pointer;
-            color: #FFFFFF;
-        }
+    .search-results li {
+      padding: 8px 12px;
+      cursor: pointer;
+      color: #FFFFFF;
+    }
 
-        .search-results li:hover {
-            background-color: #343a40;
-        }
+    .search-results li:hover {
+      background-color: #343a40;
+    }
 
-        /* Style untuk Form Input */
-        .api-input-group {
-            margin-top: 5px;
-        }
+    /* Style untuk Form Input */
+    .api-input-group {
+      margin-top: 5px;
+    }
 
-        .api-input-group input {
-            width: 100%;
-            padding: 8px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            background-color: #1A2029;
-            color: #FFFFFF;
-        }
+    .api-input-group input {
+      width: 100%;
+      padding: 8px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      background-color: #1A2029;
+      color: #FFFFFF;
+    }
 
-        /* Music Player Styles */
-        #music-player-container {
-            text-align: center;
-        }
+    /* Music Player Styles */
+    #music-player-container {
+      text-align: center;
+    }
 
-        #music-player-container i {
-            font-size: 2em;
-            color: #00FF9F;
-            cursor: pointer;
-            margin: 0 10px;
-            transition: color 0.3s ease;
-        }
+    #music-player-container i {
+      font-size: 2em;
+      color: #00FF9F;
+      cursor: pointer;
+      margin: 0 10px;
+      transition: color 0.3s ease;
+    }
 
-        #music-player-container i:hover {
-            color: #FF4F00;
-        }
+    #music-player-container i:hover {
+      color: #FF4F00;
+    }
 
-        #music-playlist {
-            display: none; /* Hide playlist */
-        }
+    #music-playlist {
+      display: none; /* Hide playlist */
+    }
 
-        /* Ensure playlist URLs are on separate lines */
-        #music-playlist p {
-            margin-bottom: 5px;
-        }
+    /* Ensure playlist URLs are on separate lines */
+    #music-playlist p {
+      margin-bottom: 5px;
+    }
 
-        /* Add the music URLs below */
-        #music-playlist p {
-            word-break: break-all; /* Prevents overflow */
-        }
+    /* Add the music URLs below */
+    #music-playlist p {
+      word-break: break-all; /* Prevents overflow */
+    }
 
 
-        .code-icon {
-            font-size: 1.2em; /* Ukuran yang lebih besar */
-            color: #f39c12; /* Warna oranye atau kuning */
-            margin-right: 5px; /* Jarak antara ikon dan teks */
-            display: inline-block; /* Agar sejajar dengan teks */
-            vertical-align: middle; /* Menyenterkan ikon vertikal */
-        }
-    </style>
+    .code-icon {
+      font-size: 1.2em; /* Ukuran yang lebih besar */
+      color: #f39c12; /* Warna oranye atau kuning */
+      margin-right: 5px; /* Jarak antara ikon dan teks */
+      display: inline-block; /* Agar sejajar dengan teks */
+      vertical-align: middle; /* Menyenterkan ikon vertikal */
+    }
+/* Styles for Sign-up/Sign-in Modals */
+.modal-content {
+    background-color: #1A2029;
+    color: #FFFFFF;
+    border: 1px solid #00FF9F;
+    border-radius: 10px;
+}
+
+.modal-header {
+    border-bottom: 1px solid #00FF9F;
+}
+
+.modal-title {
+    color: #00FF9F;
+}
+
+.close {
+    color: #00FF9F !important;
+    text-shadow: none;
+}
+
+.form-control {
+    background-color: #343a40 !important;
+    color: #FFFFFF !important;
+    border: 1px solid #00FF9F !important;
+}
+
+.btn-primary {
+    background-color: #FF4F00 !important;
+    color: #FFFFFF !important;
+    border: none !important;
+}
+
+.btn-primary:hover {
+    background-color: #FFFFFF !important;
+    color: #FF4F00 !important;
+}
+
+/* Style untuk pesan error */
+.error-message {
+    color: red;
+    margin-top: 5px;
+}
+  </style>
 </head>
 
 <body>
@@ -290,13 +333,16 @@
 
         <div class="col-md-4">
             <div id="api-key-container" class="container">
-                <h2 class="container-title">API Key</h2>
-                <p id="api-key-display">Loading API Key...</p>
+                <h2 class="container-title">Account</h2>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#signupModal">
+                    Sign Up
+                </button>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#signinModal">
+                    Sign In
+                </button>
             </div>
         </div>
     </div>
-
-
 </main>
 
 <main class="container">
@@ -355,6 +401,73 @@
 <footer>
     WANZOFC TECH
 </footer>
+<!-- Modal Sign Up -->
+<div class="modal fade" id="signupModal" tabindex="-1" role="dialog" aria-labelledby="signupModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="signupModalLabel">Sign Up</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="signupForm">
+                    <div class="form-group">
+                        <label for="signupUsername">Username</label>
+                        <input type="text" class="form-control" id="signupUsername" placeholder="Enter username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupPassword">Password</label>
+                        <input type="password" class="form-control" id="signupPassword" placeholder="Password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupEmail">Email address</label>
+                        <input type="email" class="form-control" id="signupEmail" placeholder="Enter email" required>
+                        <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                        <div id="signupEmailError" class="error-message"></div>
+                    </div>
+                    <button type="button" class="btn btn-primary" id="sendVerificationCode">Send Verification Code</button>
+                    <div class="form-group" id="verificationCodeGroup" style="display: none;">
+                        <label for="verificationCode">Verification Code</label>
+                        <input type="text" class="form-control" id="verificationCode" placeholder="Enter verification code" required>
+                        <div id="verificationCodeError" class="error-message"></div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="signupSubmit" style="display: none;">Sign Up</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Sign In -->
+<div class="modal fade" id="signinModal" tabindex="-1" role="dialog" aria-labelledby="signinModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="signinModalLabel">Sign In</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="signinForm">
+                    <div class="form-group">
+                        <label for="signinUsername">Username</label>
+                        <input type="text" class="form-control" id="signinUsername" placeholder="Enter username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signinPassword">Password</label>
+                        <input type="password" class="form-control" id="signinPassword" placeholder="Password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Sign In</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div id="music-playlist">
   <audio id="audio" autoplay loop>
@@ -371,7 +484,7 @@
 <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 
 <script>
-    $(document).ready(function () {
+ $(document).ready(function () {
         const apiKeyDisplay = $('#api-key-display');
         const tryItButtons = $('.try-it-button');
         const apiResponseDiv = $('#api-response');
@@ -383,6 +496,23 @@
         const apiEndpointsList = $('#api-endpoints-list');
         const audio = document.getElementById('audio');
         let batteryLevels = [];
+
+        // Elements for Sign-Up
+        const signupForm = $('#signupForm');
+        const signupEmailInput = $('#signupEmail');
+        const signupUsernameInput = $('#signupUsername');
+        const signupPasswordInput = $('#signupPassword');
+        const sendVerificationCodeButton = $('#sendVerificationCode');
+        const verificationCodeGroup = $('#verificationCodeGroup');
+        const verificationCodeInput = $('#verificationCode');
+        const signupSubmitButton = $('#signupSubmit');
+
+        // Error message elements
+        const signupEmailError = $('#signupEmailError');
+        const verificationCodeError = $('#verificationCodeError');
+        const signinForm = $('#signinForm');
+        const signinUsernameInput = $('#signinUsername');
+        const signinPasswordInput = $('#signinPassword');
 
         // Data endpoints (Ganti dengan data API endpoint yang sebenarnya)
         const endpointsData = [
@@ -539,6 +669,109 @@
           console.error("Autoplay dicegah:", error);
         });
 
+    // Sign-Up Functionality
+    sendVerificationCodeButton.on('click', function () {
+        const email = signupEmailInput.val();
+        if (!email) {
+            signupEmailError.text('Please enter your email address.');
+            return;
+        } else {
+            signupEmailError.text('');
+        }
+
+        // Kirim permintaan AJAX ke backend untuk mengirim kode verifikasi
+        $.ajax({
+            url: '/api/send-verification-code', // Ganti dengan endpoint yang sesuai
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({email: email}),
+            success: function (response) {
+                if (response.success) {
+                    alert('Verification code sent to your email.');
+                    verificationCodeGroup.show();
+                    signupSubmitButton.show();
+                    sendVerificationCodeButton.hide();
+
+                } else {
+                    signupEmailError.text(response.message || 'Failed to send verification code.');
+                }
+            },
+            error: function (xhr, status, error) {
+                signupEmailError.text('Failed to send verification code. Please try again.');
+            }
+        });
+    });
+
+    signupForm.on('submit', function (e) {
+            e.preventDefault();
+
+            const username = signupUsernameInput.val();
+            const password = signupPasswordInput.val();
+            const email = signupEmailInput.val();
+            const verificationCode = verificationCodeInput.val();
+
+            if (!username || !password || !email || !verificationCode) {
+                alert('Please fill in all fields.');
+                return;
+            }
+
+            // Kirim data pendaftaran ke backend untuk verifikasi dan penyimpanan
+            $.ajax({
+                url: '/api/register', // Ganti dengan endpoint yang sesuai
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    username: username,
+                    password: password,
+                    email: email,
+                    verificationCode: verificationCode
+                }),
+                success: function (response) {
+                    if (response.success) {
+                        alert('Registration successful! Please sign in.');
+                        $('#signupModal').modal('hide');
+                        signupForm[0].reset();
+                        verificationCodeGroup.hide();
+                        signupSubmitButton.hide();
+                        sendVerificationCodeButton.show();
+                    } else {
+                        verificationCodeError.text(response.message || 'Registration failed.');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    verificationCodeError.text('Registration failed. Please try again.');
+                }
+            });
+        });
+
+        // Sign-In Functionality
+    signinForm.on('submit', function (e) {
+        e.preventDefault();
+        const username = signinUsernameInput.val();
+        const password = signinPasswordInput.val();
+
+        // Kirim permintaan AJAX ke backend untuk proses sign-in
+        $.ajax({
+            url: '/api/login', // Ganti dengan endpoint yang sesuai
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({username: username, password: password}),
+            success: function (response) {
+                if (response.success) {
+                    alert('Sign in successful!');
+                    $('#signinModal').modal('hide');
+                    signinForm[0].reset();
+                    // Lakukan sesuatu setelah berhasil sign-in, contoh:
+                    // Redirect ke halaman dashboard atau perbarui tampilan
+                } else {
+                    alert(response.message || 'Sign in failed.');
+                }
+            },
+            error: function (xhr, status, error) {
+                alert('Sign in failed. Please try again.');
+            }
+        });
+    });
     });
 
     particlesJS('particles-js', {
@@ -662,7 +895,7 @@
         delay: 0.5,
         ease: "power2.out"
     });
-    gsap.from("footer", {
+        gsap.from("footer", {
         duration: 1,
         y: 100,
         opacity: 0,
