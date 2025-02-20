@@ -76,6 +76,14 @@
             background-color: #30363d;
             transform: translateX(5px);
         }
+
+        /* Gaya untuk iframe */
+        #swagger-ui-frame {
+            width: 100%;
+            border: none;
+            display: none; /* Sembunyikan secara default */
+            min-height: 800px; /* Sesuaikan tinggi sesuai kebutuhan */
+        }
     </style>
 </head>
 
@@ -87,9 +95,9 @@
             <p class="lead animate__animated animate__fadeInUp animate__delay-1s">Platform Canggih untuk AI dan Tools</p>
             <hr class="my-4">
             <p class="animate__animated animate__fadeIn animate__delay-2s">
-                Dokumentasi API lengkap tersedia di <a href="/api-docs">Swagger UI</a>.
+                Dokumentasi API lengkap tersedia di bawah ini.
             </p>
-            <a class="btn btn-primary btn-lg animate__animated animate__fadeIn animate__delay-2s" href="/api-docs" role="button">Lihat Dokumentasi <i class="fas fa-external-link-alt"></i></a>
+            <button id="show-docs-btn" class="btn btn-primary btn-lg animate__animated animate__fadeIn animate__delay-2s" onclick="toggleSwaggerUI()" role="button">Tampilkan Dokumentasi <i class="fas fa-book"></i></button>
         </div>
 
         <h2 class="mt-4 animate__animated animate__fadeIn">Endpoint Unggulan</h2>
@@ -155,6 +163,10 @@
         <ul class="animate__animated animate__fadeInUp">
             <li><a href="/kebijakan"><i class="fas fa-shield-alt"></i> Kebijakan</a></li>
         </ul>
+
+        <!-- Iframe untuk Swagger UI -->
+        <iframe id="swagger-ui-frame" src="/api-docs"></iframe>
+
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -182,6 +194,22 @@
                 }
             });
         });
+
+        // Fungsi untuk menampilkan/menyembunyikan Swagger UI
+        function toggleSwaggerUI() {
+            const iframe = document.getElementById("swagger-ui-frame");
+            const button = document.getElementById("show-docs-btn");
+            if (iframe.style.display === "none") {
+                iframe.style.display = "block";
+                button.textContent = "Sembunyikan Dokumentasi";
+                button.innerHTML = "Sembunyikan Dokumentasi <i class='fas fa-book'></i>";
+
+            } else {
+                iframe.style.display = "none";
+                button.textContent = "Tampilkan Dokumentasi";
+                button.innerHTML = "Tampilkan Dokumentasi <i class='fas fa-book'></i>";
+            }
+        }
     </script>
 
 </body>
