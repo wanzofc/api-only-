@@ -1,0 +1,8 @@
+MONGODB_URI=your_mongodb_uri
+TELEGRAM_BOT_TOKEN=7816642406:AAG0s14OnY3Msv7oRa9YO-lvEgamMt--lgc
+TELEGRAM_CHAT_ID=your_telegram_chat_id
+ADMIN_TELEGRAM_ID=your_admin_telegram_id
+JWT_SECRET=abcdefg
+APP_URL=https://wanzofc.xyz
+EMAIL_USER=berlianawan148@gmail.com
+EMAIL_PASS=olre djtq lzyu oaxg
