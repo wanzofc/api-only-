@@ -2,7 +2,7 @@ const express = require('express');
 const axios = require('axios');
 const path = require('path');
 const swaggerUi = require('swagger-ui-express');
-const swaggerJsdoc = require('swagger-jsdoc');
+// const swaggerJsdoc = require('swagger-jsdoc'); // Dihapus
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -12,23 +12,87 @@ app.use(express.static(__dirname));
 
 const formatParagraph = (text) => text ? text.replace(/\.\s+/g, ".\n\n") : "Tidak ada jawaban.";
 
-// Swagger configuration options
-const options = {
-    definition: {
-        openapi: '3.0.0',
-        info: {
-            title: 'WANZOFC TECH API Documentation',
-            version: '1.0.0',
-            description: 'Dokumentasi API untuk berbagai endpoint yang disediakan oleh WANZOFC TECH.',
+// Swagger definition
+const swaggerSpec = {
+    openapi: '3.0.0',
+    info: {
+        title: 'WANZOFC TECH API Documentation',
+        version: '1.0.0',
+        description: 'Dokumentasi API untuk berbagai endpoint yang disediakan oleh WANZOFC TECH.',
+    },
+    servers: [
+        {
+            url: `http://localhost:${PORT}`, // Gunakan template literal untuk PORT
+            description: 'Development server',
+        },
+    ],
+    paths: {
+        '/kebijakan': {
+            get: {
+                summary: 'Menampilkan halaman kebijakan.',
+                description: 'Endpoint ini menampilkan halaman kebijakan dari server.',
+                responses: {
+                    200: {
+                        description: 'Halaman kebijakan berhasil ditampilkan.',
+                    },
+                },
+            },
+        },
+         '/api/ai/deepseek-chat': {
+            get: {
+                summary: 'Mengakses Deepseek Chat AI.',
+                description: 'Mengirimkan pertanyaan ke Deepseek Chat AI dan menerima jawabannya.',
+                parameters: [
+                    {
+                        in: 'query',
+                        name: 'content',
+                        schema: {
+                            type: 'string'
+                        },
+                        description: 'Pertanyaan yang ingin diajukan ke AI.'
+                    }
+                ],
+                responses: {
+                    '200': {
+                        description: 'Respons dari Deepseek Chat AI.',
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    type: 'object',
+                                    properties: {
+                                        creator: {
+                                            type: 'string',
+                                            description: 'Nama pembuat API.'
+                                        },
+                                        result: {
+                                            type: 'boolean',
+                                            description: 'Status permintaan.'
+                                        },
+                                        message: {
+                                            type: 'string',
+                                            description: 'Pesan respons.'
+                                        },
+                                        data: {
+                                            type: 'string',
+                                            description: 'Jawaban dari Deepseek Chat AI.'
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    '500': {
+                        description: 'Terjadi kesalahan pada Deepseek Chat.'
+                    }
+                }
+            }
         },
     },
-    apis: ['./server.js'], // Path ke file utama server Anda
 };
-
-const swaggerSpec = swaggerJsdoc(options);
 
 // Serve Swagger UI
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 
 /**
  * @swagger
