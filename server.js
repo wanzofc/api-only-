@@ -11,9 +11,9 @@ const server = http.createServer(app);
 
 const PORT = process.env.PORT || 8080;
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://zanssxploit:pISqUYgJJDfnLW9b@cluster0.fgram.mongodb.net/?retryWrites=true&w=majority';
-const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || 'YOUR_TELEGRAM_BOT_TOKEN'; // Ganti dengan token bot Anda
-const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || 'YOUR_TELEGRAM_CHAT_ID'; // Ganti dengan chat ID Anda
-const ADMIN_TELEGRAM_ID = process.env.ADMIN_TELEGRAM_ID || 'YOUR_ADMIN_TELEGRAM_ID'; // Ganti dengan ID Telegram admin
+const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '7816642406:AAG0s14OnY3Msv7oRa9YO-lvEgamMt--lgc'; // Ganti dengan token bot Anda
+const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || '7096521481'; // Ganti dengan chat ID Anda
+const ADMIN_TELEGRAM_ID = process.env.ADMIN_TELEGRAM_ID || '7096521481'; // Ganti dengan ID Telegram admin
 
 mongoose.set('strictQuery', false);
 mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
