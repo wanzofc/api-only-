@@ -9,7 +9,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const nodemailer = require('nodemailer');
-const crypto = require('crypto'); // Tambahkan crypto untuk token
+const crypto = require('crypto');
 
 const app = express();
 const server = http.createServer(app);
@@ -19,19 +19,18 @@ const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://zanssxploit:pISqUY
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '7816642406:AAG0s14OnY3Msv7oRa9YO-lvEgamMt--lgc';
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || '7096521481';
 const ADMIN_TELEGRAM_ID = process.env.ADMIN_TELEGRAM_ID || '7096521481';
-const JWT_SECRET = process.env.JWT_SECRET || 'abcdegf'; // Ganti dengan secret key yang kuat
-const APP_URL = process.env.APP_URL || 'https://wanzofc.xyz'; // URL aplikasi Anda
+const JWT_SECRET = process.env.JWT_SECRET || 'abcdegf';
+const APP_URL = process.env.APP_URL || 'https://wanzofc.xyz';
 
 // Konfigurasi nodemailer
 const transporter = nodemailer.createTransport({
-    service: 'gmail', // Atau layanan email lain yang Anda gunakan
+    service: 'gmail',
     auth: {
-        user: 'berlianawan498@gmail.com', // Alamat email aplikasi Anda
-        pass: 'olre djtq lzyu oaxg' // Password aplikasi Anda
+        user: 'berlianawan498@gmail.com',
+        pass: 'olre djtq lzyu oaxg'
     }
 });
 
-// Objek untuk menyimpan token verifikasi sementara (ganti dengan database di production)
 const verificationTokens = {};
 
 mongoose.set('strictQuery', false);
@@ -46,7 +45,7 @@ const chatMessageSchema = new mongoose.Schema({
 });
 const ChatMessage = mongoose.model('ChatMessage', chatMessageSchema);
 
-// API Key Storage (Temporary - Use a proper database for production)
+// API Key Storage
 let apiKeys = loadApiKeys();
 
 function loadApiKeys() {
@@ -84,8 +83,8 @@ const userSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    apiKey: { type: String }, // Tambahkan kolom apiKey
-    isActive: { type: Boolean, default: false } // Tambahkan status aktif
+    apiKey: { type: String },
+    isActive: { type: Boolean, default: false }
 });
 
 const User = mongoose.model('User', userSchema);
@@ -136,15 +135,62 @@ if (bot) {
         }
     });
 
-       // Custom API Key command
-    bot.onText(/\/customapikey (.+)/, (msg, match) => {
+   // Delete User command
+    bot.onText(/\/deleteuser (.+)/, async (msg, match) => {
         const chatId = msg.chat.id;
-        const message = match[1];
-        const args = message.split(' ');
 
         if (msg.from.id.toString() !== ADMIN_TELEGRAM_ID) {
             return bot.sendMessage(chatId, "Hanya admin yang dapat menggunakan perintah ini.");
         }
+
+        const usernameToDelete = match[1];
+
+        try {
+            const deletedUser = await User.findOneAndDelete({ username: usernameToDelete });
+            if (deletedUser) {
+                // Update API keys and save
+                 apiKeys = loadApiKeys();
+                delete apiKeys[usernameToDelete];
+                saveApiKeys();
+                bot.sendMessage(chatId, `Pengguna dengan username ${usernameToDelete} berhasil dihapus.`);
+            } else {
+                bot.sendMessage(chatId, `Tidak dapat menemukan pengguna dengan username ${usernameToDelete}.`);
+            }
+        } catch (error) {
+            console.error('Gagal menghapus pengguna:', error);
+            bot.sendMessage(chatId, "Gagal menghapus pengguna.");
+        }
+    });
+
+    // Delete All Users command
+    bot.onText(/\/deleteallusers/, async (msg) => {
+        const chatId = msg.chat.id;
+
+        if (msg.from.id.toString() !== ADMIN_TELEGRAM_ID) {
+            return bot.sendMessage(chatId, "Hanya admin yang dapat menggunakan perintah ini.");
+        }
+
+        try {
+            await User.deleteMany({});
+
+            apiKeys = {};
+            saveApiKeys();
+            bot.sendMessage(chatId, "Semua pengguna telah dihapus!");
+        } catch (error) {
+            console.error('Gagal menghapus semua pengguna:', error);
+            bot.sendMessage(chatId, "Gagal menghapus semua pengguna.");
+        }
+    });
+       // Custom API Key command
+    bot.onText(/\/customapikey (.+)/, async (msg, match) => {
+        const chatId = msg.chat.id;
+                if (msg.from.id.toString() !== ADMIN_TELEGRAM_ID) {
+            return bot.sendMessage(chatId, "Hanya admin yang dapat menggunakan perintah ini.");
+        }
+        const message = match[1];
+        const args = message.split(' ');
+
+
 
         if (args.length !== 2) {
             return bot.sendMessage(chatId, "Format perintah salah. Gunakan: /customapikey username newapikey");
@@ -358,287 +404,6 @@ app.get('/', (req, res) => {
 
 // Declare clients array OUTSIDE all route handlers
 const clients = [];
-
-// SSE Endpoint for Chat
-app.get('/chat-stream', async (req, res) => {
-    res.setHeader('Content-Type', 'text/event-stream');
-    res.setHeader('Cache-Control', 'no-cache');
-    res.setHeader('Connection', 'keep-alive');
-    res.flushHeaders();
-
-    try {
-        const changeStream = ChatMessage.watch();
-
-        changeStream.on('change', async (change) => {
-            if (change.operationType === 'insert') {
-                const message = await ChatMessage.findById(change.documentKey._id);
-                res.write(`data: ${JSON.stringify({ message: message.message, timestamp: message.timestamp })} \n\n`);
-            }
-        });
-
-        req.on('close', () => {
-            console.log(`${clientId} Connection closed`);
-            clients = clients.filter(client => client.id !== clientId);
-        });
-    } catch (error) {
-        console.error('Error streaming updates:', error);
-        res.write(`data: ${JSON.stringify({ error: 'Error streaming updates.' })}\n\n`);
-        res.end();
-    }
-});
-
-// SSE Endpoint for Notifications
-app.get('/notification-stream', (req, res) => {
-    res.setHeader('Content-Type', 'text/event-stream');
-    res.setHeader('Cache-Control', 'no-cache');
-    res.setHeader('Connection', 'keep-alive');
-    res.flushHeaders();
-
-    const clientId = Date.now();
-    const newClient = {
-        id: clientId,
-        res,
-    };
-    clients.push(newClient);
-
-    req.on('close', () => {
-        console.log(`${clientId} Connection closed`);
-        clients = clients.filter(client => client.id !== clientId);
-    });
-});
-
-// Protected Admin endpoint to send notifications
-app.post('/admin/notify', (req, res) => {
-    const { message } = req.body;
-    if (!message) {
-        return res.status(400).json({ message: 'Message is required' });
-    }
-
-    clients.forEach(client => {
-        client.res.write(`data: ${JSON.stringify({ notification: message })} \n\n`);
-    });
-
-    res.json({ message: 'Notification sent' });
-});
-
-// Endpoint to post a new chat message
-app.post('/chat-message', async (req, res) => {
-    const { message } = req.body;
-    if (!message) {
-        return res.status(400).json({ message: 'Message is required' });
-    }
-
-    try {
-        const chatMessage = new ChatMessage({ message: message });
-        await chatMessage.save();
-        res.status(201).json({ message: 'Message saved' });
-    } catch (error) {
-        console.error('Error saving message:', error);
-        res.status(500).json({ message: 'Error saving message' });
-    }
-});
-
-// Endpoint to get chat history
-app.get('/chat-history', async (req, res) => {
-    try {
-        const chatHistory = await ChatMessage.find().sort({ timestamp: 1 }).limit(50).exec();
-        res.json(chatHistory.map(doc => ({ message: doc.message, timestamp: doc.timestamp })));
-    } catch (error) {
-        console.error('Error fetching chat history:', error);
-        res.status(500).json({ message: 'Error fetching chat history' });
-    }
-});
-// All the Other A P I
-app.get('/api/stalk/github', apiKeyValidator, async (req, res) => {
-    const username = req.query.username;
-
-    if (!username) {
-        return res.status(400).json({
-            creator: "WANZOFC TECH",
-            result: false,
-            message: "Username dibutuhkan. Sertakan parameter 'username' pada request Anda.",
-            status: appStatus
-        });
-    }
-
-    if (apiKeys.has(username)) {
-        return res.status(200).json({
-            creator: "WANZOFC TECH",
-            result: true,
-            message: "API key sudah ada.",
-            status: appStatus,
-            apikey: apiKeys.get(username)
-        });
-    }
-
-     const newApiKey = generateApiKey();
-    apiKeys[username] = newApiKey;
-    saveApiKeys()
-    res.status(201).json({
-        creator: "WANZOFC TECH",
-        result: true,
-        message: "API key berhasil dibuat.",
-        status: appStatus,
-        apikey: newApiKey
-    });
-});
-
-// Protected Endpoint
-app.get('/api/stalk/github/stalk', apiKeyValidator, async (req, res) => {
-    const user = req.query.user;
-    const username = req.query.username;
-    const apiKey = req.query.apikey;
-
-    if (!user) {
-        return res.status(400).json({
-            creator: "WANZOFC TECH",
-            result: false,
-            message: "Tambahkan parameter 'user' (contoh: /api/stalk/github/stalk?user=github_username&username=your_username&apikey=apikey).",
-            status: appStatus
-        });
-    }
-
-    try {
-        const { data } = await axios.get(`https://api.siputzx.my.id/api/stalk/github?user=${encodeURIComponent(user)}`);
-        res.json({
-            creator: "WANZOFC TECH",
-            result: true,
-            message: "GitHub Stalker",
-            status: appStatus,
-            apikey: apiKey,
-            data: data
-        });
-    } catch (error) {
-        console.error("Error fetching data:", error);
-        res.status(500).json({
-            creator: "WANZOFC TECH",
-            result: false,
-            message: "GitHub Stalker bermasalah. Periksa kembali username atau coba lagi nanti.",
-            status: appStatus,
-            apikey: apiKey,
-            error: error.message
-        });
-    }
-});
-
-// Additional API Endpoints
-app.get('/api/d/tiktok', async (req, res) => {
-    const url = req.query.url;
-    if (!url) return res.status(400).json({ result: false, message: "Tambahkan parameter 'url'." });
-
-    try {
-        const { data } = await axios.get(`https://api.siputzx.my.id/api/tiktok?url=${encodeURIComponent(url)}`);
-        res.json({ creator: "WANZOFC TECH", result: true, message: "TikTok Downloader", data: data });
-    } catch {
-        res.status(500).json({ creator: "WANZOFC TECH", result: false, message: "TikTok Downloader bermasalah." });
-    }
-});
-app.get('/api/d/igdl', async (req, res) => {
-    const url = req.query.url;
-    if (!url) return res.status(400).json({ result: false, message: "Tambahkan parameter 'url'." });
-
-    try {
-        const { data } = await axios.get(`https://api.siputzx.my.id/api/d/igdl?url=${encodeURIComponent(url)}`);
-        res.json({ creator: "WANZOFC TECH", result: true, message: "Instagram Downloader", data: data });
-    } catch {
-        res.status(500).json({ creator: "WANZOFC TECH", result: false, message: "Instagram Downloader bermasalah." });
-    }
-});
-app.get('/api/d/snackvideo', async (req, res) => {
-    const url = req.query.url;
-    if (!url) return res.status(400).json({ result: false, message: "Tambahkan parameter 'url'." });
-
-    try {
-        const { data } = await axios.get(`https://api.siputzx.my.id/api/d/snackvideo?url=${encodeURIComponent(url)}`);
-        res.json({ creator: "WANZOFC TECH", result: true, message: "SnackVideo Downloader", data: data });
-    } catch {
-        res.status(500).json({ creator: "WANZOFC TECH", result: false, message: "SnackVideo Downloader bermasalah." });
-    }
-});
-app.get('/api/d/capcut', async (req, res) => {
-    const url = req.query.url;
-    if (!url) return res.status(400).json({ result: false, message: "Tambahkan parameter 'url'." });
-
-    try {
-        const { data } = await axios.get(`https://api.siputzx.my.id/api/d/capcut?url=${encodeURIComponent(url)}`);
-        res.json({ creator: "WANZOFC TECH", result: true, message: "CapCut Template Downloader", data: data });
-    } catch {
-        res.status(500).json({ creator: "WANZOFC TECH", result: false, message: "CapCut Template Downloader bermasalah." });
-    }
-});
-app.get('/api/stalk/youtube', async (req, res) => {
-    const username = req.query.username;
-    if (!username) return res.status(400).json({ result: false, message: "Tambahkan parameter 'username'." });
-
-    try {
-        const { data } = await axios.get(`https://api.siputzx.my.id/api/stalk/youtube?username=${encodeURIComponent(username)}`);
-        res.json({ creator: "WANZOFC TECH", result: true, message: "YouTube Stalker", data: data });
-    } catch {
-        res.status(500).json({ creator: "WANZOFC TECH", result: false, message: "YouTube Stalker bermasalah." });
-    }
-});
-app.get('/api/stalk/tiktok', async (req, res) => {
-    const username = req.query.username;
-    if (!username) return res.status(400).json({ result: false, message: "Tambahkan parameter 'username'." });
-
-    try {
-        const { data } = await axios.get(`https://api.siputzx.my.id/api/stalk/tiktok?username=${encodeURIComponent(username)}`);
-        res.json({ creator: "WANZOFC TECH", result: true, message: "TikTok Stalker", data: data });
-    } catch {
-        res.status(500).json({ creator: "WANZOFC TECH", result: false, message: "TikTok Stalker bermasalah." });
-    }
-});
-app.get('/api/stalk/github', async (req, res) => {
-    const user = req.query.user;
-    if (!user) return res.status(400).json({ result: false, message: "Tambahkan parameter 'user'." });
-
-    try {
-        const { data } = await axios.get(`https://api.siputzx.my.id/api/stalk/github?user=${encodeURIComponent(user)}`);
-        res.json({ creator: "WANZOFC TECH", result: true, message: "GitHub Stalker", data: data });
-    } catch {
-        res.status(500).json({ creator: "WANZOFC TECH", result: false, message: "GitHub Stalker bermasalah." });
-    }
-});
-app.get('/api/s/tiktok', async (req, res) => {
-    const query = req.query.query;
-    if (!query) return res.status(400).json({ result: false, message: "Tambahkan parameter 'query'." });
-
-    try {
-        const { data } = await axios.get(`https://api.siputzx.my.id/api/s/tiktok?query=${encodeURIComponent(query)}`);
-        res.json({ creator: "WANZOFC TECH", result: true, message: "TikTok Search", data: data });
-    } catch {
-        res.status(500).json({ creator: "WANZOFC TECH", result: false, message: "TikTok Search bermasalah." });
-    }
-});
-
-// ** Statistik Endpoint **
-app.get('/api/statistics', async (req, res) => {
-    totalVisitors++; // Setiap kali endpoint ini diakses, anggap sebagai pengunjung baru
-
-    // Simpan totalVisitors ke database
-    try {
-        await Statistics.updateOne({}, { totalVisitors: totalVisitors }, { upsert: true });
-    } catch (error) {
-        console.error('Error updating total visitors:', error);
-    }
-
-    res.json({
-        totalRequests: totalRequests,
-        totalVisitors: totalVisitors,
-    });
-});
-
-// ** Battery Level Endpoint **
-app.post('/api/battery-level', (req, res) => {
-    const batteryLevel = req.body.batteryLevel;
-    if (batteryLevel !== undefined) {
-        batteryLevels.push(batteryLevel);
-        console.log(`Received battery level: ${batteryLevel}`);
-        res.status(200).send('Battery level received successfully');
-    } else {
-        res.status(400).send('Battery level is required');
-    }
-});
 
 // SSE Endpoint for Chat
 app.get('/chat-stream', async (req, res) => {
