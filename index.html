@@ -159,6 +159,26 @@
             max-width: 600px;
             margin-bottom: 20px;
         }
+       /* Style untuk card forum */
+        #forum-card {
+            margin-top: 20px;
+        }
+
+        #messages-container {
+            height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            margin-bottom: 10px;
+        }
+
+        #message-input {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
     </style>
 </head>
 <body>
@@ -213,7 +233,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 mb-4 animate__animated animate__fadeInUp animate__delay-1s card-wrapper">
+            <div class="col-md-4 mb-4 animate__animated animate__fadeInUp card-wrapper">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Gemini Pro AI</h5>
@@ -279,6 +299,25 @@
                     type="video/mp4">
             </video>
         </div>
+          <!-- Forum Card -->
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card" id="forum-card">
+                    <div class="card-body">
+                        <h5 class="card-title">Forum Diskusi Komunitas</h5>
+                        <div id="messages-container">
+                            <!-- Pesan-pesan akan ditampilkan di sini -->
+                        </div>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="message-input" placeholder="Ketik pesan Anda...">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="button" id="send-button">Kirim</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -302,7 +341,7 @@
                     "value": "#00ffff"
                 },
                 "shape": {
-                    "type": "circle",
+                    "type": ['circle', 'edge', 'triangle', 'polygon', 'star', 'image'], // All particle types
                     "stroke": {
                         "width": 0,
                         "color": "#000000"
@@ -311,14 +350,14 @@
                         "nb_sides": 5
                     },
                     "image": {
-                        "src": "img/github.svg",
+                        "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/HTML5_Badge.svg/512px-HTML5_Badge.svg.png", // Replace with your image URL
                         "width": 100,
                         "height": 100
                     }
                 },
                 "opacity": {
                     "value": 0.5,
-                    "random": false,
+                    "random": true,
                     "anim": {
                         "enable": false,
                         "speed": 1,
@@ -458,6 +497,69 @@
                 $("#navButton").show();
             });
         });
+    </script>
+    <script>
+    $(document).ready(function() {
+    const messagesContainer = $('#messages-container');
+    const messageInput = $('#message-input');
+    const sendButton = $('#send-button');
+
+    // Fungsi untuk memuat pesan dari server
+    function loadMessages() {
+        $.ajax({
+            url: '/api/messages', // Endpoint backend untuk mendapatkan pesan
+            type: 'GET',
+            success: function(messages) {
+                messagesContainer.empty(); // Bersihkan kontainer pesan
+
+                // Tambahkan setiap pesan ke kontainer
+                messages.forEach(function(message) {
+                    const messageElement = $('<div class="message"></div>').text(message.text); // Sesuaikan dengan struktur data Anda
+                    messagesContainer.append(messageElement);
+                });
+
+                // Scroll ke bagian bawah
+                messagesContainer.scrollTop(messagesContainer[0].scrollHeight);
+            },
+            error: function(error) {
+                console.error('Error loading messages:', error);
+            }
+        });
+    }
+
+    // Fungsi untuk mengirim pesan ke server
+    function sendMessage(message) {
+        $.ajax({
+            url: '/api/messages', // Endpoint backend untuk mengirim pesan
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ text: message }),
+            success: function() {
+                // Pesan berhasil dikirim, muat ulang pesan
+                loadMessages();
+                messageInput.val(''); // Kosongkan input
+            },
+            error: function(error) {
+                console.error('Error sending message:', error);
+            }
+        });
+    }
+
+    // Event listener untuk tombol kirim
+    sendButton.click(function() {
+        const messageText = messageInput.val();
+        if (messageText.trim() !== '') {
+            sendMessage(messageText);
+        }
+    });
+
+    // Muat pesan saat halaman dimuat
+    loadMessages();
+
+    // Set interval untuk memuat pesan secara berkala (misalnya, setiap 5 detik)
+    setInterval(loadMessages, 5000);
+});
+
     </script>
 </body>
 </html>
