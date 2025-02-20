@@ -8,7 +8,6 @@
     <link rel="canonical" href="index.html">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -21,6 +20,15 @@
             --border-color: #30363d;
             --primary-color: #238636;
             --primary-hover-color: #2ea043;
+            --message-bg: #21262d;
+            --message-text-color: #c6c6c6;
+            --dark-mode-toggle-color: #fff; /* Warna ikon mode gelap/terang */
+        }
+        .dark-mode-forum {
+            --card-bg: #333;
+            --message-bg: #444;
+            --border-color: #555;
+            --text-color: #eee;
         }
         body {
             background-color: var(--bg-color);
@@ -172,12 +180,92 @@
             background-color: var(--card-bg);
             color: var(--text-color);
             margin-bottom: 10px;
+            display: flex;
+            flex-direction: column;
         }
 
         #message-input {
             background-color: var(--card-bg);
             color: var(--text-color);
             border: 1px solid var(--border-color);
+            border-radius: 5px;
+        }
+
+        #send-button {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        #send-button:hover {
+            background-color: var(--primary-hover-color);
+            border-color: var(--primary-hover-color);
+        }
+
+        .forum-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .forum-header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .forum-header img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .forum-header h5 {
+            margin: 0;
+        }
+
+        .message {
+            padding: 8px 12px;
+            border-radius: 10px;
+            margin-bottom: 5px;
+            word-break: break-word;
+            max-width: 70%;
+            color: var(--message-text-color);
+        }
+
+        .sent {
+            background-color: var(--primary-color);
+            align-self: flex-end;
+        }
+
+        .received {
+            background-color: var(--message-bg);
+            align-self: flex-start;
+        }
+
+        .reply-button {
+            background-color: transparent;
+            border: none;
+            color: var(--link-color);
+            cursor: pointer;
+            font-size: 0.8em;
+            padding: 0;
+            margin-left: 5px;
+        }
+
+        .reply-button:hover {
+            color: var(--link-hover-color);
+        }
+
+        .dark-mode-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2em;
+            color: var(--dark-mode-toggle-color);
         }
     </style>
 </head>
@@ -221,9 +309,41 @@
             <a class="btn btn-primary btn-lg animate__animated animate__fadeIn animate__delay-2s"
                 href="/api-docs" role="button">Lihat Dokumentasi <i class="fas fa-external-link-alt"></i></a>
         </div>
+
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card" id="forum-card">
+                    <div class="card-body">
+                        <div class="forum-header">
+                            <div class="forum-header-left">
+                                <img src="https://via.placeholder.com/50" alt="Forum Logo">
+                                <h5 class="card-title">dukungan</h5>
+                            </div>
+                            <button id="dark-mode-toggle" class="dark-mode-button">🌙</button>
+                        </div>
+                        <div id="messages-container">
+                            <!-- Pesan-pesan akan ditampilkan di sini -->
+                        </div>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="message-input" placeholder="Ketik pesan Anda...">
+                            <div class="input-group-append">
+                            <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="file-input">
+                                    <label class="custom-file-label" for="file-input"></label>
+                                </div>
+                                <button class="btn btn-primary" type="button" id="send-button">
+                                    <i class="fas fa-paper-plane"></i> 
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <h2 class="mt-4 animate__animated animate__fadeIn" id="endpoints">Endpoint Unggulan</h2>
         <div class="row">
-            <div class="col-md-4 mb-4 animate__animated animate__fadeInUp card-wrapper">
+        <div class="col-md-4 mb-4 animate__animated animate__fadeInUp card-wrapper">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Deepseek Chat AI</h5>
@@ -233,7 +353,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 mb-4 animate__animated animate__fadeInUp card-wrapper">
+            <div class="col-md-4 mb-4 animate__animated animate__fadeInUp animate__delay-1s card-wrapper">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Gemini Pro AI</h5>
@@ -288,36 +408,7 @@
         <p class="animate__animated animate__fadeInUp">
            <a href="/api-docs">docs</a>.
         </p>
-        <h2 class="mt-4 animate__animated animate__fadeIn" id="gallery">my tools, my game </h2>
-        <div id="video-gallery">
-            <video controls autoplay loop muted>
-                <source src="https://files.catbox.moe/k9pb3k.mp4"
-                    type="video/mp4">
-            </video>
-            <video controls autoplay loop muted>
-                <source src="https://files.catbox.moe/d5tv4a.mp4"
-                    type="video/mp4">
-            </video>
-        </div>
-          <!-- Forum Card -->
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card" id="forum-card">
-                    <div class="card-body">
-                        <h5 class="card-title">Forum Diskusi Komunitas</h5>
-                        <div id="messages-container">
-                            <!-- Pesan-pesan akan ditampilkan di sini -->
-                        </div>
-                        <div class="input-group">
-                            <input type="text" class="form-control" id="message-input" placeholder="Ketik pesan Anda...">
-                            <div class="input-group-append">
-                                <button class="btn btn-primary" type="button" id="send-button">Kirim</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -341,7 +432,7 @@
                     "value": "#00ffff"
                 },
                 "shape": {
-                    "type": ['circle', 'edge', 'triangle', 'polygon', 'star', 'image'], // All particle types
+                    "type": ['circle', 'edge', 'triangle', 'polygon', 'star', 'image'],
                     "stroke": {
                         "width": 0,
                         "color": "#000000"
@@ -350,7 +441,7 @@
                         "nb_sides": 5
                     },
                     "image": {
-                        "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/HTML5_Badge.svg/512px-HTML5_Badge.svg.png", // Replace with your image URL
+                        "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/HTML5_Badge.svg/512px-HTML5_Badge.svg.png",
                         "width": 100,
                         "height": 100
                     }
@@ -477,7 +568,7 @@
             button.addEventListener('mouseenter', () => {
                 gsap.to(button, { scale: 1.05, duration: 0.2 });
             });
-            button.addEventListener('mouseleave', () => {
+            buttons.addEventListener('mouseleave', () => {
                 gsap.to(button, { scale: 1, duration: 0.2 });
             });
         });
@@ -498,27 +589,39 @@
             });
         });
     </script>
-    <script>
-    $(document).ready(function() {
+   <script>
+$(document).ready(function() {
     const messagesContainer = $('#messages-container');
     const messageInput = $('#message-input');
     const sendButton = $('#send-button');
+    const darkModeToggle = $('#dark-mode-toggle');
+    const forumCard = $('#forum-card');
+    const fileInput = $('#file-input');
+    let isDarkMode = false; // Status mode
 
-    // Fungsi untuk memuat pesan dari server
+    darkModeToggle.click(function() {
+        isDarkMode = !isDarkMode; // Toggle status mode
+        forumCard.toggleClass('dark-mode-forum');
+        darkModeToggle.text(isDarkMode ? '☀️' : '🌙'); // Update emoji
+    });
+
     function loadMessages() {
         $.ajax({
-            url: '/api/messages', // Endpoint backend untuk mendapatkan pesan
+            url: '/api/messages',
             type: 'GET',
             success: function(messages) {
-                messagesContainer.empty(); // Bersihkan kontainer pesan
+                messagesContainer.empty();
 
-                // Tambahkan setiap pesan ke kontainer
                 messages.forEach(function(message) {
-                    const messageElement = $('<div class="message"></div>').text(message.text); // Sesuaikan dengan struktur data Anda
+                    const messageElement = $('<div class="message"></div>')
+                        .addClass(message.sender === 'me' ? 'sent' : 'received')
+                        .text(message.text);
+
+                    const replyButton = $('<button class="reply-button">Balas</button>');
+                    messageElement.append(replyButton);
                     messagesContainer.append(messageElement);
                 });
 
-                // Scroll ke bagian bawah
                 messagesContainer.scrollTop(messagesContainer[0].scrollHeight);
             },
             error: function(error) {
@@ -527,39 +630,55 @@
         });
     }
 
-    // Fungsi untuk mengirim pesan ke server
-    function sendMessage(message) {
-        $.ajax({
-            url: '/api/messages', // Endpoint backend untuk mengirim pesan
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({ text: message }),
-            success: function() {
-                // Pesan berhasil dikirim, muat ulang pesan
-                loadMessages();
-                messageInput.val(''); // Kosongkan input
-            },
-            error: function(error) {
-                console.error('Error sending message:', error);
-            }
-        });
+     function sendMessage(message, file) {
+    let formData = new FormData();
+    formData.append('text', message);
+    if (file) {
+        formData.append('file', file);
     }
+    formData.append('sender', 'me');
 
-    // Event listener untuk tombol kirim
+    $.ajax({
+        url: '/api/messages',
+        type: 'POST',
+        contentType: false, // Penting untuk mengirim file
+        processData: false, // Penting untuk mengirim file
+        data: formData,
+        success: function() {
+            loadMessages();
+            messageInput.val('');
+            fileInput.val(''); // Reset input file
+            $('.custom-file-label').text('Pilih file'); // Reset label file
+        },
+        error: function(error) {
+            console.error('Error sending message:', error);
+        }
+    });
+}
+
+
     sendButton.click(function() {
         const messageText = messageInput.val();
-        if (messageText.trim() !== '') {
-            sendMessage(messageText);
+        const file = fileInput[0].files[0];
+
+        if (messageText.trim() !== '' || file) {
+            sendMessage(messageText, file);
         }
     });
 
-    // Muat pesan saat halaman dimuat
-    loadMessages();
+    // Update label input file
+    fileInput.change(function() {
+        if (this.files.length > 0) {
+            $('.custom-file-label').text(this.files[0].name);
+        } else {
+            $('.custom-file-label').text('Pilih file');
+        }
+    });
 
-    // Set interval untuk memuat pesan secara berkala (misalnya, setiap 5 detik)
+
+    loadMessages();
     setInterval(loadMessages, 5000);
 });
-
     </script>
 </body>
 </html>
