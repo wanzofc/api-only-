@@ -5,22 +5,20 @@ const path = require('path');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-require('dotenv').config(); // Load environment variables from .env file
+const multer = require('multer');
+require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-// Middleware
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static(__dirname));
 
 const formatParagraph = (text) => text ? text.replace(/\.\s+/g, ".\n\n") : "Tidak ada jawaban.";
 
-// Swagger UI
 const swaggerUi = require('swagger-ui-express');
 
-// Konfigurasi Swagger definition
 const swaggerDefinition = {
     openapi: '3.0.0',
     info: {
@@ -30,93 +28,30 @@ const swaggerDefinition = {
     },
     servers: [
         {
-            url: process.env.SWAGGER_SERVER_URL || `http://localhost:${PORT}`, // Sesuaikan dengan URL server Anda atau gunakan variabel lingkungan
+            url: process.env.SWAGGER_SERVER_URL || `http://localhost:${PORT}`,
             description: 'Development server',
         },
     ],
 };
 
-// Options for the swagger docs
 const options = {
     swaggerDefinition,
-    apis: ['./server.js'], // Path ke file utama server Anda
+    apis: ['./server.js'],
 };
 
-// Initialize swagger-jsdoc
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerSpec = swaggerJSDoc(options);
 
-// Serve Swagger UI
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-/**
- * @openapi
- * /kebijakan:
- *   get:
- *     summary: Menampilkan halaman kebijakan
- *     description: Mengirimkan file kebijakan.html
- *     responses:
- *       200:
- *         description: Berhasil mengirimkan file HTML.
- */
 app.get("/kebijakan", (req, res) => {
     res.sendFile(path.join(__dirname, "kebijakan.html"));
 });
 
-// Route untuk mengakses index.html
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-/**
- * @openapi
- * /api/ai/deepseek-chat:
- *   get:
- *     summary: Menggunakan Deepseek Chat AI
- *     description: Mengembalikan respon dari Deepseek Chat AI berdasarkan query yang diberikan.
- *     parameters:
- *       - in: query
- *         name: content
- *         schema:
- *           type: string
- *         description: Pertanyaan atau teks yang akan diproses oleh AI.
- *     responses:
- *       200:
- *         description: Respon sukses dari Deepseek Chat AI.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 creator:
- *                   type: string
- *                   description: Nama pembuat API.
- *                 result:
- *                   type: boolean
- *                   description: Status keberhasilan permintaan.
- *                 message:
- *                   type: string
- *                   description: Pesan deskriptif.
- *                 data:
- *                   type: string
- *                   description: Hasil dari Deepseek Chat AI.
- *       500:
- *         description: Terjadi kesalahan pada server atau Deepseek Chat bermasalah.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 creator:
- *                   type: string
- *                   description: Nama pembuat API.
- *                 result:
- *                   type: boolean
- *                   description: Status keberhasilan permintaan.
- *                 message:
- *                   type: string
- *                   description: Pesan kesalahan.
- */
 app.get('/api/ai/deepseek-chat', async (req, res) => {
     const query = req.query.content || "halo";
     try {
@@ -128,55 +63,6 @@ app.get('/api/ai/deepseek-chat', async (req, res) => {
     }
 });
 
-/**
- * @openapi
- * /api/ai/gemini-pro:
- *   get:
- *     summary: Menggunakan Gemini Pro AI
- *     description: Mengembalikan respon dari Gemini Pro AI berdasarkan query yang diberikan.
- *     parameters:
- *       - in: query
- *         name: content
- *         schema:
- *           type: string
- *         description: Pertanyaan atau teks yang akan diproses oleh AI.
- *     responses:
- *       200:
- *         description: Respon sukses dari Gemini Pro AI.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 creator:
- *                   type: string
- *                   description: Nama pembuat API.
- *                 result:
- *                   type: boolean
- *                   description: Status keberhasilan permintaan.
- *                 message:
- *                   type: string
- *                   description: Pesan deskriptif.
- *                 data:
- *                   type: string
- *                   description: Hasil dari Gemini Pro AI.
- *       500:
- *         description: Terjadi kesalahan pada server atau Gemini Pro bermasalah.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 creator:
- *                   type: string
- *                   description: Nama pembuat API.
- *                 result:
- *                   type: boolean
- *                   description: Status keberhasilan permintaan.
- *                 message:
- *                   type: string
- *                   description: Pesan kesalahan.
- */
 app.get('/api/ai/gemini-pro', async (req, res) => {
     const query = req.query.content || "hai";
     try {
@@ -194,55 +80,6 @@ app.get('/api/ai/gemini-pro', async (req, res) => {
     }
 });
 
-/**
- * @openapi
- * /api/ai/meta-llama:
- *   get:
- *     summary: Menggunakan Meta Llama AI
- *     description: Mengembalikan respon dari Meta Llama AI berdasarkan query yang diberikan.
- *     parameters:
- *       - in: query
- *         name: content
- *         schema:
- *           type: string
- *         description: Pertanyaan atau teks yang akan diproses oleh AI.
- *     responses:
- *       200:
- *         description: Respon sukses dari Meta Llama AI.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 creator:
- *                   type: string
- *                   description: Nama pembuat API.
- *                 result:
- *                   type: boolean
- *                   description: Status keberhasilan permintaan.
- *                 message:
- *                   type: string
- *                   description: Pesan deskriptif.
- *                 data:
- *                   type: string
- *                   description: Hasil dari Meta Llama AI.
- *       500:
- *         description: Terjadi kesalahan pada server atau Meta Llama bermasalah.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 creator:
- *                   type: string
- *                   description: Nama pembuat API.
- *                 result:
- *                   type: boolean
- *                   description: Status keberhasilan permintaan.
- *                 message:
- *                   type: string
- *                   description: Pesan kesalahan.
- */
 app.get('/api/ai/meta-llama', async (req, res) => {
     const query = req.query.content || "hai";
     try {
@@ -254,55 +91,6 @@ app.get('/api/ai/meta-llama', async (req, res) => {
     }
 });
 
-/**
- * @openapi
- * /api/ai/dbrx-instruct:
- *   get:
- *     summary: Menggunakan DBRX Instruct AI
- *     description: Mengembalikan respon dari DBRX Instruct AI berdasarkan query yang diberikan.
- *     parameters:
- *       - in: query
- *         name: content
- *         schema:
- *           type: string
- *         description: Pertanyaan atau teks yang akan diproses oleh AI.
- *     responses:
- *       200:
- *         description: Respon sukses dari DBRX Instruct AI.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 creator:
- *                   type: string
- *                   description: Nama pembuat API.
- *                 result:
- *                   type: boolean
- *                   description: Status keberhasilan permintaan.
- *                 message:
- *                   type: string
- *                   description: Pesan deskriptif.
- *                 data:
- *                   type: string
- *                   description: Hasil dari DBRX Instruct AI.
- *       500:
- *         description: Terjadi kesalahan pada server atau DBRX Instruct bermasalah.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 creator:
- *                   type: string
- *                   description: Nama pembuat API.
- *                 result:
- *                   type: boolean
- *                   description: Status keberhasilan permintaan.
- *                 message:
- *                   type: string
- *                   description: Pesan kesalahan.
- */
 app.get('/api/ai/dbrx-instruct', async (req, res) => {
     const query = req.query.content || "hai";
     try {
@@ -314,55 +102,6 @@ app.get('/api/ai/dbrx-instruct', async (req, res) => {
     }
 });
 
-/**
- * @openapi
- * /api/ai/deepseek-r1:
- *   get:
- *     summary: Menggunakan Deepseek R1 AI
- *     description: Mengembalikan respon dari Deepseek R1 AI berdasarkan query yang diberikan.
- *     parameters:
- *       - in: query
- *         name: content
- *         schema:
- *           type: string
- *         description: Pertanyaan atau teks yang akan diproses oleh AI.
- *     responses:
- *       200:
- *         description: Respon sukses dari Deepseek R1 AI.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 creator:
- *                   type: string
- *                   description: Nama pembuat API.
- *                 result:
- *                   type: boolean
- *                   description: Status keberhasilan permintaan.
- *                 message:
- *                   type: string
- *                   description: Pesan deskriptif.
- *                 data:
- *                   type: string
- *                   description: Hasil dari Deepseek R1 AI.
- *       500:
- *         description: Terjadi kesalahan pada server atau Deepseek R1 bermasalah.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 creator:
- *                   type: string
- *                   description: Nama pembuat API.
- *                 result:
- *                   type: boolean
- *                   description: Status keberhasilan permintaan.
- *                 message:
- *                   type: string
- *                   description: Pesan kesalahan.
- */
 app.get('/api/ai/deepseek-r1', async (req, res) => {
     const query = req.query.content || "hai";
     try {
@@ -374,55 +113,6 @@ app.get('/api/ai/deepseek-r1', async (req, res) => {
     }
 });
 
-/**
- * @openapi
- * /api/gita:
- *   get:
- *     summary: Berinteraksi dengan Gita AI
- *     description: Mengembalikan respon dari Gita AI berdasarkan query yang diberikan.
- *     parameters:
- *       - in: query
- *         name: q
- *         schema:
- *           type: string
- *         description: Pertanyaan atau teks yang akan diproses oleh AI Gita.
- *     responses:
- *       200:
- *         description: Respon sukses dari Gita AI.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 creator:
- *                   type: string
- *                   description: Nama pembuat API.
- *                 result:
- *                   type: boolean
- *                   description: Status keberhasilan permintaan.
- *                 message:
- *                   type: string
- *                   description: Pesan deskriptif.
- *                 data:
- *                   type: string
- *                   description: Hasil dari Gita AI.
- *       500:
- *         description: Terjadi kesalahan pada server atau Gita AI bermasalah.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 creator:
- *                   type: string
- *                   description: Nama pembuat API.
- *                 result:
- *                   type: boolean
- *                   description: Status keberhasilan permintaan.
- *                 message:
- *                   type: string
- *                   description: Pesan kesalahan.
- */
 app.get('/api/gita', async (req, res) => {
     const query = req.query.q || "apa itu dosa";
     try {
@@ -434,8 +124,19 @@ app.get('/api/gita', async (req, res) => {
     }
 });
 
-// Mongoose Connection
-const mongoDBURL = process.env.MONGODB_URI || 'mongodb+srv://zanssxploit:pISqUYgJJDfnLW9b@cluster0.fgram.mongodb.net/?retryWrites=true&w=majority'; // Default local MongoDB
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/');
+    },
+    filename: function (req, file, cb) {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+        cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+    }
+});
+
+const upload = multer({ storage: storage });
+
+const mongoDBURL = process.env.MONGODB_URI || 'mongodb+srv://zanssxploit:pISqUYgJJDfnLW9b@cluster0.fgram.mongodb.net/?retryWrites=true&w=majority';
 mongoose.connect(mongoDBURL, {
     useNewUrlParser: true,
     useUnifiedTopology: true
@@ -443,55 +144,25 @@ mongoose.connect(mongoDBURL, {
 .then(() => console.log('Connected to MongoDB'))
 .catch(err => {
     console.error('MongoDB connection error:', err);
-    process.exit(1); // Exit process on fatal error
+    process.exit(1);
 });
 
-// Skema Pesan (Mongoose)
 const messageSchema = new mongoose.Schema({
     text: String,
-    timestamp: { type: Date, default: Date.now } // Add timestamp
+    sender: { type: String, default: 'other' },
+    timestamp: { type: Date, default: Date.now },
+     file: {
+        filename: String,
+        path: String,
+        originalname: String
+    }
 });
 
 const Message = mongoose.model('Message', messageSchema);
 
-/**
- * @openapi
- * /api/messages:
- *   get:
- *     summary: Mendapatkan semua pesan forum
- *     description: Mengembalikan daftar semua pesan yang tersimpan di database.
- *     responses:
- *       200:
- *         description: Berhasil mendapatkan daftar pesan.
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   text:
- *                     type: string
- *                     description: Isi pesan.
- *                   timestamp:
- *                     type: string
- *                     format: date-time
- *                     description: Waktu pesan dikirim.
- *       500:
- *         description: Terjadi kesalahan saat mengambil pesan.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   description: Pesan kesalahan.
- */
-// Endpoint untuk mendapatkan semua pesan forum
 app.get('/api/messages', async (req, res) => {
     try {
-        const messages = await Message.find().sort({ timestamp: 1 }); // Sort by timestamp ascending
+        const messages = await Message.find().sort({ timestamp: 1 });
         res.json(messages);
     } catch (error) {
         console.error('Error fetching messages:', error);
@@ -503,61 +174,55 @@ app.get('/api/messages', async (req, res) => {
  * @openapi
  * /api/messages:
  *   post:
- *     summary: Membuat pesan forum baru
- *     description: Membuat pesan baru dan menyimpannya ke database.
+ *     summary: Membuat pesan forum baru dengan dukungan upload file
+ *     description: Membuat pesan baru di forum dan mengunggah file (opsional).
+ *     consumes:
+ *       - multipart/form-data
  *     requestBody:
- *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
  *               text:
  *                 type: string
- *                 description: Isi pesan.
+ *                 description: Isi pesan teks.
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *                 description: File yang akan diunggah (gambar, video, dll.).
  *     responses:
  *       201:
  *         description: Pesan berhasil dibuat.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   description: Pesan sukses.
  *       400:
- *         description: Isi pesan tidak valid.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   description: Pesan kesalahan.
+ *         description: Isi pesan tidak valid atau terjadi kesalahan pada file upload.
  *       500:
  *         description: Terjadi kesalahan saat membuat pesan.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   description: Pesan kesalahan.
  */
-// Endpoint untuk membuat pesan forum baru
-app.post('/api/messages', async (req, res) => {
-    try {
-        const { text } = req.body;
+app.post('/api/messages', upload.single('file'), async (req, res) => {
+     try {
+        const { text, sender } = req.body;
 
-        // Validation
-        if (!text || text.trim() === '') {
-            return res.status(400).json({ error: 'Message text is required' });
-        }
+         // Validation
+         if (!text && !req.file) {
+            return res.status(400).json({ error: 'Message text or file is required' });
+         }
 
-        const newMessage = new Message({ text });
+        let fileInfo = null;
+        if (req.file) {
+            fileInfo = {
+                filename: req.file.filename,
+                path: req.file.path,
+                originalname: req.file.originalname
+             };
+         }
+
+         const newMessage = new Message({
+            text: text,
+             sender: sender,
+             file: fileInfo
+         });
+
         await newMessage.save();
         res.status(201).json({ message: 'Message created successfully' });
     } catch (error) {
