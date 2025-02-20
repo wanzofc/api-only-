@@ -18,11 +18,11 @@ const swaggerDefinition = {
     info: {
         title: 'WANZOFC TECH API 🔥',
         version: '1.0.0',
-        description: 'Dokumentasi API untuk aplikasi WANZOFC TECH.',
+        description: 'Dokumentasi API  WANZOFC TECH.',
     },
     servers: [
         {
-            url: `https://only-awan.biz.id:${PORT}`, // Sesuaikan dengan URL server Anda
+            url: `https://only-awan.biz.id`, // Sesuaikan dengan URL server Anda
             description: 'Development server',
         },
     ],
