@@ -3,8 +3,6 @@ const axios = require('axios');
 const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 8080;
-
-// Swagger UI
 const swaggerUi = require('swagger-ui-express');
 
 app.use(express.json());
