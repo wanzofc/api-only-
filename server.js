@@ -52,6 +52,56 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+
+/**
+ * @openapi
+ * /api/ai/deepseek-chat:
+ *   get:
+ *     summary: Menggunakan Deepseek Chat AI
+ *     description: Mengembalikan respon dari Deepseek Chat AI berdasarkan query yang diberikan.
+ *     parameters:
+ *       - in: query
+ *         name: content
+ *         schema:
+ *           type: string
+ *         description: Pertanyaan atau teks yang akan diproses oleh AI.
+ *     responses:
+ *       200:
+ *         description: Respon sukses dari Deepseek Chat AI.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 creator:
+ *                   type: string
+ *                   description: Nama pembuat API.
+ *                 result:
+ *                   type: boolean
+ *                   description: Status keberhasilan permintaan.
+ *                 message:
+ *                   type: string
+ *                   description: Pesan deskriptif.
+ *                 data:
+ *                   type: string
+ *                   description: Hasil dari Deepseek Chat AI.
+ *       500:
+ *         description: Terjadi kesalahan pada server atau Deepseek Chat bermasalah.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 creator:
+ *                   type: string
+ *                   description: Nama pembuat API.
+ *                 result:
+ *                   type: boolean
+ *                   description: Status keberhasilan permintaan.
+ *                 message:
+ *                   type: string
+ *                   description: Pesan kesalahan.
+ */
 app.get('/api/ai/deepseek-chat', async (req, res) => {
     const query = req.query.content || "halo";
     try {
@@ -63,6 +113,55 @@ app.get('/api/ai/deepseek-chat', async (req, res) => {
     }
 });
 
+/**
+ * @openapi
+ * /api/ai/gemini-pro:
+ *   get:
+ *     summary: Menggunakan Gemini Pro AI
+ *     description: Mengembalikan respon dari Gemini Pro AI berdasarkan query yang diberikan.
+ *     parameters:
+ *       - in: query
+ *         name: content
+ *         schema:
+ *           type: string
+ *         description: Pertanyaan atau teks yang akan diproses oleh AI.
+ *     responses:
+ *       200:
+ *         description: Respon sukses dari Gemini Pro AI.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 creator:
+ *                   type: string
+ *                   description: Nama pembuat API.
+ *                 result:
+ *                   type: boolean
+ *                   description: Status keberhasilan permintaan.
+ *                 message:
+ *                   type: string
+ *                   description: Pesan deskriptif.
+ *                 data:
+ *                   type: string
+ *                   description: Hasil dari Gemini Pro AI.
+ *       500:
+ *         description: Terjadi kesalahan pada server atau Gemini Pro bermasalah.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 creator:
+ *                   type: string
+ *                   description: Nama pembuat API.
+ *                 result:
+ *                   type: boolean
+ *                   description: Status keberhasilan permintaan.
+ *                 message:
+ *                   type: string
+ *                   description: Pesan kesalahan.
+ */
 app.get('/api/ai/gemini-pro', async (req, res) => {
     const query = req.query.content || "hai";
     try {
@@ -80,6 +179,55 @@ app.get('/api/ai/gemini-pro', async (req, res) => {
     }
 });
 
+/**
+ * @openapi
+ * /api/ai/meta-llama:
+ *   get:
+ *     summary: Menggunakan Meta Llama AI
+ *     description: Mengembalikan respon dari Meta Llama AI berdasarkan query yang diberikan.
+ *     parameters:
+ *       - in: query
+ *         name: content
+ *         schema:
+ *           type: string
+ *         description: Pertanyaan atau teks yang akan diproses oleh AI.
+ *     responses:
+ *       200:
+ *         description: Respon sukses dari Meta Llama AI.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 creator:
+ *                   type: string
+ *                   description: Nama pembuat API.
+ *                 result:
+ *                   type: boolean
+ *                   description: Status keberhasilan permintaan.
+ *                 message:
+ *                   type: string
+ *                   description: Pesan deskriptif.
+ *                 data:
+ *                   type: string
+ *                   description: Hasil dari Meta Llama AI.
+ *       500:
+ *         description: Terjadi kesalahan pada server atau Meta Llama bermasalah.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 creator:
+ *                   type: string
+ *                   description: Nama pembuat API.
+ *                 result:
+ *                   type: boolean
+ *                   description: Status keberhasilan permintaan.
+ *                 message:
+ *                   type: string
+ *                   description: Pesan kesalahan.
+ */
 app.get('/api/ai/meta-llama', async (req, res) => {
     const query = req.query.content || "hai";
     try {
@@ -91,6 +239,55 @@ app.get('/api/ai/meta-llama', async (req, res) => {
     }
 });
 
+/**
+ * @openapi
+ * /api/ai/dbrx-instruct:
+ *   get:
+ *     summary: Menggunakan DBRX Instruct AI
+ *     description: Mengembalikan respon dari DBRX Instruct AI berdasarkan query yang diberikan.
+ *     parameters:
+ *       - in: query
+ *         name: content
+ *         schema:
+ *           type: string
+ *         description: Pertanyaan atau teks yang akan diproses oleh AI.
+ *     responses:
+ *       200:
+ *         description: Respon sukses dari DBRX Instruct AI.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 creator:
+ *                   type: string
+ *                   description: Nama pembuat API.
+ *                 result:
+ *                   type: boolean
+ *                   description: Status keberhasilan permintaan.
+ *                 message:
+ *                   type: string
+ *                   description: Pesan deskriptif.
+ *                 data:
+ *                   type: string
+ *                   description: Hasil dari DBRX Instruct AI.
+ *       500:
+ *         description: Terjadi kesalahan pada server atau DBRX Instruct bermasalah.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 creator:
+ *                   type: string
+ *                   description: Nama pembuat API.
+ *                 result:
+ *                   type: boolean
+ *                   description: Status keberhasilan permintaan.
+ *                 message:
+ *                   type: string
+ *                   description: Pesan kesalahan.
+ */
 app.get('/api/ai/dbrx-instruct', async (req, res) => {
     const query = req.query.content || "hai";
     try {
@@ -102,6 +299,55 @@ app.get('/api/ai/dbrx-instruct', async (req, res) => {
     }
 });
 
+/**
+ * @openapi
+ * /api/ai/deepseek-r1:
+ *   get:
+ *     summary: Menggunakan Deepseek R1 AI
+ *     description: Mengembalikan respon dari Deepseek R1 AI berdasarkan query yang diberikan.
+ *     parameters:
+ *       - in: query
+ *         name: content
+ *         schema:
+ *           type: string
+ *         description: Pertanyaan atau teks yang akan diproses oleh AI.
+ *     responses:
+ *       200:
+ *         description: Respon sukses dari Deepseek R1 AI.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 creator:
+ *                   type: string
+ *                   description: Nama pembuat API.
+ *                 result:
+ *                   type: boolean
+ *                   description: Status keberhasilan permintaan.
+ *                 message:
+ *                   type: string
+ *                   description: Pesan deskriptif.
+ *                 data:
+ *                   type: string
+ *                   description: Hasil dari Deepseek R1 AI.
+ *       500:
+ *         description: Terjadi kesalahan pada server atau Deepseek R1 bermasalah.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 creator:
+ *                   type: string
+ *                   description: Nama pembuat API.
+ *                 result:
+ *                   type: boolean
+ *                   description: Status keberhasilan permintaan.
+ *                 message:
+ *                   type: string
+ *                   description: Pesan kesalahan.
+ */
 app.get('/api/ai/deepseek-r1', async (req, res) => {
     const query = req.query.content || "hai";
     try {
@@ -113,6 +359,55 @@ app.get('/api/ai/deepseek-r1', async (req, res) => {
     }
 });
 
+/**
+ * @openapi
+ * /api/gita:
+ *   get:
+ *     summary: Berinteraksi dengan Gita AI
+ *     description: Mengembalikan respon dari Gita AI berdasarkan query yang diberikan.
+ *     parameters:
+ *       - in: query
+ *         name: q
+ *         schema:
+ *           type: string
+ *         description: Pertanyaan atau teks yang akan diproses oleh AI Gita.
+ *     responses:
+ *       200:
+ *         description: Respon sukses dari Gita AI.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 creator:
+ *                   type: string
+ *                   description: Nama pembuat API.
+ *                 result:
+ *                   type: boolean
+ *                   description: Status keberhasilan permintaan.
+ *                 message:
+ *                   type: string
+ *                   description: Pesan deskriptif.
+ *                 data:
+ *                   type: string
+ *                   description: Hasil dari Gita AI.
+ *       500:
+ *         description: Terjadi kesalahan pada server atau Gita AI bermasalah.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 creator:
+ *                   type: string
+ *                   description: Nama pembuat API.
+ *                 result:
+ *                   type: boolean
+ *                   description: Status keberhasilan permintaan.
+ *                 message:
+ *                   type: string
+ *                   description: Pesan kesalahan.
+ */
 app.get('/api/gita', async (req, res) => {
     const query = req.query.q || "apa itu dosa";
     try {
@@ -123,6 +418,7 @@ app.get('/api/gita', async (req, res) => {
         res.status(500).json({ creator: "WANZOFC TECH", result: false, message: "Gita AI bermasalah." });
     }
 });
+
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
