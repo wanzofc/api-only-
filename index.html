@@ -5,53 +5,84 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WANZOFC TECH API</title>
+
+    <!-- AMP (Accelerated Mobile Pages) -->
+    <link rel="amphtml" href="amp/index.html">
+    <link rel="canonical" href="index.html">
+
+    <!-- Stylesheets -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
     <style>
+        /* Palet Warna yang Harmonis (Contoh) */
+        :root {
+            --bg-color: #0d1117;
+            --text-color: #c6c6c6;
+            --link-color: #58a6ff;
+            --link-hover-color: #8ec0ff;
+            --jumbotron-bg: #161b22;
+            --card-bg: #161b22;
+            --border-color: #30363d;
+            --primary-color: #238636;
+            --primary-hover-color: #2ea043;
+        }
+
         body {
-            background-color: #0d1117;
-            color: #c6c6c6;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             font-family: 'Roboto', sans-serif;
             overflow-x: hidden;
         }
 
         a {
-            color: #58a6ff;
+            color: var(--link-color);
         }
 
         a:hover {
-            color: #8ec0ff;
+            color: var(--link-hover-color);
             text-decoration: none;
         }
 
         .jumbotron {
-            background-color: #161b22;
-            border-bottom: 1px solid #30363d;
+            background-color: var(--jumbotron-bg);
+            border-bottom: 1px solid var(--border-color);
             padding: 3rem 1rem;
             text-align: center;
         }
 
         .card {
-            background-color: #161b22;
-            border: 1px solid #30363d;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
             transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
         }
 
+        /* Desain Kartu Lebih Interaktif */
         .card:hover {
             transform: translateY(-8px);
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
         }
 
+        .card .card-body {
+            padding: 1.5rem;
+        }
+
+        .card .card-title {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+        }
+
         .btn-primary {
-            background-color: #238636;
-            border-color: #238636;
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
             transition: background-color 0.3s ease;
         }
 
         .btn-primary:hover {
-            background-color: #2ea043;
-            border-color: #2ea043;
+            background-color: var(--primary-hover-color);
+            border-color: var(--primary-hover-color);
         }
 
         ul {
@@ -66,20 +97,60 @@
         ul li a {
             display: block;
             padding: 10px 15px;
-            background-color: #161b22;
-            border: 1px solid #30363d;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
             border-radius: 5px;
             transition: background-color 0.3s ease, transform 0.2s ease;
         }
 
         ul li a:hover {
-            background-color: #30363d;
+            background-color: var(--border-color);
             transform: translateX(5px);
+        }
+
+        /* Efek Hover Microinteraction pada Tombol */
+        .btn {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .btn:hover::before {
+            opacity: 1;
+        }
+
+        /* Tipografi (Contoh) */
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-weight: 700;
         }
     </style>
 </head>
 
 <body>
+    <!-- Latar Belakang particlesJS -->
+    <div id="particles-js" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;"></div>
+
+    <!-- Audio Autoplay (Perhatikan Kebijakan Browser) -->
+    <audio id="backgroundAudio" loop autoplay muted>
+        <source src="background-music.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
 
     <div class="container mt-5">
         <div class="jumbotron text-center">
@@ -89,6 +160,11 @@
             <p class="animate__animated animate__fadeIn animate__delay-2s">
                 Dokumentasi API lengkap tersedia di <a href="/api-docs">Swagger UI</a>.
             </p>
+
+            <!-- AR/VR: Link untuk Pengalaman VR (Contoh) -->
+            <a class="btn btn-info btn-lg animate__animated animate__fadeIn animate__delay-2s"
+                href="/vr-experience" role="button">Lihat dalam VR <i class="fas fa-vr-cardboard"></i></a>
+
             <a class="btn btn-primary btn-lg animate__animated animate__fadeIn animate__delay-2s"
                 href="/api-docs" role="button">Lihat Dokumentasi <i class="fas fa-external-link-alt"></i></a>
         </div>
@@ -96,47 +172,47 @@
         <h2 class="mt-4 animate__animated animate__fadeIn">Endpoint Unggulan</h2>
 
         <div class="row">
-            <div class="col-md-4 mb-4 animate__animated animate__fadeInUp">
+            <div class="col-md-4 mb-4 animate__animated animate__fadeInUp card-wrapper">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Deepseek Chat AI</h5>
                         <p class="card-text">Berinteraksi dengan AI menggunakan Deepseek Chat.</p>
-                        <a href="/api/ai/deepseek-chat?content=Apa%20itu%20WANZOFC%20TECH?" class="btn btn-primary">Coba
-                            Sekarang <i class="fas fa-arrow-right"></i></a>
+                        <a href="/api/ai/deepseek-chat?content=Apa%20itu%20WANZOFC%20TECH?"
+                            class="btn btn-primary">Coba Sekarang <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 mb-4 animate__animated animate__fadeInUp animate__delay-1s">
+            <div class="col-md-4 mb-4 animate__animated animate__fadeInUp animate__delay-1s card-wrapper">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Gemini Pro AI</h5>
                         <p class="card-text">Dapatkan jawaban dari Gemini Pro.</p>
-                        <a href="/api/ai/gemini-pro?content=Ceritakan%20tentang%20dirimu" class="btn btn-primary">Coba
-                            Sekarang <i class="fas fa-arrow-right"></i></a>
+                        <a href="/api/ai/gemini-pro?content=Ceritakan%20tentang%20dirimu"
+                            class="btn btn-primary">Coba Sekarang <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 mb-4 animate__animated animate__fadeInUp animate__delay-2s">
+            <div class="col-md-4 mb-4 animate__animated animate__fadeInUp animate__delay-2s card-wrapper">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Meta Llama AI</h5>
                         <p class="card-text">Berinteraksi dengan Meta Llama model.</p>
-                        <a href="/api/ai/meta-llama?content=Berikan%20contoh%20penggunaan%20AI" class="btn btn-primary">Coba
-                            Sekarang <i class="fas fa-arrow-right"></i></a>
+                        <a href="/api/ai/meta-llama?content=Berikan%20contoh%20penggunaan%20AI"
+                            class="btn btn-primary">Coba Sekarang <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 mb-4 animate__animated animate__fadeInUp animate__delay-1s">
+            <div class="col-md-4 mb-4 animate__animated animate__fadeInUp animate__delay-1s card-wrapper">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">DBRX Instruct AI</h5>
                         <p class="card-text">Berinteraksi dengan DBRX Instruct model.</p>
-                        <a href="/api/ai/dbrx-instruct?content=Siapa%20Presiden%20Indonesia" class="btn btn-primary">Coba
-                            Sekarang <i class="fas fa-arrow-right"></i></a>
+                        <a href="/api/ai/dbrx-instruct?content=Siapa%20Presiden%20Indonesia"
+                            class="btn btn-primary">Coba Sekarang <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 mb-4 animate__animated animate__fadeInUp animate__delay-2s">
+            <div class="col-md-4 mb-4 animate__animated animate__fadeInUp animate__delay-2s card-wrapper">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Deepseek R1 AI</h5>
@@ -146,18 +222,17 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 mb-4 animate__animated animate__fadeInUp animate__delay-2s">
+            <div class="col-md-4 mb-4 animate__animated animate__fadeInUp animate__delay-2s card-wrapper">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Gita AI</h5>
                         <p class="card-text">Berinteraksi dengan Gita model.</p>
-                        <a href="/api/gita?q=apa%20itu%20dosa" class="btn btn-primary">Coba
-                            Sekarang <i class="fas fa-arrow-right"></i></a>
+                        <a href="/api/gita?q=apa%20itu%20dosa" class="btn btn-primary">Coba Sekarang <i
+                                class="fas fa-arrow-right"></i></a>
                     </div>
                 </div>
             </div>
         </div>
-
         <h2 class="mt-4 animate__animated animate__fadeIn">Navigasi</h2>
         <ul class="animate__animated animate__fadeInUp">
             <li><a href="/kebijakan"><i class="fas fa-shield-alt"></i> Kebijakan</a></li>
@@ -168,29 +243,182 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 
     <script>
+        // Inisialisasi particlesJS
+        particlesJS('particles-js', {
+            "particles": {
+                "number": {
+                    "value": 80,
+                    "density": {
+                        "enable": true,
+                        "value_area": 800
+                    }
+                },
+                "color": {
+                    "value": "#ffffff"
+                },
+                "shape": {
+                    "type": "circle",
+                    "stroke": {
+                        "width": 0,
+                        "color": "#000000"
+                    },
+                    "polygon": {
+                        "nb_sides": 5
+                    },
+                    "image": {
+                        "src": "img/github.svg",
+                        "width": 100,
+                        "height": 100
+                    }
+                },
+                "opacity": {
+                    "value": 0.5,
+                    "random": false,
+                    "anim": {
+                        "enable": false,
+                        "speed": 1,
+                        "opacity_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "size": {
+                    "value": 3,
+                    "random": true,
+                    "anim": {
+                        "enable": false,
+                        "speed": 40,
+                        "size_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "line_linked": {
+                    "enable": true,
+                    "distance": 150,
+                    "color": "#ffffff",
+                    "opacity": 0.4,
+                    "width": 1
+                },
+                "move": {
+                    "enable": true,
+                    "speed": 6,
+                    "direction": "none",
+                    "random": false,
+                    "straight": false,
+                    "out_mode": "out",
+                    "attract": {
+                        "enable": false,
+                        "rotateX": 600,
+                        "rotateY": 1200
+                    }
+                }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": {
+                    "onhover": {
+                        "enable": true,
+                        "mode": "repulse"
+                    },
+                    "onclick": {
+                        "enable": true,
+                        "mode": "push"
+                    },
+                    "resize": true
+                },
+                "modes": {
+                    "grab": {
+                        "distance": 400,
+                        "line_linked": {
+                            "opacity": 1
+                        }
+                    },
+                    "bubble": {
+                        "distance": 400,
+                        "size": 40,
+                        "duration": 2,
+                        "opacity": 8,
+                        "speed": 3
+                    },
+                    "repulse": {
+                        "distance": 200
+                    },
+                    "push": {
+                        "particles_nb": 4
+                    },
+                    "remove": {
+                        "particles_nb": 2
+                    }
+                }
+            },
+            "retina_detect": true,
+            "config_demo": {
+                "hide_card": false,
+                "background_color": "#b61924",
+                "background_image": "",
+                "opacity": 0.8,
+                "particles_number": 80
+            }
+        });
+
         // GSAP Animations
+        gsap.registerPlugin(ScrollTrigger);
+
+        //Jumbotron Animation
         gsap.from(".jumbotron h1", { opacity: 0, duration: 1, y: -50, ease: "power3.out" });
         gsap.from(".jumbotron p", { opacity: 0, duration: 1, y: 50, delay: 0.5, ease: "power3.out" });
         gsap.from(".jumbotron .btn", { opacity: 0, duration: 1, delay: 1, y: 50, ease: "power3.out" });
 
-        gsap.utils.toArray(".card").forEach((card, index) => {
+        // Card Animations dengan ScrollTrigger dan Parallax
+        gsap.utils.toArray(".card-wrapper").forEach((wrapper, index) => {
+            let card = wrapper.querySelector(".card");
+
+            // Parallax effect
+            gsap.to(card, {
+                y: 50, // Adjust the parallax intensity
+                ease: "none",
+                scrollTrigger: {
+                    trigger: wrapper,
+                    start: "top bottom",
+                    end: "bottom top",
+                    scrub: true,
+                }
+            });
+
             gsap.from(card, {
                 opacity: 0,
                 x: index % 2 === 0 ? -100 : 100,
                 duration: 0.75,
-                delay: 0.25 * index,
                 ease: "power2.out",
                 scrollTrigger: {
-                    trigger: card,
+                    trigger: wrapper,
                     start: "top 80%",
                     toggleActions: "play none none reset"
                 }
             });
         });
-    </script>
 
+        //Microinteraction (Contoh Sederhana)
+        const buttons = document.querySelectorAll('.btn');
+
+        buttons.forEach(button => {
+            button.addEventListener('mouseenter', () => {
+                gsap.to(button, { scale: 1.05, duration: 0.2 });
+            });
+
+            button.addEventListener('mouseleave', () => {
+                gsap.to(button, { scale: 1, duration: 0.2 });
+            });
+        });
+        // Autoplay audio (Pastikan ijin browser diberikan)
+        document.getElementById('backgroundAudio').play().catch(error => {
+            console.error("Autoplay prevented:", error);
+            // Tambahkan tombol atau logika untuk memungkinkan pengguna memulai audio
+        });
+    </script>
 </body>
 
 </html>
