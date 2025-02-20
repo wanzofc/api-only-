@@ -76,14 +76,6 @@
             background-color: #30363d;
             transform: translateX(5px);
         }
-
-        /* Gaya untuk iframe */
-        #swagger-ui-frame {
-            width: 100%;
-            border: none;
-            display: none; /* Sembunyikan secara default */
-            min-height: 800px; /* Sesuaikan tinggi sesuai kebutuhan */
-        }
     </style>
 </head>
 
@@ -95,9 +87,10 @@
             <p class="lead animate__animated animate__fadeInUp animate__delay-1s">Platform Canggih untuk AI dan Tools</p>
             <hr class="my-4">
             <p class="animate__animated animate__fadeIn animate__delay-2s">
-                Dokumentasi API lengkap tersedia di bawah ini.
+                Dokumentasi API lengkap tersedia di <a href="/api-docs">Swagger UI</a>.
             </p>
-            <button id="show-docs-btn" class="btn btn-primary btn-lg animate__animated animate__fadeIn animate__delay-2s" onclick="toggleSwaggerUI()" role="button">Tampilkan Dokumentasi <i class="fas fa-book"></i></button>
+            <a class="btn btn-primary btn-lg animate__animated animate__fadeIn animate__delay-2s"
+                href="/api-docs" role="button">Lihat Dokumentasi <i class="fas fa-external-link-alt"></i></a>
         </div>
 
         <h2 class="mt-4 animate__animated animate__fadeIn">Endpoint Unggulan</h2>
@@ -108,7 +101,8 @@
                     <div class="card-body">
                         <h5 class="card-title">Deepseek Chat AI</h5>
                         <p class="card-text">Berinteraksi dengan AI menggunakan Deepseek Chat.</p>
-                        <a href="/api/ai/deepseek-chat?content=Apa%20itu%20WANZOFC%20TECH?" class="btn btn-primary">Coba Sekarang <i class="fas fa-arrow-right"></i></a>
+                        <a href="/api/ai/deepseek-chat?content=Apa%20itu%20WANZOFC%20TECH?" class="btn btn-primary">Coba
+                            Sekarang <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </div>
             </div>
@@ -117,7 +111,8 @@
                     <div class="card-body">
                         <h5 class="card-title">Gemini Pro AI</h5>
                         <p class="card-text">Dapatkan jawaban dari Gemini Pro.</p>
-                        <a href="/api/ai/gemini-pro?content=Ceritakan%20tentang%20dirimu" class="btn btn-primary">Coba Sekarang <i class="fas fa-arrow-right"></i></a>
+                        <a href="/api/ai/gemini-pro?content=Ceritakan%20tentang%20dirimu" class="btn btn-primary">Coba
+                            Sekarang <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </div>
             </div>
@@ -126,7 +121,8 @@
                     <div class="card-body">
                         <h5 class="card-title">Meta Llama AI</h5>
                         <p class="card-text">Berinteraksi dengan Meta Llama model.</p>
-                        <a href="/api/ai/meta-llama?content=Berikan%20contoh%20penggunaan%20AI" class="btn btn-primary">Coba Sekarang <i class="fas fa-arrow-right"></i></a>
+                        <a href="/api/ai/meta-llama?content=Berikan%20contoh%20penggunaan%20AI" class="btn btn-primary">Coba
+                            Sekarang <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </div>
             </div>
@@ -135,7 +131,8 @@
                     <div class="card-body">
                         <h5 class="card-title">DBRX Instruct AI</h5>
                         <p class="card-text">Berinteraksi dengan DBRX Instruct model.</p>
-                        <a href="/api/ai/dbrx-instruct?content=Siapa%20Presiden%20Indonesia" class="btn btn-primary">Coba Sekarang <i class="fas fa-arrow-right"></i></a>
+                        <a href="/api/ai/dbrx-instruct?content=Siapa%20Presiden%20Indonesia" class="btn btn-primary">Coba
+                            Sekarang <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </div>
             </div>
@@ -144,7 +141,8 @@
                     <div class="card-body">
                         <h5 class="card-title">Deepseek R1 AI</h5>
                         <p class="card-text">Berinteraksi dengan Deepseek R1 model.</p>
-                        <a href="/api/ai/deepseek-r1?content=Apa%20itu%20Internet" class="btn btn-primary">Coba Sekarang <i class="fas fa-arrow-right"></i></a>
+                        <a href="/api/ai/deepseek-r1?content=Apa%20itu%20Internet" class="btn btn-primary">Coba
+                            Sekarang <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </div>
             </div>
@@ -153,7 +151,8 @@
                     <div class="card-body">
                         <h5 class="card-title">Gita AI</h5>
                         <p class="card-text">Berinteraksi dengan Gita model.</p>
-                        <a href="/api/gita?q=apa%20itu%20dosa" class="btn btn-primary">Coba Sekarang <i class="fas fa-arrow-right"></i></a>
+                        <a href="/api/gita?q=apa%20itu%20dosa" class="btn btn-primary">Coba
+                            Sekarang <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </div>
             </div>
@@ -163,10 +162,6 @@
         <ul class="animate__animated animate__fadeInUp">
             <li><a href="/kebijakan"><i class="fas fa-shield-alt"></i> Kebijakan</a></li>
         </ul>
-
-        <!-- Iframe untuk Swagger UI -->
-        <iframe id="swagger-ui-frame" src="/api-docs"></iframe>
-
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -194,22 +189,6 @@
                 }
             });
         });
-
-        // Fungsi untuk menampilkan/menyembunyikan Swagger UI
-        function toggleSwaggerUI() {
-            const iframe = document.getElementById("swagger-ui-frame");
-            const button = document.getElementById("show-docs-btn");
-            if (iframe.style.display === "none") {
-                iframe.style.display = "block";
-                button.textContent = "Sembunyikan Dokumentasi";
-                button.innerHTML = "Sembunyikan Dokumentasi <i class='fas fa-book'></i>";
-
-            } else {
-                iframe.style.display = "none";
-                button.textContent = "Tampilkan Dokumentasi";
-                button.innerHTML = "Tampilkan Dokumentasi <i class='fas fa-book'></i>";
-            }
-        }
     </script>
 
 </body>
