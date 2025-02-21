@@ -6,6 +6,10 @@
     <title>WANZOFC TECH API</title>
     <link rel="amphtml" href="amp/index.html">
     <link rel="canonical" href="index.html">
+
+    <!-- Manifest PWA -->
+    <link rel="manifest" href="manifest.json">
+
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
@@ -271,12 +275,12 @@
             color: var(--dark-mode-toggle-color);
         }
 
-        /* Style untuk card music player */
-        #music-player-card {
+        /* Style untuk card install aplikasi */
+        #install-app-card {
             margin-bottom: 20px;
         }
 
-        #music-player {
+        #install-app-button {
             width: 100%;
         }
 
@@ -338,7 +342,7 @@
     <div id="particles-js" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;"></div>
     <audio id="backgroundAudio" loop autoplay muted>
         <source src="https://files.catbox.moe/yizd1x.mp3" type="audio/mpeg">
-        </audio>
+    </audio>
     <div class="content">
         <div class="jumbotron text-center">
             <h1 class="display-4 animate__animated animate__fadeInDown">WANZOFC TECH API</h1>
@@ -353,17 +357,16 @@
         <div class="row justify-content-center">
            <!-- Card Forum sudah dihilangkan dari sini -->
         </div>
+        <!-- Container "Install Aplikasi" -->
          <div class="row justify-content-center">
             <div class="col-md-8">
-                <div class="card" id="music-player-card">
+                <div class="card" id="install-app-card">
                     <div class="card-body">
-                        <h5 class="card-title">my songs </h5>
-                        <audio id="music-player" src="https://files.catbox.moe/yizd1x.mp3" controls></audio>
-                        <div class="mt-2">
-                            <button id="play-pause-button" class="btn btn-primary">
-                                <i class="fas fa-play"></i> 
-                            </button>
-                        </div>
+                        <h5 class="card-title">Instal Aplikasi</h5>
+                        <p class="card-text">Dapatkan pengalaman yang lebih baik dengan menginstal aplikasi kami.</p>
+                        <button class="btn btn-primary" id="install-app-button">
+                            Install Sekarang <i class="fas fa-download"></i>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -651,6 +654,48 @@
             });
         });
     </script>
+       <script>
+        let deferredInstallPrompt = null;
+        const installButton = document.getElementById('install-app-button');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Mencegah Chrome 67 dan yang lebih lama agar tidak secara otomatis memunculkan prompt
+            e.preventDefault();
+            // Simpan event agar nanti dapat digunakan.
+            deferredInstallPrompt = e;
+            // Tampilkan tombol install
+            installButton.style.display = 'block';
+        });
+
+        installButton.addEventListener('click', async () => {
+            if (deferredInstallPrompt !== null) {
+                // Tampilkan prompt install
+                deferredInstallPrompt.prompt();
+                // Tunggu respons pengguna
+                const { outcome } = await deferredInstallPrompt.userChoice;
+                // (Opsional) Kirim analitik dengan outcome yang telah dipilih
+                console.log(`User response to the install prompt: ${outcome}`);
+                // Kita hanya dapat menggunakannya sekali, hilangkan referensi
+                deferredInstallPrompt = null;
+                // Sembunyikan tombol install
+                installButton.style.display = 'none';
+            }
+        });
+
+    // Service Worker Registration
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/service-worker.js')
+                .then((registration) => {
+                    console.log('Service Worker terdaftar: ', registration);
+                })
+                .catch((error) => {
+                    console.log('Registrasi Service Worker gagal: ', error);
+                });
+        });
+    }
+
+</script>
    <script>
 $(document).ready(function() {
     const messagesContainer = $('#messages-container');
@@ -786,22 +831,6 @@ $(document).ready(function() {
     loadMessages();
     setInterval(loadMessages, 5000);
 });
-    </script>
-     <script>
-        $(document).ready(function() {
-            const audio = document.getElementById('music-player');
-            const playPauseButton = $('#play-pause-button');
-
-            playPauseButton.click(function() {
-                if (audio.paused) {
-                    audio.play();
-                    playPauseButton.html('<i class="fas fa-pause"></i> ');
-                } else {
-                    audio.pause();
-                    playPauseButton.html('<i class="fas fa-play"></i> ');
-                }
-            });
-        });
     </script>
 </body>
 </html>
