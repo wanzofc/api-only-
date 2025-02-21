@@ -732,15 +732,22 @@ $(document).ready(function() {
     $.ajax({
         url: '/api/messages',
         type: 'POST',
-        contentType: true, // Penting untuk mengirim file
-        processData: true, // Penting untuk mengirim file
+        contentType: false, // Penting untuk mengirim file
+        processData: false, // Penting untuk mengirim file
         data: formData,
-        success: function() {
+        success: function(response) {
+            // Setelah berhasil mengirim, muat ulang pesan
             loadMessages();
             messageInput.val('');
-            fileInput.val(''); // Reset input file
-            $('.custom-file-label').text('Pilih file'); // Reset label file
-             replyToIdInput.val(''); // Reset ID Balasan
+            fileInput.val('');
+            $('.custom-file-label').text('Pilih file');
+            replyToIdInput.val('');
+            messageInput.attr('placeholder', 'Ketik pesan Anda...');
+
+            // Scroll ke bawah setelah memuat pesan
+            setTimeout(() => {
+                messagesContainer.scrollTop(messagesContainer[0].scrollHeight);
+            }, 100); // Menunggu sedikit agar pesan benar-benar ter-render
         },
         error: function(error) {
             console.error('Error sending message:', error);
