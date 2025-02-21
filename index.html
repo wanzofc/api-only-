@@ -22,7 +22,10 @@
             --primary-hover-color: #2ea043;
             --message-bg: #21262d;
             --message-text-color: #c6c6c6;
-            --dark-mode-toggle-color: #fff; /* Warna ikon mode gelap/terang */
+            --dark-mode-toggle-color: #fff;
+            --widget-bg: #238636;
+            --widget-text: #fff;
+            --widget-open-bg: #161b22;
         }
         .dark-mode-forum {
             --card-bg: #333;
@@ -276,14 +279,66 @@
         #music-player {
             width: 100%;
         }
+
+        /* Style untuk Chat Widget */
+        #chat-widget-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--widget-bg);
+            color: var(--widget-text);
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1000;
+            transition: background-color 0.3s ease;
+        }
+
+        #chat-widget-button:hover {
+            background-color: var(--primary-hover-color);
+        }
+
+        #chat-widget-container {
+            position: fixed;
+            bottom: 80px; /* Sesuaikan posisi */
+            right: 20px;
+            width: 350px;
+            max-height: 500px;
+            background-color: var(--widget-open-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 999;
+            display: none; /* Sembunyikan secara default */
+            overflow: hidden; /* Mencegah overflow konten */
+        }
+
+        #chat-widget-container.open {
+            display: block;
+        }
+
+        /* Style untuk Balasan */
+        .replying-to {
+            background-color: #30363d;
+            color: #c6c6c6;
+            padding: 5px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            font-size: 0.8em;
+        }
     </style>
 </head>
 <body>
     <div id="particles-js" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;"></div>
     <audio id="backgroundAudio" loop autoplay muted>
         <source src="https://files.catbox.moe/yizd1x.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
+        </audio>
     <div class="content">
         <div class="jumbotron text-center">
             <h1 class="display-4 animate__animated animate__fadeInDown">WANZOFC TECH API</h1>
@@ -296,33 +351,7 @@
                 href="/api-docs" role="button"> <i class="fas fa-external-link-alt"></i></a>
         </div>
         <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card" id="forum-card">
-                    <div class="card-body">
-                        <div class="forum-header">
-                            <div class="forum-header-left">
-                                <img src="https://files.catbox.moe/nisyfz.png" alt="Forum Logo">
-                                <h5 class="card-title">dukungan</h5>
-                            </div>
-                            <button id="dark-mode-toggle" class="dark-mode-button">🌙</button>
-                        </div>
-                        <div id="messages-container">
-                        </div>
-                        <div class="input-group">
-                            <input type="text" class="form-control" id="message-input" placeholder="ketik pesan Anda...">
-                            <div class="input-group-append">
-                            <div class="custom-file">
-                                    <input type="file" class="custom-file-input" id="file-input">
-                                    <label class="custom-file-label" for="file-input"></label>
-                                </div>
-                                <button class="btn btn-primary" type="button" id="send-button">
-                                    <i class="fas fa-paper-plane"></i> 
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+           <!-- Card Forum sudah dihilangkan dari sini -->
         </div>
          <div class="row justify-content-center">
             <div class="col-md-8">
@@ -407,6 +436,41 @@
            <a href="/api-docs">docs</a>.
         </p>
 
+    </div>
+
+    <!-- Chat Widget Button -->
+    <button id="chat-widget-button">
+        <i class="fas fa-comment-dots"></i>
+    </button>
+
+    <!-- Chat Widget Container -->
+    <div id="chat-widget-container">
+        <div class="card" id="forum-card">
+            <div class="card-body">
+                <div class="forum-header">
+                    <div class="forum-header-left">
+                        <img src="https://files.catbox.moe/nisyfz.png" alt="Forum Logo">
+                        <h5 class="card-title">dukungan</h5>
+                    </div>
+                    <button id="dark-mode-toggle" class="dark-mode-button">🌙</button>
+                </div>
+                <div id="messages-container">
+                </div>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="message-input" placeholder="ketik pesan Anda...">
+                    <input type="hidden" id="reply-to-id">
+                    <div class="input-group-append">
+                    <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="file-input">
+                            <label class="custom-file-label" for="file-input"></label>
+                        </div>
+                        <button class="btn btn-primary" type="button" id="send-button">
+                            <i class="fas fa-paper-plane"></i> 
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -595,12 +659,15 @@ $(document).ready(function() {
     const darkModeToggle = $('#dark-mode-toggle');
     const forumCard = $('#forum-card');
     const fileInput = $('#file-input');
-    let isDarkMode = false; // Status mode
+    let isDarkMode = false;
+    const chatWidgetButton = $('#chat-widget-button');
+    const chatWidgetContainer = $('#chat-widget-container');
+    const replyToIdInput = $('#reply-to-id');
 
     darkModeToggle.click(function() {
-        isDarkMode = !isDarkMode; // Toggle status mode
+        isDarkMode = !isDarkMode;
         forumCard.toggleClass('dark-mode-forum');
-        darkModeToggle.text(isDarkMode ? '☀️' : '🌙'); // Update emoji
+        darkModeToggle.text(isDarkMode ? '☀️' : '🌙');
     });
 
     function loadMessages() {
@@ -613,10 +680,20 @@ $(document).ready(function() {
                 messages.forEach(function(message) {
                     const messageElement = $('<div class="message"></div>')
                         .addClass(message.sender === 'me' ? 'sent' : 'received')
-                        .text(message.text);
+                        .attr('data-message-id', message.id);
 
+                    if (message.reply_to) {
+                        const repliedTo = messages.find(m => m.id === message.reply_to);
+                        if (repliedTo) {
+                            messageElement.prepend(`<div class="replying-to">Membalas: ${repliedTo.text}</div>`);
+                        } else {
+                            messageElement.prepend(`<div class="replying-to">Membalas pesan yang tidak ada</div>`);
+                        }
+                    }
+
+                    messageElement.text(message.text);
                     const replyButton = $('<button class="reply-button">Balas</button>');
-                    messageElement.append(replyButton);
+                    messageElement.append(' ').append(replyButton);
                     messagesContainer.append(messageElement);
                 });
 
@@ -628,13 +705,16 @@ $(document).ready(function() {
         });
     }
 
-     function sendMessage(message, file) {
+ function sendMessage(message, file, replyToId) {
     let formData = new FormData();
     formData.append('text', message);
     if (file) {
         formData.append('file', file);
     }
     formData.append('sender', 'me');
+    if (replyToId) {
+        formData.append('reply_to', replyToId);
+    }
 
     $.ajax({
         url: '/api/messages',
@@ -647,6 +727,7 @@ $(document).ready(function() {
             messageInput.val('');
             fileInput.val(''); // Reset input file
             $('.custom-file-label').text('Pilih file'); // Reset label file
+             replyToIdInput.val(''); // Reset ID Balasan
         },
         error: function(error) {
             console.error('Error sending message:', error);
@@ -654,13 +735,13 @@ $(document).ready(function() {
     });
 }
 
-
     sendButton.click(function() {
         const messageText = messageInput.val();
         const file = fileInput[0].files[0];
+        const replyToId = replyToIdInput.val(); // ambil ID pesan yang di balas
 
         if (messageText.trim() !== '' || file) {
-            sendMessage(messageText, file);
+            sendMessage(messageText, file, replyToId); // kirim ID balasan
         }
     });
 
@@ -672,8 +753,22 @@ $(document).ready(function() {
             $('.custom-file-label').text('Pilih file');
         }
     });
+
+     //Event Handker untuk tombol balas
+    messagesContainer.on('click', '.reply-button', function(){
+        const messageId = $(this).closest('.message').data('message-id');
+        replyToIdInput.val(messageId); //Simpan ID pesan yang akan di balas
+        messageInput.attr('placeholder', `membalas pesan ${messageId}`); //opsional : indikasi visual
+        messageInput.focus();
+
+    });
+
     loadMessages();
     setInterval(loadMessages, 5000);
+
+    chatWidgetButton.click(function() {
+        chatWidgetContainer.toggleClass('open');
+    });
 });
     </script>
      <script>
