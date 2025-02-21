@@ -22,13 +22,13 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerDefinition = {
     openapi: '3.0.0',
     info: {
-        title: 'WANZOFC TECH API 🔥',
+        title: 'WANZOFC TECH API ðŸ”¥',
         version: '1.0.0',
         description: 'Dokumentasi API WANZOFC TECH.',
     },
     servers: [
         {
-            url: process.env.SWAGGER_SERVER_URL || `http://localhost:${PORT}`,
+            url: process.env.SWAGGER_SERVER_URL || `https://only-awan.biz.id`,
             description: 'Development server',
         },
     ],
@@ -447,10 +447,15 @@ const messageSchema = new mongoose.Schema({
     text: String,
     sender: { type: String, default: 'other' },
     timestamp: { type: Date, default: Date.now },
-     file: {
+    file: {
         filename: String,
         path: String,
         originalname: String
+    },
+    reply_to: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Message',
+        default: null //Untuk pesan awal, reply_to nya null
     }
 });
 
@@ -470,8 +475,8 @@ app.get('/api/messages', async (req, res) => {
  * @openapi
  * /api/messages:
  *   post:
- *     summary: Membuat pesan forum baru dengan dukungan upload file
- *     description: Membuat pesan baru di forum dan mengunggah file (opsional).
+ *     summary: Membuat pesan forum baru dengan dukungan upload file dan reply
+ *     description: Membuat pesan baru di forum dan mengunggah file (opsional) dan fitur reply.
  *     consumes:
  *       - multipart/form-data
  *     requestBody:
@@ -487,6 +492,9 @@ app.get('/api/messages', async (req, res) => {
  *                 type: string
  *                 format: binary
  *                 description: File yang akan diunggah (gambar, video, dll.).
+ *               reply_to:
+ *                 type: string
+ *                 description: ID pesan yang dibalas.
  *     responses:
  *       201:
  *         description: Pesan berhasil dibuat.
@@ -496,13 +504,13 @@ app.get('/api/messages', async (req, res) => {
  *         description: Terjadi kesalahan saat membuat pesan.
  */
 app.post('/api/messages', upload.single('file'), async (req, res) => {
-     try {
-        const { text, sender } = req.body;
+    try {
+        const { text, sender, reply_to } = req.body;
 
-         // Validation
-         if (!text && !req.file) {
+        // Validation
+        if (!text && !req.file) {
             return res.status(400).json({ error: 'Message text or file is required' });
-         }
+        }
 
         let fileInfo = null;
         if (req.file) {
@@ -510,14 +518,16 @@ app.post('/api/messages', upload.single('file'), async (req, res) => {
                 filename: req.file.filename,
                 path: req.file.path,
                 originalname: req.file.originalname
-             };
-         }
+            };
+        }
 
-         const newMessage = new Message({
+        // Buat message baru
+        const newMessage = new Message({
             text: text,
-             sender: sender,
-             file: fileInfo
-         });
+            sender: sender,
+            file: fileInfo,
+            reply_to: reply_to || null //Set reply_to, kalau tidak ada isinya null
+        });
 
         await newMessage.save();
         res.status(201).json({ message: 'Message created successfully' });
