@@ -323,7 +323,7 @@
             display: block;
         }
 
-        /* Style untuk Balasan */
+       /* Style untuk Balasan */
         .replying-to {
             background-color: #30363d;
             color: #c6c6c6;
@@ -460,12 +460,12 @@
                     <input type="text" class="form-control" id="message-input" placeholder="ketik pesan Anda...">
                     <input type="hidden" id="reply-to-id">
                     <div class="input-group-append">
-                    <div class="custom-file">
+                        <div class="custom-file">
                             <input type="file" class="custom-file-input" id="file-input">
-                            <label class="custom-file-label" for="file-input"></label>
+                            <label class="custom-file-label" for="file-input">Pilih file</label>
                         </div>
                         <button class="btn btn-primary" type="button" id="send-button">
-                            <i class="fas fa-paper-plane"></i> 
+                            <i class="fas fa-paper-plane"></i>
                         </button>
                     </div>
                 </div>
@@ -641,7 +641,7 @@
         $(document).ready(function() {
             $("#navButton").click(function() {
                 $(".sidebar-nav").addClass("open");
-                $(".content").addClass("open");
+                $(".content").addClass("open";
                 $(this).hide();
             });
             $("#closeNavButton").click(function() {
@@ -651,125 +651,127 @@
             });
         });
     </script>
-   <script>
-$(document).ready(function() {
-    const messagesContainer = $('#messages-container');
-    const messageInput = $('#message-input');
-    const sendButton = $('#send-button');
-    const darkModeToggle = $('#dark-mode-toggle');
-    const forumCard = $('#forum-card');
-    const fileInput = $('#file-input');
-    let isDarkMode = false;
-    const chatWidgetButton = $('#chat-widget-button');
-    const chatWidgetContainer = $('#chat-widget-container');
-    const replyToIdInput = $('#reply-to-id');
+    <script>
+    $(document).ready(function() {
+        const messagesContainer = $('#messages-container');
+        const messageInput = $('#message-input');
+        const sendButton = $('#send-button');
+        const darkModeToggle = $('#dark-mode-toggle');
+        const forumCard = $('#forum-card');
+        const fileInput = $('#file-input');
+        const chatWidgetButton = $('#chat-widget-button');
+        const chatWidgetContainer = $('#chat-widget-container');
+        const replyToIdInput = $('#reply-to-id');
 
-    darkModeToggle.click(function() {
-        isDarkMode = !isDarkMode;
-        forumCard.toggleClass('dark-mode-forum');
-        darkModeToggle.text(isDarkMode ? '☀️' : '🌙');
-    });
+        chatWidgetButton.click(function() {
+            chatWidgetContainer.toggleClass('open');
+        });
 
-    function loadMessages() {
-        $.ajax({
-            url: '/api/messages',
-            type: 'GET',
-            success: function(messages) {
-                messagesContainer.empty();
+        darkModeToggle.click(function() {
+            forumCard.toggleClass('dark-mode-forum');
+            darkModeToggle.text(forumCard.hasClass('dark-mode-forum') ? '☀️' : '🌙');
+        });
 
-                messages.forEach(function(message) {
-                    const messageElement = $('<div class="message"></div>')
-                        .addClass(message.sender === 'me' ? 'sent' : 'received')
-                        .attr('data-message-id', message.id);
+        function loadMessages() {
+            $.ajax({
+                url: '/api/messages',
+                type: 'GET',
+                success: function(messages) {
+                    messagesContainer.empty();
 
-                    if (message.reply_to) {
-                        const repliedTo = messages.find(m => m.id === message.reply_to);
-                        if (repliedTo) {
-                            messageElement.prepend(`<div class="replying-to">Membalas: ${repliedTo.text}</div>`);
-                        } else {
-                            messageElement.prepend(`<div class="replying-to">Membalas pesan yang tidak ada</div>`);
+                    messages.forEach(function(message) {
+                        const messageElement = $('<div class="message"></div>')
+                            .addClass(message.sender === 'me' ? 'sent' : 'received')
+                            .attr('data-message-id', message._id); // MongoDB menggunakan _id
+
+                        if (message.reply_to) {
+                            const repliedTo = messages.find(m => m._id === message.reply_to); //MongoDB menggunakan _id
+                            if (repliedTo) {
+                                messageElement.prepend(`<div class="replying-to">Membalas: ${repliedTo.text}</div>`);
+                            } else {
+                                messageElement.prepend(`<div class="replying-to">Membalas pesan yang tidak ditemukan</div>`);
+                            }
                         }
-                    }
 
-                    messageElement.text(message.text);
-                    const replyButton = $('<button class="reply-button">Balas</button>');
-                    messageElement.append(' ').append(replyButton);
-                    messagesContainer.append(messageElement);
-                });
+                        let messageContent = message.text ? `<p>${message.text}</p>` : '';
 
-                messagesContainer.scrollTop(messagesContainer[0].scrollHeight);
-            },
-            error: function(error) {
-                console.error('Error loading messages:', error);
+                        if (message.file && message.file.path) {
+                            messageContent += `<img src="${message.file.path}" alt="Gambar" style="max-width: 200px;">`;
+                        }
+
+                        messageElement.append(messageContent);
+                        const replyButton = $('<button class="reply-button">Balas</button>');
+                        messageElement.append(' ').append(replyButton);
+                        messagesContainer.append(messageElement);
+                    });
+
+                    messagesContainer.scrollTop(messagesContainer[0].scrollHeight);
+                },
+                error: function(error) {
+                    console.error('Error loading messages:', error);
+                }
+            });
+        }
+
+        function sendMessage(message, file, replyToId) {
+            let formData = new FormData();
+            formData.append('text', message);
+            if (file) {
+                formData.append('file', file);
+            }
+            formData.append('sender', 'me');
+            if (replyToId) {
+                formData.append('reply_to', replyToId);
+            }
+
+            $.ajax({
+                url: '/api/messages',
+                type: 'POST',
+                contentType: false,
+                processData: false,
+                data: formData,
+                success: function() {
+                    loadMessages();
+                    messageInput.val('');
+                    fileInput.val('');
+                    $('.custom-file-label').text('Pilih file');
+                    replyToIdInput.val('');
+                    messageInput.attr('placeholder', 'Ketik pesan Anda...');
+                },
+                error: function(error) {
+                    console.error('Error sending message:', error);
+                }
+            });
+        }
+
+        sendButton.click(function() {
+            const messageText = messageInput.val();
+            const file = fileInput[0].files[0];
+            const replyToId = replyToIdInput.val();
+
+            if (messageText.trim() !== '' || file) {
+                sendMessage(messageText, file, replyToId);
             }
         });
-    }
 
- function sendMessage(message, file, replyToId) {
-    let formData = new FormData();
-    formData.append('text', message);
-    if (file) {
-        formData.append('file', file);
-    }
-    formData.append('sender', 'me');
-    if (replyToId) {
-        formData.append('reply_to', replyToId);
-    }
+        fileInput.change(function() {
+            if (this.files.length > 0) {
+                $('.custom-file-label').text(this.files[0].name);
+            } else {
+                $('.custom-file-label').text('Pilih file');
+            }
+        });
 
-    $.ajax({
-        url: '/api/messages',
-        type: 'POST',
-        contentType: false, // Penting untuk mengirim file
-        processData: false, // Penting untuk mengirim file
-        data: formData,
-        success: function() {
-            loadMessages();
-            messageInput.val('');
-            fileInput.val(''); // Reset input file
-            $('.custom-file-label').text('Pilih file'); // Reset label file
-             replyToIdInput.val(''); // Reset ID Balasan
-        },
-        error: function(error) {
-            console.error('Error sending message:', error);
-        }
+        messagesContainer.on('click', '.reply-button', function() {
+            const messageId = $(this).closest('.message').data('message-id');
+            replyToIdInput.val(messageId);
+            messageInput.attr('placeholder', `Membalas pesan ${messageId}`);
+            messageInput.focus();
+        });
+
+        loadMessages();
+        setInterval(loadMessages, 5000);
     });
-}
-
-    sendButton.click(function() {
-        const messageText = messageInput.val();
-        const file = fileInput[0].files[0];
-        const replyToId = replyToIdInput.val(); // ambil ID pesan yang di balas
-
-        if (messageText.trim() !== '' || file) {
-            sendMessage(messageText, file, replyToId); // kirim ID balasan
-        }
-    });
-
-    // Update label input file
-    fileInput.change(function() {
-        if (this.files.length > 0) {
-            $('.custom-file-label').text(this.files[0].name);
-        } else {
-            $('.custom-file-label').text('Pilih file');
-        }
-    });
-
-     //Event Handker untuk tombol balas
-    messagesContainer.on('click', '.reply-button', function(){
-        const messageId = $(this).closest('.message').data('message-id');
-        replyToIdInput.val(messageId); //Simpan ID pesan yang akan di balas
-        messageInput.attr('placeholder', `membalas pesan ${messageId}`); //opsional : indikasi visual
-        messageInput.focus();
-
-    });
-
-    loadMessages();
-    setInterval(loadMessages, 5000);
-
-    chatWidgetButton.click(function() {
-        chatWidgetContainer.toggleClass('open');
-    });
-});
     </script>
      <script>
         $(document).ready(function() {
