@@ -81,7 +81,7 @@
         ul {
             list-style: none;
             padding-left: 0;
-            }
+        }
         ul li {
             margin-bottom: 8px;
         }
@@ -664,7 +664,11 @@ $(document).ready(function() {
     const chatWidgetContainer = $('#chat-widget-container');
     const replyToIdInput = $('#reply-to-id');
 
-    chatWidgetButton.click(function() {
+    // Memastikan chatWidgetContainer tertutup saat halaman dimuat
+    chatWidgetContainer.removeClass('open');
+
+    // Memastikan chatWidgetButton mendapatkan event listener
+    chatWidgetButton.off('click').on('click', function() {
         chatWidgetContainer.toggleClass('open');
     });
 
@@ -728,8 +732,8 @@ $(document).ready(function() {
     $.ajax({
         url: '/api/messages',
         type: 'POST',
-        contentType: false, // Penting untuk mengirim file
-        processData: false, // Penting untuk mengirim file
+        contentType: true, // Penting untuk mengirim file
+        processData: true, // Penting untuk mengirim file
         data: formData,
         success: function() {
             loadMessages();
@@ -774,10 +778,6 @@ $(document).ready(function() {
 
     loadMessages();
     setInterval(loadMessages, 5000);
-
-    chatWidgetButton.click(function() {
-        chatWidgetContainer.toggleClass('open');
-    });
 });
     </script>
      <script>
