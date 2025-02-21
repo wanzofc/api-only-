@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.0/dist/sweetalert2.min.css">
+
     <style>
         :root {
             --bg-color: #0d1117;
@@ -483,6 +485,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/ScrollTrigger.min.js"></script>
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.0/dist/sweetalert2.all.min.js"></script>
+
     <script>
         particlesJS('particles-js', {
             "particles": {
@@ -692,9 +696,51 @@
                 .catch((error) => {
                     console.log('Registrasi Service Worker gagal: ', error);
                 });
+
+            // Verifikasi Pemuatan Manifest (Opsional)
+            fetch('manifest.json')
+            .then(response => {
+                if (!response.ok) {
+                throw new Error(`Gagal memuat manifest: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(manifest => {
+                console.log('Manifest berhasil dimuat:', manifest);
+                // Anda dapat melakukan sesuatu dengan data manifest di sini, jika diperlukan
+            })
+            .catch(error => {
+                console.error('Error memuat manifest:', error);
+            });
+
         });
     }
 
+    // Event Listener untuk Setelah PWA Diinstal
+    window.addEventListener('appinstalled', (event) => {
+        console.log('PWA berhasil diinstal');
+        // Menampilkan Notifikasi SweetAlert2
+        Swal.fire({
+            title: 'Aplikasi Berhasil Diinstal!',
+            text: 'Anda sekarang dapat menggunakan WANZOFC TECH API secara offline.',
+            icon: 'success',
+            confirmButtonText: 'Siip!',
+            background: 'var(--message-bg)',
+            color: 'var(--message-text-color)',
+            confirmButtonColor: 'var(--primary-color)',
+            timer: 5000, // Notifikasi akan tertutup secara otomatis setelah 5 detik
+            showClass: {
+                popup: `
+                animate__animated animate__fadeInDown
+                `
+            },
+            hideClass: {
+                popup: `
+                animate__animated animate__fadeOutUp
+                `
+            }
+        });
+    });
 </script>
    <script>
 $(document).ready(function() {
@@ -800,7 +846,7 @@ $(document).ready(function() {
     });
 }
 
-    sendButton.click(function() {
+        sendButton.click(function() {
         const messageText = messageInput.val();
         const file = fileInput[0].files[0];
         const replyToId = replyToIdInput.val(); // ambil ID pesan yang di balas
