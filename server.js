@@ -52,6 +52,91 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+/**
+ * @openapi
+ * /api/ai/gpt3:
+ *   get:
+ *     summary: Menggunakan GPT-3 AI
+ *     description: Mengembalikan respon dari GPT-3 AI berdasarkan prompt dan content yang diberikan.
+ *     parameters:
+ *       - in: query
+ *         name: prompt
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Prompt untuk GPT-3 AI.
+ *       - in: query
+ *         name: content
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Content untuk GPT-3 AI.
+ *     responses:
+ *       200:
+ *         description: Respon sukses dari GPT-3 AI.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 creator:
+ *                   type: string
+ *                   description: Nama pembuat API.
+ *                 result:
+ *                   type: boolean
+ *                   description: Status keberhasilan permintaan.
+ *                 message:
+ *                   type: string
+ *                   description: Pesan deskriptif.
+ *                 data:
+ *                   type: object
+ *                   description: Hasil dari GPT-3 AI.
+ *       400:
+ *         description: Parameter prompt dan content harus diberikan.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 creator:
+ *                   type: string
+ *                   description: Nama pembuat API.
+ *                 result:
+ *                   type: boolean
+ *                   description: Status keberhasilan permintaan.
+ *                 message:
+ *                   type: string
+ *                   description: Pesan kesalahan.
+ *       500:
+ *         description: Terjadi kesalahan pada server atau GPT-3 AI bermasalah.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 creator:
+ *                   type: string
+ *                   description: Nama pembuat API.
+ *                 result:
+ *                   type: boolean
+ *                   description: Status keberhasilan permintaan.
+ *                 message:
+ *                   type: string
+ *                   description: Pesan kesalahan.
+ */
+app.get('/api/ai/gpt3', async (req, res) => {
+    try {
+        const prompt = req.query.prompt;
+        const content = req.query.content;
+        if (!prompt || !content) return res.status(400).json({ creator: "WANZOFC TECH", result: false, message: "Harap masukkan parameter prompt dan content!" });
+
+        const { data } = await axios.get(`https://api.siputzx.my.id/api/ai/gpt3?prompt=${encodeURIComponent(prompt)}&content=${encodeURIComponent(content)}`);
+        res.json({ creator: "WANZOFC TECH", result: true, message: "GPT-3 AI Response", data: data });
+    } catch (error) {
+        console.error("Error in /api/ai/gpt3:", error); // Log error
+        res.status(500).json({ creator: "WANZOFC TECH", result: false, message: "Gagal mendapatkan respons dari GPT-3 AI." });
+    }
+});
 
 /**
  * @openapi
