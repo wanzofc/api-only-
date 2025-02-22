@@ -298,6 +298,67 @@ app.get('/api/ai/dbrx-instruct', async (req, res) => {
         res.status(500).json({ creator: "WANZOFC TECH", result: false, message: "DBRX Instruct bermasalah." });
     }
 });
+/**
+ * @openapi
+ * /api/gita:
+ *   get:
+ *     summary: Berinteraksi dengan khodam AI
+ *     description: Mengembalikan respon dari khodam AI berdasarkan content yang diberikan.
+ *     parameters:
+ *       - in: content
+ *         name: q
+ *         schema:
+ *           type: string
+ *         description: Pertanyaan atau teks yang akan diproses oleh AI khodam.
+ *     responses:
+ *       200:
+ *         description: Respon sukses dari khodam AI.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 creator:
+ *                   type: string
+ *                   description: Nama pembuat API.
+ *                 result:
+ *                   type: boolean
+ *                   description: Status keberhasilan permintaan.
+ *                 message:
+ *                   type: string
+ *                   description: Pesan deskriptif.
+ *                 data:
+ *                   type: string
+ *                   description: Hasil dari khodam AI.
+ *       500:
+ *         description: Terjadi kesalahan pada server atau Gita AI bermasalah.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 creator:
+ *                   type: string
+ *                   description: Nama pembuat API.
+ *                 result:
+ *                   type: boolean
+ *                   description: Status keberhasilan permintaan.
+ *                 message:
+ *                   type: string
+ *                   description: Pesan kesalahan.
+ */
+app.get('/api/ai/khodam', async (req, res) => {
+    try {
+        const content = req.query.content;
+        if (!content) return res.status(400).json({ creator: "WANZOFC TECH", result: false, message: "Harap masukkan parameter content!" });
+
+        const { data } = await axios.get(`https://api.siputzx.my.id/api/ai/dukun?content=${encodeURIComponent(content)}`);
+        res.json(data);
+    } catch (error) {
+        console.error("Error in /api/ai/khodam:", error); // Log error
+        res.status(500).json({ creator: "WANZOFC TECH", result: false, message: "Gagal mengambil data Khodam AI." });
+    }
+});
 
 /**
  * @openapi
