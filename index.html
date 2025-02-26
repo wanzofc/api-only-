@@ -4,11 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>WANZOFC TECH API</title>
+    <meta name="description" content="WANZOFC TECH API: Platform canggih untuk AI dan tools. Dapatkan akses ke berbagai API seperti Deepseek Chat, Gemini Pro, Meta Llama, dan lainnya.">
     <link rel="amphtml" href="amp/index.html">
     <link rel="canonical" href="index.html">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <style>
         :root {
             --bg-color: #0d1117;
@@ -27,12 +29,7 @@
             --widget-text: #fff;
             --widget-open-bg: #161b22;
         }
-        .dark-mode-forum {
-            --card-bg: #333;
-            --message-bg: #444;
-            --border-color: #555;
-            --text-color: #eee;
-        }
+
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
@@ -40,51 +37,63 @@
             overflow-x: hidden;
             overscroll-behavior: contain;
         }
+
         a {
             color: var(--link-color);
         }
+
         a:hover {
             color: var(--link-hover-color);
             text-decoration: none;
         }
+
         .jumbotron {
             background-color: var(--jumbotron-bg);
             border-bottom: 1px solid var(--border-color);
             padding: 3rem 1rem;
             text-align: center;
         }
+
         .card {
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
             transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
         }
+
         .card:hover {
             transform: translateY(-8px);
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
         }
+
         .card .card-body {
             padding: 1.5rem;
         }
+
         .card .card-title {
             font-size: 1.25rem;
             margin-bottom: 0.75rem;
         }
+
         .btn-primary {
             background-color: var(--primary-color);
             border-color: var(--primary-color);
             transition: background-color 0.3s ease;
         }
+
         .btn-primary:hover {
             background-color: var(--primary-hover-color);
             border-color: var(--primary-hover-color);
         }
+
         ul {
             list-style: none;
             padding-left: 0;
         }
+
         ul li {
             margin-bottom: 8px;
         }
+
         ul li a {
             display: block;
             padding: 10px 15px;
@@ -93,14 +102,17 @@
             border-radius: 5px;
             transition: background-color 0.3s ease, transform 0.2s ease;
         }
+
         ul li a:hover {
             background-color: var(--border-color);
             transform: translateX(5px);
         }
+
         .btn {
             position: relative;
             overflow: hidden;
         }
+
         .btn::before {
             content: "";
             position: absolute;
@@ -112,12 +124,20 @@
             opacity: 0;
             transition: opacity 0.3s ease;
         }
+
         .btn:hover::before {
             opacity: 1;
         }
-        h1, h2, h3, h4, h5, h6 {
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
             font-weight: 700;
         }
+
         .sidebar-nav {
             position: fixed;
             top: 0;
@@ -132,25 +152,31 @@
             transition: left 0.3s ease;
             z-index: 1000;
         }
+
         .sidebar-nav.open {
             left: 0;
         }
+
         .sidebar-nav .nav-link {
             padding: 1rem;
             color: var(--text-color);
         }
+
         .sidebar-nav .nav-link:hover {
             background-color: var(--border-color);
             color: var(--link-hover-color);
         }
+
         .content {
             margin-left: 0;
             padding: 20px;
             transition: margin-left 0.3s ease;
         }
+
         .content.open {
             margin-left: 250px;
         }
+
         #navButton {
             position: fixed;
             top: 20px;
@@ -162,15 +188,18 @@
             cursor: pointer;
             z-index: 1001;
         }
+
         #navButton.open {
             display: none;
         }
+
         #video-gallery video {
             width: 100%;
             max-width: 600px;
             margin-bottom: 20px;
         }
-       /* Style untuk card forum */
+
+        /* Style untuk card forum */
         #forum-card {
             margin-top: 20px;
         }
@@ -306,7 +335,8 @@
 
         #chat-widget-container {
             position: fixed;
-            bottom: 80px; /* Sesuaikan posisi */
+            bottom: 80px;
+            /* Sesuaikan posisi */
             right: 20px;
             width: 350px;
             max-height: 500px;
@@ -315,8 +345,10 @@
             border-radius: 5px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             z-index: 999;
-            display: none; /* Sembunyikan secara default */
-            overflow: hidden; /* Mencegah overflow konten */
+            display: none;
+            /* Sembunyikan secara default */
+            overflow: hidden;
+            /* Mencegah overflow konten */
         }
 
         #chat-widget-container.open {
@@ -332,14 +364,70 @@
             border-radius: 5px;
             font-size: 0.8em;
         }
+
+        .mouse-trail {
+            position: absolute;
+            width: 10px;
+            /* Ukuran trail */
+            height: 10px;
+            background-color: var(--primary-color);
+            /* Warna trail */
+            border-radius: 50%;
+            /* Membuat trail berbentuk lingkaran */
+            pointer-events: none;
+            /* Memastikan trail tidak mengganggu interaksi */
+            z-index: 9999;
+            /* Menempatkan trail di atas konten lain */
+            opacity: 0.7;
+            /* Opacity trail */
+            transition: opacity 0.3s ease-out;
+            /* Efek fade out */
+        }
+
+        #daily-tip-container {
+            background-color: var(--message-bg);
+            /* Sesuaikan dengan tema Anda */
+            border: 1px solid var(--border-color);
+            color: var(--message-text-color);
+            border-radius: 5px;
+            padding: 10px;
+        }
     </style>
 </head>
+
 <body>
+
+    <!-- Ucapan Selamat Datang (Modal) -->
+    <div class="modal fade" id="welcomeModal" tabindex="-1" role="dialog" aria-labelledby="welcomeModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="welcomeModalLabel">Selamat Datang di WANZOFC TECH API!</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Selamat datang! Kami senang Anda bergabung dengan komunitas kami. Jelajahi API kami, baca
+                    dokumentasinya, dan jangan ragu untuk bertanya jika Anda memiliki pertanyaan.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Mulai!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="particles-js" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;"></div>
     <audio id="backgroundAudio" loop autoplay muted>
         <source src="https://files.catbox.moe/yizd1x.mp3" type="audio/mpeg">
-        </audio>
+    </audio>
+
     <div class="content">
+         <div class="alert alert-info mt-3 animate__animated animate__fadeIn" id="daily-tip-container" style="display: none;">
+                <strong>Tip Harian:</strong> <span id="daily-tip"></span>
+            </div>
         <div class="jumbotron text-center">
             <h1 class="display-4 animate__animated animate__fadeInDown">WANZOFC TECH API</h1>
             <p class="lead animate__animated animate__fadeInUp animate__delay-1s">platform canggih untuk ai dan tools</p>
@@ -347,13 +435,13 @@
             <p class="animate__animated animate__fadeIn animate__delay-2s">
                 <a href="/api-docs">docs</a>.
             </p>
-            <a class="btn btn-primary btn-lg animate__animated animate__fadeIn animate__delay-2s"
-                href="/api-docs" role="button"> <i class="fas fa-external-link-alt"></i></a>
+            <a class="btn btn-primary btn-lg animate__animated animate__fadeIn animate__delay-2s" href="/api-docs"
+                role="button"> <i class="fas fa-external-link-alt"></i></a>
         </div>
         <div class="row justify-content-center">
-           <!-- Card Forum sudah dihilangkan dari sini -->
+            <!-- Card Forum sudah dihilangkan dari sini -->
         </div>
-         <div class="row justify-content-center">
+        <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card" id="music-player-card">
                     <div class="card-body">
@@ -361,7 +449,7 @@
                         <audio id="music-player" src="https://files.catbox.moe/yizd1x.mp3" controls></audio>
                         <div class="mt-2">
                             <button id="play-pause-button" class="btn btn-primary">
-                                <i class="fas fa-play"></i> 
+                                <i class="fas fa-play"></i>
                             </button>
                         </div>
                     </div>
@@ -370,13 +458,13 @@
         </div>
         <h2 class="mt-4 animate__animated animate__fadeIn" id="endpoints">endpoint unggulan</h2>
         <div class="row">
-        <div class="col-md-4 mb-4 animate__animated animate__fadeInUp card-wrapper">
+            <div class="col-md-4 mb-4 animate__animated animate__fadeInUp card-wrapper">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Deepseek Chat AI</h5>
                         <p class="card-text">Berinteraksi dengan AI menggunakan Deepseek Chat.</p>
-                        <a href="/api/ai/deepseek-chat?content=Apa%20itu%20WANZOFC%20TECH?"
-                            class="btn btn-primary">Coba Sekarang <i class="fas fa-arrow-right"></i></a>
+                        <a href="/api/ai/deepseek-chat?content=Apa%20itu%20WANZOFC%20TECH?" class="btn btn-primary">Coba
+                            Sekarang <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </div>
             </div>
@@ -385,8 +473,8 @@
                     <div class="card-body">
                         <h5 class="card-title">Gemini Pro AI</h5>
                         <p class="card-text">Dapatkan jawaban dari Gemini Pro.</p>
-                        <a href="/api/ai/gemini-pro?content=Ceritakan%20tentang%20dirimu"
-                            class="btn btn-primary">Coba Sekarang <i class="fas fa-arrow-right"></i></a>
+                        <a href="/api/ai/gemini-pro?content=Ceritakan%20tentang%20dirimu" class="btn btn-primary">Coba
+                            Sekarang <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </div>
             </div>
@@ -405,8 +493,8 @@
                     <div class="card-body">
                         <h5 class="card-title">GPT3 AI</h5>
                         <p class="card-text">Berinteraksi dengan Meta Llama model.</p>
-                        <a href="/api/ai/gpt3?prompt=kamu adalah wanzofc&content=hi"
-                            class="btn btn-primary">Coba Sekarang <i class="fas fa-arrow-right"></i></a>
+                        <a href="/api/ai/gpt3?prompt=kamu adalah wanzofc&content=hi" class="btn btn-primary">Coba
+                            Sekarang <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </div>
             </div>
@@ -443,7 +531,7 @@
         </div>
         <h2 class="mt-4 animate__animated animate__fadeIn" id="documentation">dokumentasi</h2>
         <p class="animate__animated animate__fadeInUp">
-           <a href="/api-docs">docs</a>.
+            <a href="/api-docs">docs</a>.
         </p>
 
     </div>
@@ -470,12 +558,12 @@
                     <input type="text" class="form-control" id="message-input" placeholder="ketik pesan Anda...">
                     <input type="hidden" id="reply-to-id">
                     <div class="input-group-append">
-                    <div class="custom-file">
+                        <div class="custom-file">
                             <input type="file" class="custom-file-input" id="file-input">
                             <label class="custom-file-label" for="file-input">Pilih file</label>
                         </div>
                         <button class="btn btn-primary" type="button" id="send-button">
-                            <i class="fas fa-paper-plane"></i> 
+                            <i class="fas fa-paper-plane"></i>
                         </button>
                     </div>
                 </div>
@@ -491,6 +579,7 @@
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 
     <script>
+        //PARTICLES JS
         particlesJS('particles-js', {
             "particles": {
                 "number": {
@@ -606,11 +695,28 @@
                 "particles_number": 80
             }
         });
-
+        //GSAP SCROLL
         gsap.registerPlugin(ScrollTrigger);
-        gsap.from(".jumbotron h1", { opacity: 0, duration: 1, y: -50, ease: "power3.out" });
-        gsap.from(".jumbotron p", { opacity: 0, duration: 1, y: 50, delay: 0.5, ease: "power3.out" });
-        gsap.from(".jumbotron .btn", { opacity: 0, duration: 1, delay: 1, y: 50, ease: "power3.out" });
+        gsap.from(".jumbotron h1", {
+            opacity: 0,
+            duration: 1,
+            y: -50,
+            ease: "power3.out"
+        });
+        gsap.from(".jumbotron p", {
+            opacity: 0,
+            duration: 1,
+            y: 50,
+            delay: 0.5,
+            ease: "power3.out"
+        });
+        gsap.from(".jumbotron .btn", {
+            opacity: 0,
+            duration: 1,
+            delay: 1,
+            y: 50,
+            ease: "power3.out"
+        });
         gsap.utils.toArray(".card-wrapper").forEach((wrapper, index) => {
             let card = wrapper.querySelector(".card");
             gsap.to(card, {
@@ -638,16 +744,22 @@
         const buttons = document.querySelectorAll('.btn');
         buttons.forEach(button => {
             button.addEventListener('mouseenter', () => {
-                gsap.to(button, { scale: 1.05, duration: 0.2 });
+                gsap.to(button, {
+                    scale: 1.05,
+                    duration: 0.2
+                });
             });
             buttons.addEventListener('mouseleave', () => {
-                gsap.to(button, { scale: 1, duration: 0.2 });
+                gsap.to(button, {
+                    scale: 1,
+                    duration: 0.2
+                });
             });
         });
         document.getElementById('backgroundAudio').play().catch(error => {
             console.error("Autoplay prevented:", error);
         });
-
+        //NAV
         $(document).ready(function() {
             $("#navButton").click(function() {
                 $(".sidebar-nav").addClass("open");
@@ -661,143 +773,152 @@
             });
         });
     </script>
-   <script>
-$(document).ready(function() {
-    const messagesContainer = $('#messages-container');
-    const messageInput = $('#message-input');
-    const sendButton = $('#send-button');
-    const darkModeToggle = $('#dark-mode-toggle');
-    const forumCard = $('#forum-card');
-    const fileInput = $('#file-input');
-    let isDarkMode = false;
-    const chatWidgetButton = $('#chat-widget-button');
-    const chatWidgetContainer = $('#chat-widget-container');
-    const replyToIdInput = $('#reply-to-id');
+    <script>
+        //FORUM
+        $(document).ready(function() {
+            const messagesContainer = $('#messages-container');
+            const messageInput = $('#message-input');
+            const sendButton = $('#send-button');
+            const darkModeToggle = $('#dark-mode-toggle');
+            const forumCard = $('#forum-card');
+            const fileInput = $('#file-input');
+            let isDarkMode = false;
+            const chatWidgetButton = $('#chat-widget-button');
+            const chatWidgetContainer = $('#chat-widget-container');
+            const replyToIdInput = $('#reply-to-id');
 
-    // Memastikan chatWidgetContainer tertutup saat halaman dimuat
-    chatWidgetContainer.removeClass('open');
+            // Memastikan chatWidgetContainer tertutup saat halaman dimuat
+            chatWidgetContainer.removeClass('open');
 
-    // Memastikan chatWidgetButton mendapatkan event listener
-    chatWidgetButton.off('click').on('click', function() {
-        chatWidgetContainer.toggleClass('open');
-    });
+            // Memastikan chatWidgetButton mendapatkan event listener
+            chatWidgetButton.off('click').on('click', function() {
+                chatWidgetContainer.toggleClass('open');
+            });
 
-    darkModeToggle.click(function() {
-        forumCard.toggleClass('dark-mode-forum');
-        darkModeToggle.text(forumCard.hasClass('dark-mode-forum') ? '☀️' : '🌙');
-    });
+            darkModeToggle.click(function() {
+                forumCard.toggleClass('dark-mode-forum');
+                darkModeToggle.text(forumCard.hasClass('dark-mode-forum') ? '☀️' : '🌙');
+            });
 
-    function loadMessages() {
-        $.ajax({
-            url: '/api/messages',
-            type: 'GET',
-            success: function(messages) {
-                messagesContainer.empty();
+            function loadMessages() {
+                $.ajax({
+                    url: '/api/messages',
+                    type: 'GET',
+                    success: function(messages) {
+                        messagesContainer.empty();
 
-                messages.forEach(function(message) {
-                    const messageElement = $('<div class="message"></div>')
-                        .addClass(message.sender === 'me' ? 'sent' : 'received')
-                        .attr('data-message-id', message._id); // MongoDB menggunakan _id
+                        messages.forEach(function(message) {
+                            const messageElement = $('<div class="message"></div>')
+                                .addClass(message.sender === 'me' ? 'sent' : 'received')
+                                .attr('data-message-id', message._id); // MongoDB menggunakan _id
 
-                    if (message.reply_to) {
-                        const repliedTo = messages.find(m => m._id === message.reply_to); //MongoDB menggunakan _id
-                        if (repliedTo) {
-                            messageElement.prepend(`<div class="replying-to">Membalas: ${repliedTo.text}</div>`);
-                        } else {
-                            messageElement.prepend(`<div class="replying-to">Membalas pesan yang tidak ditemukan</div>`);
-                        }
+                            if (message.reply_to) {
+                                const repliedTo = messages.find(m => m._id === message.reply_to); //MongoDB menggunakan _id
+                                if (repliedTo) {
+                                    messageElement.prepend(
+                                        `<div class="replying-to">Membalas: ${repliedTo.text}</div>`
+                                    );
+                                } else {
+                                    messageElement.prepend(
+                                        `<div class="replying-to">Membalas pesan yang tidak ditemukan</div>`
+                                    );
+                                }
+                            }
+
+                            let messageContent = message.text ? `<p>${message.text}</p>` : '';
+
+                            if (message.file && message.file.path) {
+                                messageContent +=
+                                    `<img src="${message.file.path}" alt="Gambar" style="max-width: 200px;">`;
+                            }
+
+                            messageElement.append(messageContent);
+                            const replyButton = $('<button class="reply-button">Balas</button>');
+                            messageElement.append(' ').append(replyButton);
+                            messagesContainer.append(messageElement);
+                        });
+
+                        messagesContainer.scrollTop(messagesContainer[0].scrollHeight);
+                    },
+                    error: function(error) {
+                        console.error('Error loading messages:', error);
                     }
-
-                    let messageContent = message.text ? `<p>${message.text}</p>` : '';
-
-                    if (message.file && message.file.path) {
-                        messageContent += `<img src="${message.file.path}" alt="Gambar" style="max-width: 200px;">`;
-                    }
-
-                    messageElement.append(messageContent);
-                    const replyButton = $('<button class="reply-button">Balas</button>');
-                    messageElement.append(' ').append(replyButton);
-                    messagesContainer.append(messageElement);
                 });
-
-                messagesContainer.scrollTop(messagesContainer[0].scrollHeight);
-            },
-            error: function(error) {
-                console.error('Error loading messages:', error);
             }
-        });
-    }
 
- function sendMessage(message, file, replyToId) {
-    let formData = new FormData();
-    formData.append('text', message);
-    if (file) {
-        formData.append('file', file);
-    }
-    formData.append('sender', 'me');
-    if (replyToId) {
-        formData.append('reply_to', replyToId);
-    }
+            function sendMessage(message, file, replyToId) {
+                let formData = new FormData();
+                formData.append('text', message);
+                if (file) {
+                    formData.append('file', file);
+                }
+                formData.append('sender', 'me');
+                if (replyToId) {
+                    formData.append('reply_to', replyToId);
+                }
 
-    $.ajax({
-        url: '/api/messages',
-        type: 'POST',
-        contentType: false, // Penting untuk mengirim file
-        processData: false, // Penting untuk mengirim file
-        data: formData,
-        success: function(response) {
-            // Setelah berhasil mengirim, muat ulang pesan
+                $.ajax({
+                    url: '/api/messages',
+                    type: 'POST',
+                    contentType: false, // Penting untuk mengirim file
+                    processData: false, // Penting untuk mengirim file
+                    data: formData,
+                    success: function(response) {
+                        // Setelah berhasil mengirim, muat ulang pesan
+                        loadMessages();
+                        messageInput.val('');
+                        fileInput.val('');
+                        $('.custom-file-label').text('Pilih file');
+                        replyToIdInput.val('');
+                        messageInput.attr('placeholder', 'Ketik pesan Anda...');
+
+                        // Scroll ke bawah setelah memuat pesan
+                        setTimeout(() => {
+                            messagesContainer.scrollTop(messagesContainer[0].scrollHeight);
+                        }, 100); // Menunggu sedikit agar pesan benar-benar ter-render
+                    },
+                    error: function(error) {
+                        console.error('Error sending message:', error);
+                        alert('Terjadi kesalahan saat mengirim pesan. Silakan coba lagi.'); // Pesan error ke pengguna
+                    }
+                });
+            }
+
+                        sendButton.click(function() {
+                const messageText = messageInput.val().trim();
+                const file = fileInput[0].files[0];
+                const replyToId = replyToIdInput.val();
+
+                if (messageText === '' && !file) {
+                    alert('Pesan tidak boleh kosong!');
+                    return;
+                }
+
+                sendMessage(messageText, file, replyToId);
+            });
+
+            fileInput.change(function() {
+                if (this.files.length > 0) {
+                    $('.custom-file-label').text(this.files[0].name);
+                } else {
+                    $('.custom-file-label').text('Pilih file');
+                }
+            });
+
+            messagesContainer.on('click', '.reply-button', function() {
+                const messageId = $(this).closest('.message').data('message-id');
+                replyToIdInput.val(messageId);
+                messageInput.attr('placeholder', `membalas pesan ${messageId}`);
+                messageInput.focus();
+
+            });
+
             loadMessages();
-            messageInput.val('');
-            fileInput.val('');
-            $('.custom-file-label').text('Pilih file');
-            replyToIdInput.val('');
-            messageInput.attr('placeholder', 'Ketik pesan Anda...');
-
-            // Scroll ke bawah setelah memuat pesan
-            setTimeout(() => {
-                messagesContainer.scrollTop(messagesContainer[0].scrollHeight);
-            }, 100); // Menunggu sedikit agar pesan benar-benar ter-render
-        },
-        error: function(error) {
-            console.error('Error sending message:', error);
-        }
-    });
-}
-
-    sendButton.click(function() {
-        const messageText = messageInput.val();
-        const file = fileInput[0].files[0];
-        const replyToId = replyToIdInput.val(); // ambil ID pesan yang di balas
-
-        if (messageText.trim() !== '' || file) {
-            sendMessage(messageText, file, replyToId); // kirim ID balasan
-        }
-    });
-
-    // Update label input file
-    fileInput.change(function() {
-        if (this.files.length > 0) {
-            $('.custom-file-label').text(this.files[0].name);
-        } else {
-            $('.custom-file-label').text('Pilih file');
-        }
-    });
-
-     //Event Handker untuk tombol balas
-    messagesContainer.on('click', '.reply-button', function(){
-        const messageId = $(this).closest('.message').data('message-id');
-        replyToIdInput.val(messageId); //Simpan ID pesan yang akan di balas
-        messageInput.attr('placeholder', `membalas pesan ${messageId}`); //opsional : indikasi visual
-        messageInput.focus();
-
-    });
-
-    loadMessages();
-    setInterval(loadMessages, 5000);
-});
+            setInterval(loadMessages, 5000);
+        });
     </script>
-     <script>
+    <script>
+        //MUSIC PLAYER
         $(document).ready(function() {
             const audio = document.getElementById('music-player');
             const playPauseButton = $('#play-pause-button');
@@ -811,6 +932,74 @@ $(document).ready(function() {
                     playPauseButton.html('<i class="fas fa-play"></i> ');
                 }
             });
+        });
+    </script>
+     <script>
+         //DAILY TIPS
+        $(document).ready(function() {
+            const dailyTips = [
+                "Gunakan parameter 'limit' untuk membatasi jumlah hasil yang dikembalikan oleh API.",
+                "Coba gunakan fitur pencarian lanjutan untuk menemukan endpoint API yang Anda butuhkan dengan cepat.",
+                "Periksa dokumentasi API untuk contoh kode dan panduan penggunaan.",
+                "Gunakan fitur rate limiting untuk mencegah server Anda kelebihan beban.",
+                "Berikan umpan balik kepada kami tentang API untuk membantu kami meningkatkannya."
+            ];
+
+            function getRandomTip() {
+                const randomIndex = Math.floor(Math.random() * dailyTips.length);
+                return dailyTips[randomIndex];
+            }
+
+            const dailyTip = getRandomTip();
+            $("#daily-tip").text(dailyTip);
+            $("#daily-tip-container").fadeIn(1000);
+        });
+    </script>
+     <script>
+        //WELCOME MODAL
+        $(document).ready(function() {
+            const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
+
+            if (!hasSeenWelcome) {
+                $('#welcomeModal').modal('show');
+                localStorage.setItem('hasSeenWelcome', 'true');
+            }
+        });
+    </script>
+    <script>     
+        gsap.registerPlugin(ScrollTrigger);
+        gsap.to("body", {
+        backgroundColor: "#6a1b9a", 
+        scrollTrigger: {
+            trigger: "body",
+            start: "top top",
+            end: "bottom bottom",
+            scrub: true, 
+            onUpdate: (self) => {
+                let progress = self.progress;
+                let startColor = [13, 17, 23];  //Nilai RGB dari var(--bg-color) (#0d1117)
+                let endColor = [106, 27, 154];  //Nilai RGB dari #6a1b9a
+
+                let newColor = startColor.map((start, i) => {
+                  return start + (endColor[i] - start) * progress;
+                });
+
+                document.body.style.backgroundColor = `rgb(${newColor[0]}, ${newColor[1]}, ${newColor[2]})`;
+              },
+          }
+        });
+    </script>
+     <script>
+        document.addEventListener('mousemove', function(e) {
+            let trail = document.createElement('div');
+            trail.className = 'mouse-trail';
+            trail.style.left = e.clientX + 'px';
+            trail.style.top = e.clientY + 'px';
+            document.body.appendChild(trail);
+
+            setTimeout(() => {
+                trail.remove();
+            }, 500);
         });
     </script>
 </body>
